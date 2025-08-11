@@ -83,7 +83,6 @@ def normalize_prediction_json(pred_json, gt_json):
     
     except Exception as e:
         logger.error(f"JSON 정규화 중 오류 발생: {e}")
-        st.warning(f"JSON 정규화 중 문제가 발생했습니다. 원본 JSON을 사용합니다: {str(e)}")
         # 오류 발생 시 원본 반환
         return pred_json
     
@@ -331,7 +330,6 @@ def eval_json(gt_json, norm_pred, embed_backend, model_name=None, api_key=None, 
     의미 유사도/완전일치 기반 JSON 평가 metric 실행 (필드별 평가기준 지원)
     """
 
-    api_base_log = api_base
     api_base = f"{api_base}/v1" if api_base else None
     provider, *model_parts = model_name.split("/") if model_name else (None,)
     model_name_short = "/".join(model_parts) if model_parts else model_name
