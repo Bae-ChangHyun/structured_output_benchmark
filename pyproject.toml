@@ -1,0 +1,36 @@
+[project]
+name = "structured-output-benchmark"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.61.0",
+    "dotenv>=0.9.9",
+    "google-generativeai==0.8.5",
+    "instructor>=1.10.0",
+    "langchain>=0.3.27",
+    "langchain-anthropic>=0.3.18",
+    "langchain-google-genai==2.0.4",
+    "langchain-huggingface>=0.3.1",
+    "langchain-ollama>=0.3.6",
+    "langchain-openai>=0.3.28",
+    "langfuse>=3.2.2",
+    "llama-index-llms-google-genai>=0.3.0",
+    "llama-index-llms-openai>=0.5.1",
+    "llama-index-llms-openai-like>=0.5.0",
+    "lm-format-enforcer>=0.10.12",
+    "loguru>=0.7.3",
+    "marvin>=3.1.1",
+    "mirascope>=1.25.5",
+    "ollama>=0.5.3",
+    "openai==1.99.1",
+    "pandas>=2.3.1",
+    "plotly>=6.2.0",
+    "pydantic>=2.11.7",
+    "pydantic-ai==0.4.3",
+    "scipy>=1.16.1",
+    "streamlit>=1.48.0",
+    "transformers[torch]>=4.55.0",
+    "typer>=0.16.0",
+]
