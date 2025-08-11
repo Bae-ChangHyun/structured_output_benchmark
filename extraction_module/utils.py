@@ -7,10 +7,17 @@ from loguru import logger
 
 def convert_schema(schema_name: str):
     """
-    주어진 스키마 파일명(확장자 제외)에서 ExtractInfo 클래스를 동적으로 import하여 반환
+    주어진 스키마 파일명(확장자 제외 또는 경로)에서 ExtractInfo 클래스를 동적으로 import하여 반환
     """
-    file_path = os.path.join(f'extraction_module/schema/{schema_name}.py')
-    spec = importlib.util.spec_from_file_location(schema_name, file_path)
+    # 경로로 들어온 경우: .py로 끝나거나 /가 포함된 경우
+    if schema_name.endswith('.py') or '/' in schema_name or '\\' in schema_name:
+        file_path = schema_name
+        # .py 확장자 제거하여 모듈명 생성
+        module_name = os.path.splitext(os.path.basename(file_path))[0]
+    else:
+        file_path = os.path.join('extraction_module', 'schema', f'{schema_name}.py')
+        module_name = schema_name
+    spec = importlib.util.spec_from_file_location(module_name, file_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return getattr(mod, 'ExtractInfo')
