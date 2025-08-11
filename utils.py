@@ -8,6 +8,68 @@ from typing import get_origin, get_args, Union
 from extraction_module.utils import get_compatible_frameworks, convert_schema
 
 
+def select_host_by_choice(choice: int):
+    """선택된 번호에 따라 호스트 정보를 반환합니다 (API용)"""
+    if choice == 1:
+        return {
+            "host": "openai",
+            "base_url": "https://api.openai.com/v1",
+            "model": os.getenv("OPENAI_MODELS", "gpt-4o-mini"),
+            "api_key": os.getenv("OPENAI_API_KEY"),
+        }
+    elif choice == 2:
+        return {
+            "host": "anthropic",
+            "base_url": "https://api.anthropic.com/v1",
+            "model": os.getenv("ANTHROPIC_MODELS", "claude-3-sonnet-20240229"),
+            "api_key": os.getenv("ANTHROPIC_API_KEY"),
+        }
+    elif choice == 3:
+        return {
+            "host": "vllm",
+            "base_url": os.getenv("VLLM_BASEURL"),
+            "model": os.getenv("VLLM_MODELS", "openai/gpt-oss-120b"),
+            "api_key": "dummy",
+        }
+    elif choice == 4:
+        return {
+            "host": "ollama",
+            "base_url": os.getenv("OLLAMA_HOST", "http://localhost:11434/v1"),
+            "model": os.getenv("OLLAMA_MODELS", "llama3.1:8b"),
+            "api_key": "dummy",
+        }
+    elif choice == 5:
+        return {
+            "host": "google",
+            "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
+            "model": os.getenv("GOOGLE_MODELS", "gemini-1.5-flash"),
+            "api_key": os.getenv("GOOGLE_API_KEY"),
+        }
+    else:
+        raise ValueError(f"Invalid host choice: {choice}")
+
+def select_framework_by_choice(host: str, choice: int):
+    """선택된 번호에 따라 프레임워크를 반환합니다 (API용)"""
+    compatible_frameworks = get_compatible_frameworks(host)
+    
+    if not compatible_frameworks:
+        raise ValueError(f"No compatible frameworks for host '{host}'")
+    
+    if choice < 1 or choice > len(compatible_frameworks):
+        raise ValueError(f"Invalid framework choice: {choice}")
+    
+    return compatible_frameworks[choice - 1]
+
+def get_available_hosts():
+    """사용 가능한 호스트 목록을 반환합니다"""
+    return [
+        {"id": 1, "name": "openai", "description": "OpenAI API"},
+        {"id": 2, "name": "anthropic", "description": "Anthropic API"},
+        {"id": 3, "name": "vllm", "description": "vLLM 서버"},
+        {"id": 4, "name": "ollama", "description": "Ollama 로컬 서버"},
+        {"id": 5, "name": "google", "description": "Google Gemini API"}
+    ]
+
 # host 선택 메뉴 함수
 def select_host():
     print("=== Host 선택 ===")
