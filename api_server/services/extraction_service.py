@@ -70,6 +70,14 @@ class ExtractionService:
         logger.add(log_filename, level="INFO", enqueue=True)
         
         try:
+            # input_text가 파일 경로라면 파일 내용 읽기
+            if isinstance(input_text, str) and os.path.isfile(input_text):
+                try:
+                    with open(input_text, "r", encoding="utf-8") as f:
+                        input_text = f.read()
+                except Exception as file_err:
+                    logger.error(f"파일 읽기 실패: {input_text}, 에러: {str(file_err)}")
+                    raise file_err
             # Langfuse 트레이스 ID 생성
             langfuse_trace_id = self.langfuse_client.create_trace_id(seed=f"custom-{str(uuid.uuid4())}")
             
