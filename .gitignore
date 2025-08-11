@@ -1,5 +1,6 @@
-
+sample_gt/
 *.csv
+result/
 
 # Python
 __pycache__/
