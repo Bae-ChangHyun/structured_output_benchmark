@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from typing import Dict, List
+from typing import Dict, List, Any
 import os
 
 from extraction_module.utils import get_compatible_frameworks
@@ -8,31 +8,11 @@ from utils import get_available_hosts
 router = APIRouter()
 
 @router.get("/hosts")
-async def get_hosts() -> Dict[str, List[Dict[str, str]]]:
+async def get_hosts() -> Dict[str, Any]:
     """
     사용 가능한 호스트 목록을 반환합니다.
-    
-    추출 API에서 host_choice 파라미터로 사용할 수 있는 값들을 제공합니다.
-    
-    **Response:**
-    ```json
-    {
-        "success": true,
-        "data": [
-            {"id": 1, "name": "openai", "description": "OpenAI API"},
-            {"id": 2, "name": "anthropic", "description": "Anthropic API"},
-            ...
-        ]
-    }
-    ```
     """
-    hosts = [
-        {"id": 1, "name": "openai", "description": "OpenAI API"},
-        {"id": 2, "name": "anthropic", "description": "Anthropic API"},
-        {"id": 3, "name": "vllm", "description": "vLLM 서버"},
-        {"id": 4, "name": "ollama", "description": "Ollama 로컬 서버"},
-        {"id": 5, "name": "google", "description": "Google Gemini API"}
-    ]
+    hosts = ["openai", "anthropic", "vllm", "ollama", "google"]
     
     return {
         "success": True,
@@ -40,7 +20,7 @@ async def get_hosts() -> Dict[str, List[Dict[str, str]]]:
     }
 
 @router.get("/frameworks")
-async def get_frameworks(host: str = "openai") -> Dict[str, List[str]]:
+async def get_frameworks(host: str = "openai") -> Dict[str, Any]:
     """
     특정 호스트에서 사용 가능한 프레임워크 목록을 반환합니다.
     
@@ -98,37 +78,4 @@ async def get_schemas() -> Dict[str, List[str]]:
     return {
         "success": True,
         "data": schemas
-    }
-
-@router.get("/config")
-async def get_config() -> Dict[str, dict]:
-    """현재 환경 설정 정보를 반환합니다."""
-    config = {
-        "openai": {
-            "available": bool(os.getenv("OPENAI_API_KEY")),
-            "models": os.getenv("OPENAI_MODELS", "gpt-4o-mini")
-        },
-        "anthropic": {
-            "available": bool(os.getenv("ANTHROPIC_API_KEY")),
-            "models": os.getenv("ANTHROPIC_MODELS", "claude-3-sonnet-20240229")
-        },
-        "vllm": {
-            "available": bool(os.getenv("VLLM_BASEURL")),
-            "base_url": os.getenv("VLLM_BASEURL"),
-            "models": os.getenv("VLLM_MODELS", "openai/gpt-oss-120b")
-        },
-        "ollama": {
-            "available": True,  # Ollama는 로컬이므로 항상 available로 표시
-            "base_url": os.getenv("OLLAMA_HOST", "http://localhost:11434/v1"),
-            "models": os.getenv("OLLAMA_MODELS", "llama3.1:8b")
-        },
-        "google": {
-            "available": bool(os.getenv("GOOGLE_API_KEY")),
-            "models": os.getenv("GOOGLE_MODELS", "gemini-1.5-flash")
-        }
-    }
-    
-    return {
-        "success": True,
-        "data": config
     }

@@ -31,9 +31,7 @@ app = FastAPI(
     ## 주요 기능
     
     * **텍스트 추출**: 다양한 LLM 호스트와 프레임워크를 통한 구조화된 정보 추출
-    * **파일 업로드**: 텍스트 파일을 업로드하여 추출 실행
     * **평가**: 예측 결과와 정답 JSON 비교 평가
-    * **비동기 작업**: 긴 작업을 백그라운드에서 실행하고 상태 추적
     
     ## 지원 호스트
     
@@ -45,24 +43,10 @@ app = FastAPI(
     
     ## 사용법
     
-    1. `/api/v1/utils/hosts` - 사용 가능한 호스트 목록 확인
-    2. `/api/v1/utils/frameworks?host=<호스트명>` - 호스트별 프레임워크 목록 확인
-    3. `/api/v1/extraction/run` - 텍스트 추출 실행
-    4. `/api/v1/extraction/upload` - 파일 업로드를 통한 추출
-    
-    ## 예시
-    
-    ```bash
-    # 호스트 목록 확인
-    curl "http://localhost:8000/api/v1/utils/hosts"
-    
-    # OpenAI 호스트의 프레임워크 목록 확인
-    curl "http://localhost:8000/api/v1/utils/frameworks?host=openai"
-    
-    # 텍스트 추출 실행
-    curl -X POST "http://localhost:8000/api/v1/extraction/run" \\
-      -H "Content-Type: application/json" \\
-      -d '{"input_text": "안녕하세요. 김철수입니다.", "host_choice": 1}'
+    1. `/v1/utils/hosts` - 사용 가능한 호스트 목록 확인
+    2. `/v1/utils/frameworks?host=<호스트명>` - 호스트별 프레임워크 목록 확인
+    3. `/v1/extraction` - 텍스트 추출 실행
+    3. `/v1/evaluation` - 평가 실행
     ```
     """,
     version="1.0.0",
@@ -79,10 +63,10 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(extraction.router, prefix="/api/v1/extraction", tags=["extraction"])
-app.include_router(evaluation.router, prefix="/api/v1/evaluation", tags=["evaluation"])
-app.include_router(visualization.router, prefix="/api/v1/visualization", tags=["visualization"])
-app.include_router(utils.router, prefix="/api/v1/utils", tags=["utils"])
+app.include_router(extraction.router, prefix="/v1/extraction", tags=["extraction"])
+app.include_router(evaluation.router, prefix="/v1/evaluation", tags=["evaluation"])
+app.include_router(visualization.router, prefix="/v1/visualization", tags=["visualization"])
+app.include_router(utils.router, prefix="/v1/utils", tags=["utils"])
 
 @app.get("/")
 async def root():

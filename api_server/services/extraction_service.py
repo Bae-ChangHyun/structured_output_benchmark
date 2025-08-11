@@ -1,18 +1,14 @@
 import os
 import json
 import uuid
-import asyncio
 from datetime import datetime
 from typing import Optional, Dict, Any
 from loguru import logger
 import yaml
 from langfuse import get_client
 
-from extraction_module.utils import extract_with_framework
-from utils import (
-    select_host_by_choice, select_framework_by_choice, record_extraction, 
-    box_line, log_response, final_report
-)
+from extraction_module.utils import extract_with_framework, get_compatible_frameworks
+from utils import (record_extraction, box_line, log_response, final_report)
 from api_server.models.extraction import ExtractionResult
 
 from dotenv import load_dotenv
@@ -24,29 +20,6 @@ class ExtractionService:
     def __init__(self):
         self.langfuse_client = get_client()
     
-    def get_host_info(self, host_choice: Optional[int] = None) -> Dict[str, Any]:
-        """호스트 정보를 가져옵니다."""
-        if host_choice:
-            return select_host_by_choice(host_choice)
-        else:
-            # 기본값으로 OpenAI 사용
-            return {
-                "host": "openai",
-                "base_url": "https://api.openai.com/v1",
-                "model": os.getenv("OPENAI_MODELS", "gpt-4o-mini"),
-                "api_key": os.getenv("OPENAI_API_KEY"),
-            }
-    
-    def get_framework_name(self, host: str, framework_choice: Optional[int] = None) -> str:
-        """프레임워크 이름을 가져옵니다."""
-        if framework_choice:
-            return select_framework_by_choice(host, framework_choice)
-        else:
-            # 기본값으로 첫 번째 호환 프레임워크 사용
-            from extraction_module.utils import get_compatible_frameworks
-            frameworks = get_compatible_frameworks(host)
-            return frameworks[0] if frameworks else "openai"
-    
     async def run_extraction(
         self,
         input_text: str,
@@ -54,8 +27,8 @@ class ExtractionService:
         schema_name: str = "schema_han",
         temperature: float = 0.1,
         timeout: int = 900,
-        host_choice: Optional[int] = None,
-        framework_choice: Optional[int] = None
+        framework: str = 'OpenAIFramework',
+        host_info: Optional[Dict[str, Any]] = None
     ) -> ExtractionResult:
         """추출 작업을 실행합니다."""
         
@@ -80,13 +53,12 @@ class ExtractionService:
                     raise file_err
             # Langfuse 트레이스 ID 생성
             langfuse_trace_id = self.langfuse_client.create_trace_id(seed=f"custom-{str(uuid.uuid4())}")
-            
-            # 호스트 및 프레임워크 정보 가져오기
-            host_info = self.get_host_info(host_choice)
-            framework_name = self.get_framework_name(host_info["host"], framework_choice)
-            
+                        
+            if framework not in get_compatible_frameworks(host_info['host']):
+                logger.error(f"호환되지 않는 프레임워크: {framework}")
+                raise ValueError(f"호환되지 않는 프레임워크: {framework}")
+
             base_url = host_info["base_url"]
-            api_key = host_info["api_key"]
             model = host_info["model"]
             
             # 실험 정보 로깅
@@ -97,7 +69,7 @@ class ExtractionService:
                 box_line(f"Host: {host_info['host']}"),
                 box_line(f"BaseURL: {base_url}"),
                 box_line(f"Model: {model}"),
-                box_line(f"Framework: {framework_name}"),
+                box_line(f"Framework: {framework}"),
                 box_line(f"Input: {input_text.strip()[:20]}..."),
                 box_line(f"Retries: {retries}"),
                 "*" * box_width
@@ -112,7 +84,7 @@ class ExtractionService:
             
             # 추출 실행
             result, success, latencies = extract_with_framework(
-                framework_name=framework_name,
+                framework_name=framework,
                 provider=host_info["host"],
                 model_name=host_info["model"],
                 base_url=host_info["base_url"],
@@ -150,7 +122,7 @@ class ExtractionService:
                 host=host_info["host"],
                 model=model,
                 prompt=f"{extract_prompt}\n{input_text}",
-                framework=framework_name,
+                framework=framework,
                 success=bool(result),
                 latency=latency,
                 langfuse_url=langfuse_url,

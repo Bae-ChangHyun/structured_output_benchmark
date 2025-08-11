@@ -242,7 +242,6 @@ async def run_evaluation(pred_json_path: str, gt_json_path: str, schema_name: st
             structure_score=eval_result.get('structure_score', 0),
             content_score=eval_result.get('content_score', 0),
             eval_result_path=eval_result_save_path,
-            run_folder=run_folder,
             note=""
         )
 

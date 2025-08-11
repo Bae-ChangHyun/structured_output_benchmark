@@ -1,6 +1,5 @@
 import os
 import json
-import asyncio
 from datetime import datetime
 from typing import Optional
 from loguru import logger
@@ -8,7 +7,10 @@ from loguru import logger
 from evaluation_module.metric import normalize_prediction_json, eval_json
 from utils import load_field_eval_criteria, record_evaluation, convert_np
 from api_server.models.evaluation import EvaluationResult
+from dotenv import load_dotenv
 
+# 환경변수 로드
+load_dotenv()
 
 class EvaluationService:
     
