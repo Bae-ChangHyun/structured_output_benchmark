@@ -35,12 +35,12 @@ app = typer.Typer()
 def run(
     input_text: str = typer.Option("Hello, how are you?", "--input", help="프롬프트 텍스트 또는 파일 경로"),
     retries: int = typer.Option(1, "--retries", help="프레임워크 재시도 횟수"),
-    schema: str = typer.Option("schema_han", "--schema", help="프레임워크 스키마 이름"),
+    schema_name: str = typer.Option("schema_han", "--schema", help="프레임워크 스키마 이름"),
     temperature: float = typer.Option(0.1, "--temperature", help="프롬프트 온도"),
     timeout: int = typer.Option(900, "--timeout", help="LLM request timeout 시간")
 ):
     """현재 프로세스 실행 (extraction)"""
-    asyncio.run(run_extraction(input, retries, schema, temperature, timeout))
+    asyncio.run(run_extraction(input_text, retries, schema_name, temperature, timeout))
 
 
 @app.command() 
@@ -51,8 +51,7 @@ def eval(
     criteria_path: Optional[str] = typer.Option("evaluation_module/criteria/criteria.json", "--criteria", help="평가 기준 파일 경로"),
     embed_backend: str = typer.Option("openai", "--embed-backend", help="임베딩 백엔드 (huggingface/openai/vllm/ollama)"),
     model_name: Optional[str] = typer.Option(None, "--model-name", help="임베딩 모델명"),
-    api_base: Optional[str] = typer.Option(None, "--api-base", help="API 베이스 URL"),
-    run_folder: Optional[str] = typer.Option(None, "--run-folder", help="실행 폴더")
+    api_base: Optional[str] = typer.Option(None, "--api-base", help="API 베이스 URL")
 ):
     """Evaluation 프로세스 실행"""
     asyncio.run(run_evaluation(pred_json_path, gt_json_path, schema_name, criteria_path, embed_backend, model_name, api_base))

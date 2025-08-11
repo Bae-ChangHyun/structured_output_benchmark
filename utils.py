@@ -179,7 +179,6 @@ def record_evaluation(
     structure_score,
     content_score,
     eval_result_path,
-    run_folder=None,
     note=""
 ):
     csv_path = "result/evaluation_result.csv"
@@ -194,7 +193,6 @@ def record_evaluation(
         "structure_score": structure_score,
         "content_score": content_score,
         "eval_result_path": eval_result_path,
-        "run_folder": run_folder,
         "note": note
     }
     if os.path.isfile(csv_path):

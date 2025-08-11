@@ -53,7 +53,7 @@ async def run_extraction(request: ExtractionRequest):
         result = await extraction_service.run_extraction(
             input_text=request.input_text,
             retries=request.retries,
-            schema_name=request.schema,
+            schema_name=request.schema_name,
             temperature=request.temperature,
             timeout=request.timeout,
             host_choice=request.host_choice,
@@ -122,7 +122,7 @@ async def run_extraction_background(task_id: str, request: ExtractionRequest):
         result = await extraction_service.run_extraction(
             input_text=request.input_text,
             retries=request.retries,
-            schema_name=request.schema,
+            schema_name=request.schema_name,
             temperature=request.temperature,
             timeout=request.timeout,
             host_choice=request.host_choice,
@@ -155,7 +155,7 @@ async def run_extraction_background(task_id: str, request: ExtractionRequest):
 async def run_extraction_with_file(
     file: UploadFile = File(..., description="텍스트 파일 (.txt, .md, .json 등)"),
     retries: int = Form(1, description="재시도 횟수 (1-10)"),
-    schema: str = Form("schema_han", description="스키마 이름"),
+    schema_name: str = Form("schema_han", description="스키마 이름"),
     temperature: float = Form(0.1, description="프롬프트 온도 (0.0-2.0)"),
     timeout: int = Form(900, description="타임아웃 시간(초)"),
     host_choice: Optional[int] = Form(None, description="호스트 선택: 1=OpenAI, 2=Anthropic, 3=vLLM, 4=Ollama, 5=Google"),
@@ -193,7 +193,7 @@ async def run_extraction_with_file(
         result = await extraction_service.run_extraction(
             input_text=input_text,
             retries=retries,
-            schema_name=schema,
+            schema_name=schema_name,
             temperature=temperature,
             timeout=timeout,
             host_choice=host_choice,

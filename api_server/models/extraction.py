@@ -5,7 +5,7 @@ from .common import BaseResponse, TaskResponse
 class ExtractionRequest(BaseModel):
     input_text: Optional[str] = Field(None, description="프롬프트 텍스트 (파일 업로드 시 None 가능)")
     retries: int = Field(1, ge=1, le=10, description="프레임워크 재시도 횟수")
-    schema: str = Field("schema_han", description="프레임워크 스키마 이름 (예: schema_han)")
+    schema_name: str = Field("schema_han", description="프레임워크 스키마 이름 (예: schema_han)")
     temperature: float = Field(0.1, ge=0.0, le=2.0, description="프롬프트 온도")
     timeout: int = Field(900, ge=30, le=3600, description="LLM request timeout 시간 (초)")
     host_choice: Optional[int] = Field(
@@ -21,7 +21,7 @@ class ExtractionRequest(BaseModel):
 
 class ExtractionFileRequest(BaseModel):
     retries: int = Field(1, ge=1, le=10, description="프레임워크 재시도 횟수")
-    schema: str = Field("schema_han", description="프레임워크 스키마 이름 (예: schema_han)")
+    schema_name: str = Field("schema_han", description="프레임워크 스키마 이름 (예: schema_han)")
     temperature: float = Field(0.1, ge=0.0, le=2.0, description="프롬프트 온도")
     timeout: int = Field(900, ge=30, le=3600, description="LLM request timeout 시간 (초)")
     host_choice: Optional[int] = Field(
