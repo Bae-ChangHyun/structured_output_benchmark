@@ -33,4 +33,7 @@ dependencies = [
     "streamlit>=1.48.0",
     "transformers[torch]>=4.55.0",
     "typer>=0.16.0",
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6",
 ]
