@@ -1,5 +1,6 @@
 import os
 import time
+import yaml
 import asyncio
 import sys
 import argparse
@@ -32,14 +33,14 @@ app = typer.Typer()
 
 @app.command()
 def run(
-    prompt: str = typer.Option("Hello, how are you?", "--prompt", help="프롬프트 텍스트 또는 파일 경로"),
+    input_text: str = typer.Option("Hello, how are you?", "--input", help="프롬프트 텍스트 또는 파일 경로"),
     retries: int = typer.Option(1, "--retries", help="프레임워크 재시도 횟수"),
     schema: str = typer.Option("schema_han", "--schema", help="프레임워크 스키마 이름"),
     temperature: float = typer.Option(0.1, "--temperature", help="프롬프트 온도"),
     timeout: int = typer.Option(900, "--timeout", help="LLM request timeout 시간")
 ):
     """현재 프로세스 실행 (extraction)"""
-    asyncio.run(run_extraction(prompt, retries, schema, temperature, timeout))
+    asyncio.run(run_extraction(input, retries, schema, temperature, timeout))
 
 
 @app.command() 
@@ -67,7 +68,7 @@ def viz(
     os.system(f"streamlit run evaluation_module/visualizer.py -- --eval-result {eval_result_path}")
 
 
-async def run_extraction(prompt: str, retries: int, schema_name: str, temperature: float, timeout: int):
+async def run_extraction(input_text: str, retries: int, schema_name: str, temperature: float, timeout: int):
     """Extraction 실행 함수"""
     logger.remove()
     logger.add(sys.stderr, level="INFO")
@@ -79,9 +80,9 @@ async def run_extraction(prompt: str, retries: int, schema_name: str, temperatur
     logger.add(log_filename, level=os.getenv("MODE", "INFO").upper(), enqueue=True)
     
     # 프롬프트가 파일 경로인지 확인
-    if os.path.isfile(prompt):
-        with open(prompt, 'r', encoding='utf-8') as f:
-            prompt = f.read()
+    if os.path.isfile(input_text):
+        with open(input_text, 'r', encoding='utf-8') as f:
+            input_text = f.read()
             
     langfuse_trace_id = langfuse_client.create_trace_id(seed=f"custom-{str(uuid.uuid4())}")
 
@@ -100,7 +101,7 @@ async def run_extraction(prompt: str, retries: int, schema_name: str, temperatur
         box_line(f"BaseURL: {base_url}"),
         box_line(f"Model: {model}"),
         box_line(f"Framework: {framework_name}"),
-        box_line(f"Prompt: {prompt.strip()[:20]}"),
+        box_line(f"Input: {input_text.strip()[:20]}"),
         box_line(f"Retries: {retries}"),
         "*" * box_width
     ]
@@ -111,14 +112,19 @@ async def run_extraction(prompt: str, retries: int, schema_name: str, temperatur
     success = None
     latency = None
     note = ""
+    
+    # prompt.yaml에서 Extract_prompt 불러오기
+    with open("prompt.yaml", "r", encoding="utf-8") as f:
+        prompt_yaml = yaml.safe_load(f)
+    extract_prompt = prompt_yaml.get("Extract_prompt", "Extract information from the given content.")
 
     result, success, latencies = extract_with_framework(
             framework_name=framework_name,
             provider=host_info["host"],
             model=host_info["model"],
             base_url=host_info["base_url"],
-            content=prompt,  # content로 전달
-            prompt=f"Extract information from the given content.\n{prompt}",  # 기본 추출 프롬프트
+            content=input_text,  # content로 전달
+            prompt=f"{extract_prompt}\n{input_text}",  # 기본 추출 프롬프트
             schema_name=schema_name,
             retries=retries,
             api_delay_seconds=0.5,
@@ -151,7 +157,7 @@ async def run_extraction(prompt: str, retries: int, schema_name: str, temperatur
         log_filename=log_filename,
         host=host_info["host"],
         model=model,
-        prompt=prompt,
+        prompt=f"{extract_prompt}\n{input_text}",
         framework=framework_name,
         success=success,
         latency=latency,

@@ -18,7 +18,7 @@ def convert_schema(schema_name: str):
 def extract_with_framework(
     framework_name: str,
     provider: str,
-    model: str,
+    model_name: str,
     base_url: str,
     content: str,
     prompt: str,
@@ -47,11 +47,8 @@ def extract_with_framework(
         tuple[Dict[str, Any], bool]: (추출된 데이터, 성공 여부)
     """
     try:
-        #provider, *model_parts = model.split("/")
-        #model_name = "/".join(model_parts)
-        model_name=model
-
         response_model = convert_schema(schema_name)
+        
         init_kwargs = {
             "llm_model": model_name,
             "llm_provider": provider,
