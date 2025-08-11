@@ -100,7 +100,7 @@ class EmbeddingBackend:
         elif backend in ['vllm', 'ollama']:
             self.model = OpenAIEmbeddings(
                 model=model_name,
-                openai_api_key=api_key,
+                openai_api_key="dummy",
                 openai_api_base=api_base
             )
         elif backend == 'huggingface':
@@ -325,28 +325,26 @@ def compare_json(gt, pred, embedder: EmbeddingBackend, weights: Optional[Dict[st
     }
     return report
 
-def eval_json(gt_json, norm_pred, embed_backend, model_name=None, api_key=None, api_base=None, run_folder=None, field_eval_criteria=None):
+def eval_json(gt_json, pred_json, 
+              embed_backend, model=None, api_base=None,
+              field_eval_criteria=None):
     """
     의미 유사도/완전일치 기반 JSON 평가 metric 실행 (필드별 평가기준 지원)
     """
 
-    api_base = f"{api_base}/v1" if api_base else None
-    provider, *model_parts = model_name.split("/") if model_name else (None,)
-    model_name_short = "/".join(model_parts) if model_parts else model_name
-
-    # 임베딩 백엔드 객체 생성
     if embed_backend == 'huggingface':
-        embedder = EmbeddingBackend('huggingface', model_name=model_name_short)
+        embedder = EmbeddingBackend('huggingface', model_name=model)
     elif embed_backend == 'openai':
-        embedder = EmbeddingBackend('openai', model_name=model_name_short)
+        embedder = EmbeddingBackend('openai', model_name=model)
     elif embed_backend == 'vllm':
-        embedder = EmbeddingBackend('vllm', model_name=model_name_short, api_base=api_base)
+        if not api_base: api_base = os.getenv("VLLM_BASEURL", "http://localhost:8000/v1")
+        embedder = EmbeddingBackend('vllm', model_name=model, api_base=api_base)
     elif embed_backend == 'ollama':
-        embedder = EmbeddingBackend('ollama', model_name=model_name_short, api_base=api_base)
+        if not api_base: api_base = os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1")
+        embedder = EmbeddingBackend('ollama', model_name=model, api_base=api_base)
     else:
         return
 
-
-    report = compare_json(gt_json, norm_pred, embedder, field_eval_criteria=field_eval_criteria)
+    report = compare_json(gt_json, pred_json, embedder, field_eval_criteria=field_eval_criteria)
 
     return report

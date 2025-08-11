@@ -56,7 +56,7 @@ def eval(
     run_folder: Optional[str] = typer.Option(None, "--run-folder", help="실행 폴더")
 ):
     """Evaluation 프로세스 실행"""
-    asyncio.run(run_evaluation(pred_json_path, gt_json_path, schema_name, criteria_path, embed_backend, model_name, api_key, api_base, run_folder))
+    asyncio.run(run_evaluation(pred_json_path, gt_json_path, schema_name, criteria_path, embed_backend, model_name, api_base))
 
 # viz 명령 단순화: streamlit 앱 직접 실행
 @app.command()
@@ -169,8 +169,7 @@ async def run_extraction(input_text: str, retries: int, schema_name: str, temper
 
 
 async def run_evaluation(pred_json_path: str, gt_json_path: str, schema_name: str, criteria_path: Optional[str],
-                        embed_backend: str, model_name: Optional[str], api_key: Optional[str], 
-                        api_base: Optional[str], run_folder: Optional[str]):
+                        embed_backend: str, model_name: Optional[str], api_base: Optional[str]):
     """Evaluation 실행 함수"""
     logger.remove()
     logger.add(sys.stderr, level="INFO")
@@ -218,9 +217,7 @@ async def run_evaluation(pred_json_path: str, gt_json_path: str, schema_name: st
             norm_pred,
             embed_backend=embed_backend,
             model_name=model_name,
-            api_key=api_key,
             api_base=api_base,
-            run_folder=run_folder,
             field_eval_criteria=field_eval_criteria
         )
 
