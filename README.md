@@ -59,7 +59,7 @@ LANGFUSE_SECRET_KEY=...
 ## 사용법
 CLI는 Typer 기반이며 세 가지 하위 명령을 제공합니다.
 
-### 1) 추출 실행(run)
+### 1) Structured output 추출
 프롬프트 문자열 또는 텍스트 파일 경로를 입력해 구조화 추출을 수행합니다. 실행 중 Host/Framework를 터미널에서 인터랙티브로 선택합니다.
 
 ```bash
@@ -71,20 +71,67 @@ python main.py run --prompt "안녕하세요. 제 이력은 ..." \
 	--timeout 900
 
 # 프롬프트 파일로 실행
-python main.py run --prompt ./sample.txt --schema schema_han
+python main.py run --prompt ./sample.txt --schema schema
 ```
 
-- 스키마: 기본 제공 `schema_han`(Pydantic BaseModel: `ExtractInfo`) **반드시 스키마의 최종 클래스명은 ExtractInfo여야 합니다.**
+- 스키마: 기본 제공 `schema`(Pydantic BaseModel: `ExtractInfo`) <br>
+	**반드시 스키마의 최종 클래스명은 ExtractInfo여야 하며, extraction_module/schema 폴더에 들어있어야 합니다.**
+	<details>
+	<summary>스키마 파일 구조</summary>
+
+	```python
+	from pydantic import BaseModel, Field
+	from typing import List, Optional
+
+	# 개인정보
+	class PersonalInfo(BaseModel):
+		name: Optional[str] = Field(description="이름", default=None)
+		gender: Optional[str] = Field(description="성별(남자/여자)", default=None)
+		nationality_type: Optional[str] = Field(description="외국인/내국인", default=None)
+		nationality: Optional[str] = Field(description="국가명", default=None)
+		birth: Optional[str] = Field(description="생년월일(yyyy 또는 yyyy-mm-dd 또는 yyyy-mm)", default=None)
+		contacts: List[str] = Field(description="연락처(전화번호)", default_factory=list)
+		email: Optional[str] = Field(description="이메일", default=None)
+		address: Optional[str] = Field(description="주소", default=None)
+		available_date: Optional[str] = Field(description="입사가능시기", default=None)
+		sns_links: List[str] = Field(description="SNS 링크(깃헙/링크드인/블로그 등)", default_factory=list)
+		desired_job: Optional[str] = Field(description="희망직무", default=None)
+		desired_location: Optional[str] = Field(description="희망 근무지", default=None)
+		desired_position: Optional[str] = Field(description="희망 직급", default=None)
+		desired_salary: Optional[str] = Field(description="희망 급여", default=None)
+
+	class MilitaryService(BaseModel):
+		military_status: Optional[str] = Field(description="병역대상(군필, 미필, 면제, 복무중, 해당없음)", default=None)
+		service_start_date: Optional[str] = Field(description="입대년월일(yyyy 또는 yyyy-mm-dd 또는 yyyy-mm)", default=None)
+		service_end_date: Optional[str] = Field(description="제대년월일(yyyy 또는 yyyy-mm-dd 또는 yyyy-mm)", default=None)
+		military_branch: Optional[str] = Field(description="군별(육군,해군,공군,해병 등)", default=None)
+		rank: Optional[str] = Field(description="제대계급(이병, 일병, 상병, 병장)", default=None)
+
+	class ExtractInfo(BaseModel):
+		personal_info: Optional[PersonalInfo] = Field(description="개인정보", default=None)
+		military_service: Optional[MilitaryService] = Field(description="병역", default=None)
+	```
+	</details>
+
 - 결과물: `result/extraction/<YYYYMMDD_HHMM>/result_<ts>.json` 및 로그 저장
 - 실험 요약/추적 링크는 Langfuse 설정 시 기록됩니다
 
-지원 프레임워크(예시)
-- OpenAIFramework, InstructorFramework, LangchainToolFramework, LangchainParserFramework,
-	MirascopeFramework, LlamaIndexFramework, MarvinFramework, OllamaFramework,
-	GoogleFramework, LMFormatEnforcerFramework, AnthropicFramework
+지원 프레임워크
+- [OpenAIFramework](https://platform.openai.com/docs/guides/structured-outputs)
+- [GoogleFramework](https://ai.google.dev/gemini-api/docs/structured-output?lang=python&authuser=1&hl=ko)
+- [AnthropicFramework](https://docs.anthropic.com/en/docs/agents-and-tools/tool-use/overview#json-mode)
+- [InstructorFramework](https://python.useinstructor.com/)
+- [LangchainToolFramework](https://python.langchain.com/docs/how_to/structured_output/#the-with_structured_output-method)
+- [LangchainParserFramework](https://python.langchain.com/docs/how_to/structured_output/#prompting-and-parsing-model-outputs-directly)
+- [MirascopeFramework](https://mirascope.com/docs/mirascope/learn/output_parsers)
+- [LlamaIndexFramework](https://docs.llamaindex.ai/en/stable/examples/output_parsing/llm_program/)
+- [MarvinFramework](https://github.com/PrefectHQ/marvin)
+- [OllamaFramework](https://ollama.com/blog/structured-outputs)
+- [LMFormatEnforcerFramework](https://github.com/noamgat/lm-format-enforcer)
 
-Host별 호환성은 `extraction_module/framework_compatibility.yaml`를 참고하세요.
-해당 파일을 기반으로 호환되는 프레임워크를 사용가능하도록 구현해놨으니, `framework_compatibility.yaml` 파일은 수정하면 안됩니다.
+
+Host별 호환성은 [extraction_module/framework_compatibility.yaml](extraction_module/framework_compatibility.yaml)를 참고하세요. <br>
+해당 파일을 기반으로 호환되는 프레임워크를 사용가능하도록 구현해놨으니, 파일은 수정하면 안됩니다.
 
 
 ### 2) 평가(eval)
@@ -149,7 +196,6 @@ python main.py viz --eval-result result/evaluation/20250808_1757/eval_result.jso
 - Host 선택 시 키가 없거나 Base URL이 올바르지 않으면 요청 실패가 발생할 수 있습니다. `.env`를 확인하세요.
 - vLLM/Ollama는 OpenAI 호환 서버가 실행 중이어야 합니다(`.../v1` 경로).
 - 처음 실행 시 임베딩/모델 다운로드로 시간이 걸릴 수 있습니다.
-- 예측 JSON 구조가 크게 다르면 평가 전 정규화(`norm_pred.json`)에서 비어 있는 필드가 많이 생성될 수 있습니다.
 
 
 ## 라이선스
