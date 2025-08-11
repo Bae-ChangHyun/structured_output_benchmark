@@ -3,7 +3,6 @@ from typing import Dict, List, Any
 import os
 
 from extraction_module.utils import get_compatible_frameworks
-from utils import get_available_hosts
 
 router = APIRouter()
 
