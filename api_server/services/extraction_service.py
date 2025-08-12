@@ -7,9 +7,10 @@ from loguru import logger
 import yaml
 from langfuse import get_client
 
-from extraction_module.utils import extract_with_framework, get_compatible_frameworks
-from utils import (record_extraction, box_line, log_response, final_report)
+from extraction_module.utils import get_compatible_frameworks
 from api_server.models.extraction import ExtractionResult
+from core.types import ExtractionCoreRequest, HostInfo
+from core.extraction import run_extraction_core
 
 from dotenv import load_dotenv
 
@@ -51,94 +52,30 @@ class ExtractionService:
                 except Exception as file_err:
                     logger.error(f"파일 읽기 실패: {input_text}, 에러: {str(file_err)}")
                     raise file_err
-            # Langfuse 트레이스 ID 생성
-            langfuse_trace_id = self.langfuse_client.create_trace_id(seed=f"custom-{str(uuid.uuid4())}")
-                        
             if framework not in get_compatible_frameworks(host_info['host']):
                 logger.error(f"호환되지 않는 프레임워크: {framework}")
                 raise ValueError(f"호환되지 않는 프레임워크: {framework}")
+            # core 유즈케이스 호출
+            core_result = run_extraction_core(
+                ExtractionCoreRequest(
+                    input_text_or_path=input_text,
+                    retries=retries,
+                    schema_name=schema_name,
+                    temperature=temperature,
+                    timeout=timeout,
+                    framework_name=framework,
+                    host_info=HostInfo(host=host_info["host"], base_url=host_info["base_url"], model=host_info["model"]),
+                )
+            )
 
-            base_url = host_info["base_url"]
-            model = host_info["model"]
-            
-            # 실험 정보 로깅
-            box_width = 48
-            exp_info = [
-                "*" * box_width,
-                f"{'API Extraction 시작'.center(box_width)}",
-                box_line(f"Host: {host_info['host']}"),
-                box_line(f"BaseURL: {base_url}"),
-                box_line(f"Model: {model}"),
-                box_line(f"Framework: {framework}"),
-                box_line(f"Input: {input_text.strip()[:20]}..."),
-                box_line(f"Retries: {retries}"),
-                "*" * box_width
-            ]
-            for line in exp_info:
-                logger.info(line)
-            
-            # prompt.yaml에서 Extract_prompt 불러오기
-            with open("prompt.yaml", "r", encoding="utf-8") as f:
-                prompt_yaml = yaml.safe_load(f)
-            extract_prompt = prompt_yaml.get("Extract_prompt", "Extract information from the given content.")
-            
-            # 추출 실행
-            result, success, latencies = extract_with_framework(
-                framework_name=framework,
-                provider=host_info["host"],
-                model_name=host_info["model"],
-                base_url=host_info["base_url"],
-                content=input_text,
-                prompt=f"{extract_prompt}\n{input_text}",
-                schema_name=schema_name,
-                retries=retries,
-                api_delay_seconds=0.5,
-                timeout=timeout,
-                temperature=temperature,
-                langfuse_trace_id=langfuse_trace_id
-            )
-            
-            # 결과 저장
-            result_json_path = os.path.join(log_dir, f"result_{log_time}.json")
-            with open(result_json_path, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=2)
-            
-            # 성공률 및 지연시간 계산
-            success_rate = success
-            latency = latencies[0] if isinstance(latencies, list) and latencies else latencies
-            
-            # 로깅
-            logger.success(f"API Extraction completed")
-            logger.success(f"Success rate: {success_rate:.2%}")
-            log_response(logger, result, latency, prefix="API response ")
-            
-            # Langfuse URL 생성
-            langfuse_url = self.langfuse_client.get_trace_url(trace_id=langfuse_trace_id)
-            final_report(exp_info, logger, latency, langfuse_url)
-            
-            # 결과 기록
-            record_extraction(
-                log_filename=log_filename,
-                host=host_info["host"],
-                model=model,
-                prompt=f"{extract_prompt}\n{input_text}",
-                framework=framework,
-                success=bool(result),
-                latency=latency,
-                langfuse_url=langfuse_url,
-                note="API Call",
-                csv_path="result/extraction_result.csv",
-                result_json_path=result_json_path
-            )
-            
             return ExtractionResult(
-                success=bool(result),
-                result=result,
-                success_rate=success_rate,
-                latency=latency,
-                log_dir=log_dir,
-                result_json_path=result_json_path,
-                langfuse_url=langfuse_url
+                success=core_result.success,
+                result=core_result.result,
+                success_rate=core_result.success_rate,
+                latency=core_result.latency,
+                log_dir=core_result.log_dir,
+                result_json_path=core_result.result_json_path,
+                langfuse_url=core_result.langfuse_url,
             )
             
         except Exception as e:

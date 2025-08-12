@@ -178,7 +178,7 @@ def load_extract_info(schema_name: str):
     return convert_schema(schema_name)
 
 
-def load_field_eval_criteria(schema_name: str, criteria_path = f"evaluation_module/criteria/criteria.json") -> Optional[Dict[str, str]]:
+def load_field_eval_criteria(schema_name: str, criteria_path = f"evaluation_module/criteria.json") -> Optional[Dict[str, str]]:
     """
     스키마에 대한 필드 평가 기준을 로드하거나 생성합니다.
     
