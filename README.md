@@ -123,13 +123,11 @@ python main.py --cli viz --eval-result result/evaluation/<YYYYMMDD_HHMM>/eval_re
 ## API 사용법
 
 ### 1) 추출 API
-- 동기: POST /api/v1/extraction/run
-- 비동기: POST /api/v1/extraction/run-async → GET /api/v1/extraction/status/{task_id}
-- 파일 업로드: POST /api/v1/extraction/upload
+`POST /v1/extraction`
 
 예시(동기)
 ```bash
-curl -X POST "http://localhost:8000/api/v1/extraction/run" \
+curl -X POST "http://localhost:8000/v1/extraction" \
 	-H "Content-Type: application/json" \
 	-d '{
 		"input_text": "안녕하세요. 제 이름은 김철수입니다...",
@@ -142,13 +140,11 @@ curl -X POST "http://localhost:8000/api/v1/extraction/run" \
 ```
 
 ### 2) 평가 API
-- 동기: POST /api/v1/evaluation/run
-- 비동기: POST /api/v1/evaluation/run-async → GET /api/v1/evaluation/status/{task_id}
-- 파일 업로드: POST /api/v1/evaluation/upload
+`POST /v1/evaluation`
 
 예시(동기)
 ```bash
-curl -X POST "http://localhost:8000/api/v1/evaluation/run" \
+curl -X POST "http://localhost:8000/v1/evaluation" \
 	-H "Content-Type: application/json" \
 	-d '{
 		"pred_json_path": "result/extraction/.../result.json",
@@ -159,8 +155,8 @@ curl -X POST "http://localhost:8000/api/v1/evaluation/run" \
 ```
 
 ### 3) 유틸리티/시각화 API
-- 유틸: GET /api/v1/utils/hosts, /frameworks?host=..., /schemas, /config
-- 시각화: GET /api/v1/visualization/streamlit/{result_path}, POST /api/v1/visualization/generate, GET /api/v1/visualization/html/{result_path}
+- 유틸: GET /v1/utils/hosts, /frameworks?host=..., /schemas, /config
+- 시각화: GET /v1/visualization/streamlit/{result_path}, POST /api/v1/visualization/generate, GET /api/v1/visualization/html/{result_path}
 
 ## CLI 사용법
 
@@ -233,7 +229,7 @@ TASK_TIMEOUT=3600       # 1시간
 ```bash
 python main.py
 
-curl -X POST "http://localhost:8000/api/v1/extraction/run" \
+curl -X POST "http://localhost:8000/v1/extraction" \
 	-H "Content-Type: application/json" \
 	-d '{
 		"input_text": "안녕하세요. 저는 김철수이고 서울에 거주하며 개발자로 일하고 있습니다.",

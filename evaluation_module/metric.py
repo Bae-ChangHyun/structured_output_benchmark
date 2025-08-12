@@ -326,22 +326,22 @@ def compare_json(gt, pred, embedder: EmbeddingBackend, weights: Optional[Dict[st
     return report
 
 def eval_json(gt_json, pred_json, 
-              embed_backend, model=None, api_base=None,
+              embed_backend, model_name=None, api_base=None,
               field_eval_criteria=None):
     """
     의미 유사도/완전일치 기반 JSON 평가 metric 실행 (필드별 평가기준 지원)
     """
 
     if embed_backend == 'huggingface':
-        embedder = EmbeddingBackend('huggingface', model_name=model)
+        embedder = EmbeddingBackend('huggingface', model_name=model_name)
     elif embed_backend == 'openai':
-        embedder = EmbeddingBackend('openai', model_name=model)
+        embedder = EmbeddingBackend('openai', model_name=model_name)
     elif embed_backend == 'vllm':
         if not api_base: api_base = os.getenv("VLLM_BASEURL", "http://localhost:8000/v1")
-        embedder = EmbeddingBackend('vllm', model_name=model, api_base=api_base)
+        embedder = EmbeddingBackend('vllm', model_name=model_name, api_base=api_base)
     elif embed_backend == 'ollama':
         if not api_base: api_base = os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1")
-        embedder = EmbeddingBackend('ollama', model_name=model, api_base=api_base)
+        embedder = EmbeddingBackend('ollama', model_name=model_name, api_base=api_base)
     else:
         return
 
