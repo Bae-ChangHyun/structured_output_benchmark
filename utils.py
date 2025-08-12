@@ -98,11 +98,9 @@ def record_extraction(
         "result_json_path": result_json_path
     }
     if os.path.isfile(csv_path):
-        import pandas as pd
         df = pd.read_csv(csv_path)
         df = pd.concat([df, pd.DataFrame([record])], ignore_index=True)
     else:
-        import pandas as pd
         df = pd.DataFrame([record])
     df.to_csv(csv_path, index=False)
     
@@ -117,7 +115,6 @@ def record_evaluation(
     structure_score,
     content_score,
     eval_result_path,
-    run_folder=None,
     note=""
 ):
     csv_path = "result/evaluation_result.csv"
@@ -132,7 +129,6 @@ def record_evaluation(
         "structure_score": structure_score,
         "content_score": content_score,
         "eval_result_path": eval_result_path,
-        "run_folder": run_folder,
         "note": note
     }
     if os.path.isfile(csv_path):
