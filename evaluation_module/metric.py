@@ -151,7 +151,7 @@ def eval_json(gt, pred, host_info,
     field_reports = {}
 
     embedder = load_embedder(host_info.host, 
-                             model_name=host_info.model, 
+                             model=host_info.model, 
                              api_base=host_info.base_url)
 
     def _compare(gt_val, pred_val, key, weight=1.0, path="", field_eval_criteria=None):

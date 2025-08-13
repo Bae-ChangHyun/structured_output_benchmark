@@ -9,6 +9,7 @@ from structured_output_benchmark.utils import select_llm_host, select_embed_host
 from structured_output_benchmark.core.types import ExtractionRequest, EvaluationRequest, HostInfo
 from structured_output_benchmark.core.extraction import run_extraction_core
 from structured_output_benchmark.core.evaluation import run_evaluation_core
+from structured_output_benchmark.core.visualization import run_visualization_core
 
 
 load_dotenv()
@@ -42,11 +43,17 @@ def eval(
 # viz 명령 단순화: streamlit 앱 직접 실행
 @app.command()
 def viz(
-    eval_result_path: str = typer.Option(..., '--eval-result', help='평가 결과 JSON 파일 경로')
+    eval_result_path: str = typer.Option(..., '--eval-result', help='평가 결과 JSON 파일 경로'),
+    html: bool = typer.Option(False, '--html', help='Streamlit 대신 정적 HTML 생성'),
+    output_dir: Optional[str] = typer.Option(None, '--out', help='HTML 출력 디렉토리'),
 ):
-    """평가 결과 시각화: streamlit 앱을 바로 실행합니다."""
-    print(f"Streamlit 시각화 실행: http://localhost:8501")
-    os.system(f"streamlit run evaluation_module/visualizer.py -- --eval-result {eval_result_path}")
+    """평가 결과 시각화: Streamlit 또는 정적 HTML 방식 지원."""
+    if html:
+        result = run_visualization_core(eval_result_path=eval_result_path, output_dir=output_dir)
+        print(f"HTML 생성 완료: {result['html_path']}")
+    else:
+        print(f"Streamlit 시각화 실행: http://localhost:8501")
+        os.system(f"streamlit run evaluation_module/visualizer.py -- --eval-result {eval_result_path}")
 
 
 async def run_extraction(input_text: str, retries: int, schema_name: str, temperature: float, timeout: int, langfuse_trace_id: Optional[str] = None):

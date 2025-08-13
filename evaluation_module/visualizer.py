@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Tuple, Union
 import json
 import argparse
 
@@ -191,16 +191,31 @@ class EvaluationVisualizer:
         with tab3:
             self.visualize_detailed_comparison(report)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--eval-result', type=str, required=True)
-args, _ = parser.parse_known_args()
+def render_evaluation_report(eval_result: Union[str, Dict[str, Any]]):
+    """Convenience function to render a report in Streamlit.
 
-try:
-    with open(args.eval_result, 'r', encoding='utf-8') as f:
-        eval_result = json.load(f)
-except Exception as e:
-    st.error(f"파일을 열거나 파싱할 수 없습니다: {e}")
-    st.stop()
+    Accepts either a path to an evaluation result JSON file or the already-parsed dict.
+    """
+    data: Dict[str, Any]
+    if isinstance(eval_result, str):
+        with open(eval_result, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    else:
+        data = eval_result
 
-visualizer = EvaluationVisualizer()
-visualizer.visualize_report(eval_result)
+    visualizer = EvaluationVisualizer()
+    return visualizer.visualize_report(data)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--eval-result', type=str, required=True)
+    args, _ = parser.parse_known_args()
+    try:
+        with open(args.eval_result, 'r', encoding='utf-8') as f:
+            eval_result = json.load(f)
+    except Exception as e:
+        st.error(f"파일을 열거나 파싱할 수 없습니다: {e}")
+        st.stop()
+
+    render_evaluation_report(eval_result)

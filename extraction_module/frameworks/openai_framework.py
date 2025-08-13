@@ -43,7 +43,7 @@ class OpenAIFramework(BaseFramework):
         schema= self.response_model
         
         fields = {}
-        for name, field in schema.__fields__.items():
+        for name, field in schema.model_fields.items():
             typ = field.annotation
             if get_origin(typ) is not None and get_origin(typ).__name__ == "Union":
                 args = [a for a in get_args(typ) if a is not type(None)]

@@ -68,3 +68,13 @@ class EvaluationResponse(BaseResponse):
     eval_result_path: Optional[str] = None
     overall_score: Optional[float] = None
     output_dir: Optional[str] = None
+
+class VisualizationRequest(BaseModel):
+    eval_result_path: str
+    output_dir: Optional[str] = None
+    html_filename: Optional[str] = "visualization.html"
+
+class VisualizationResponse(BaseResponse):
+    html_path: Optional[str] = None
+    output_dir: Optional[str] = None
+    overall_score: Optional[float] = None
