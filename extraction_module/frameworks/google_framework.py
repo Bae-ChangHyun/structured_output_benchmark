@@ -4,7 +4,7 @@ from google import genai
 from google.genai import types
 
 from langfuse import observe
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class GoogleFramework(BaseFramework):

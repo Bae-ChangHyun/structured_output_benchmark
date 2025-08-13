@@ -84,7 +84,7 @@ def experiment(
 class BaseFramework(ABC):
     prompt: str
     llm_model: str
-    llm_provider: str
+    llm_host: str
     base_url: str
     response_model: Any
     device: str
@@ -95,8 +95,8 @@ class BaseFramework(ABC):
     def __init__(self, *args, **kwargs) -> None:
         self.prompt = kwargs.get("prompt", "")
         self.llm_model = kwargs.get("llm_model", "gpt-3.5-turbo")
-        self.llm_provider = kwargs.get("llm_provider", "openai")
-        self.base_url = kwargs.get("base_url", os.environ.get("OLLAMA_HOST", ""))
+        self.llm_host = kwargs.get("llm_host", "openai")
+        self.base_url = kwargs.get("base_url", os.environ.get("VLLM_BASEURL", ""))
         self.device = kwargs.get("device", "cpu")
         self.api_delay_seconds = kwargs.get("api_delay_seconds", 0)  # API 지연 시간 설정
         self.retries = kwargs.get("retries", 3)  # 기본 재시도 횟수 설정

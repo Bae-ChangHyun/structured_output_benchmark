@@ -5,7 +5,7 @@ import anthropic
 from loguru import logger
 from langfuse import observe
 
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class AnthropicFramework(BaseFramework):

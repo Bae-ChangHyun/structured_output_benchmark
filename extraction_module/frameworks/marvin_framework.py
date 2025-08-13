@@ -11,7 +11,7 @@ from pydantic_ai.providers.anthropic import AnthropicProvider
 
 
 from langfuse import observe
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class MarvinFramework(BaseFramework):
@@ -22,17 +22,17 @@ class MarvinFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        if self.llm_provider == "openai":
+        if self.llm_host == "openai":
             self.model = OpenAIModel(self.llm_model)    
             
-        elif self.llm_provider == "ollama" or self.llm_provider == "vllm":
+        elif self.llm_host == "ollama" or self.llm_host == "vllm":
             provider = OpenAIProvider(
                 base_url=self.base_url,
                 api_key='dummmy'
             )
             self.model = OpenAIModel(self.llm_model, provider=provider)
             
-        elif self.llm_provider == "google":
+        elif self.llm_host == "google":
             provider = GoogleProvider(api_key=os.getenv("GOOGLE_API_KEY"))
             settings = GoogleModelSettings(
                 temperature=self.temperature,
@@ -42,7 +42,7 @@ class MarvinFramework(BaseFramework):
                                      provider=provider,
                                       settings=settings)
 
-        elif self.llm_provider == "anthropic":
+        elif self.llm_host == "anthropic":
             provider = AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY"))
             self.model = AnthropicModel(self.llm_model)
 

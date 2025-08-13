@@ -3,7 +3,7 @@ from mirascope import llm
 from mirascope.core import openai
 from openai import OpenAI
 from langfuse import observe
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class MirascopeFramework(BaseFramework):
@@ -12,8 +12,8 @@ class MirascopeFramework(BaseFramework):
 
     def response(self, prompt):
 
-        if self.llm_provider == 'openai' or self.llm_provider == 'google':
-            @llm.call(provider=self.llm_provider, model=self.llm_model, response_model=self.response_model)
+        if self.llm_host == 'openai' or self.llm_host == 'google':
+            @llm.call(provider=self.llm_host, model=self.llm_model, response_model=self.response_model)
             def extract_info(query: str):
                 return f"{query}"
         else:
