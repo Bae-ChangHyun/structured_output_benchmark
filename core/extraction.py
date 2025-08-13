@@ -60,6 +60,7 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
 
     extract_prompt = _load_prompt()
 
+
     result, success, latencies = extract_with_framework(
         framework=req.framework,
         llm_host=host_info.host,
@@ -70,9 +71,8 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
         schema_name=req.schema_name,
         retries=req.retries,
         api_delay_seconds=0.5,
-        timeout=req.timeout,
-        temperature=req.temperature,
         langfuse_trace_id=trace_id,
+        extra_kwargs=req.extra_kwargs,
     )
 
     log_time = os.path.basename(output_dir)

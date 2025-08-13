@@ -28,7 +28,6 @@ class OllamaFramework(BaseFramework):
                 messages=[
                     {"role": "user", "content": self.prompt.format(**inputs)}
                 ],
-                options={'temperature': self.temperature},
             )
             content = json.loads(response.message.content)
             

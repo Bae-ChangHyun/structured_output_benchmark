@@ -18,10 +18,7 @@ class LlamaIndexFramework(BaseFramework):
         super().__init__(*args, **kwargs)
         
         if self.llm_host == "openai":
-            self.client = OpenAI(model=self.llm_model,
-                                 temperature=self.temperature,
-                                 max_retries=0,
-                                 timeout=self.timeout)
+            self.client = OpenAI(model=self.llm_model,max_retries=0,)
 
         elif self.llm_host == "ollama" or self.llm_host == "vllm":
             self.client = OpenAILike(
@@ -29,8 +26,6 @@ class LlamaIndexFramework(BaseFramework):
                 api_key="dummy",
                 model=self.llm_model,
                 #max_tokens=16384,  #!TODO: 하드코딩,
-                timeout=self.timeout,
-                temperature=self.temperature,
                 max_retries=0, 
             )
             
@@ -39,7 +34,6 @@ class LlamaIndexFramework(BaseFramework):
                 #api_base=self.base_url,
                 api_key=os.getenv("GOOGLE_API_KEY"),
                 model=self.llm_model,
-                temperature=self.temperature,
                 max_retries=0,
             )
 
@@ -55,8 +49,8 @@ class LlamaIndexFramework(BaseFramework):
         @experiment(retries=retries)
         def run_experiment(inputs):
 
-            response = self.llamaindex_client(**inputs)
-            
+            response = self.llamaindex_client(llm_kwargs=self.extra_kwargs, **inputs)
+
             return response
 
         predictions, percent_successful, latencies = run_experiment(inputs)

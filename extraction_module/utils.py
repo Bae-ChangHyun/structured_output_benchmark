@@ -32,9 +32,8 @@ def extract_with_framework(
     schema_name: str ,
     retries: int = 1,
     api_delay_seconds: float = 0,
-    timeout: int = 900,
-    temperature: float = 1.0,
     langfuse_trace_id: Optional[str] = None,
+    extra_kwargs: Optional[Dict[str, Any]] = None,
     
 ) -> tuple[Dict[str, Any], bool, Any]:
     """
@@ -64,8 +63,7 @@ def extract_with_framework(
             "response_model": response_model,
             "api_delay_seconds": api_delay_seconds,
             "langfuse_trace_id": langfuse_trace_id,
-            "timeout": timeout,
-            "temperature": temperature
+            "extra_kwargs":extra_kwargs,
         }
         
         # 프레임워크 인스턴스 생성

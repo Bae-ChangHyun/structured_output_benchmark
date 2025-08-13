@@ -166,7 +166,8 @@ Base URL: http://localhost:8000
 - Request Body(요약)
 	- input_text: 문자열 또는 텍스트 파일 경로
 	- schema_name: 스키마 이름(기본 schema_han)
-	- retries, temperature, timeout, framework, host_info(필수: host/base_url/model)
+	- retries, framework, host_info(필수: host/base_url/model)
+	- kwargs: 프레임워크/LLM 파라미터 딕셔너리(JSON). 예: {"temperature":0.1, "timeout":900, "seed":42}
 - Response(요약)
 	- success, message, data.result(JSON), success_rate, latency, result_path, output_dir, langfuse_url
 
@@ -178,8 +179,7 @@ curl -X POST http://localhost:8000/v1/extraction \
 		"input_text": "안녕하세요. 제 이름은 홍길동입니다.",
 		"schema_name": "schema_han",
 		"retries": 1,
-		"temperature": 0.1,
-		"timeout": 900,
+		"kwargs": {"temperature": 0.1, "timeout": 900},
 		"framework": "OpenAIFramework",
 		"host_info": {"host": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
 	}'
@@ -192,6 +192,7 @@ payload = {
 	"input_text": "안녕하세요. 제 이름은 홍길동입니다.",
 	"schema_name": "schema_han",
 	"framework": "OpenAIFramework",
+	"kwargs": {"temperature": 0.1, "timeout": 900},
 	"host_info": {"host": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
 }
 r = requests.post("http://localhost:8000/v1/extraction", json=payload)
@@ -264,7 +265,7 @@ Response (요약)
 
 추출(run)
 ```bash
-python main.py --cli run --input ./sample.txt --schema schema_han --retries 1 --temperature 0.1
+python main.py --cli run --input ./sample.txt --schema schema_han --retries 1 --kwargs '{"temperature":0.1,"timeout":900}'
 ```
 
 평가(eval)

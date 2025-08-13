@@ -18,11 +18,9 @@ async def run_extraction(request: ExtractionRequest):
     요청 본문
     - input_text: 추출할 텍스트(또는 텍스트 파일 경로)
     - schema_name: 스키마 이름(기본: schema_han)
-    - retries: 재시도 횟수(1~10)
-    - temperature: 샘플링 온도(0.0~2.0)
-    - timeout: 요청 타임아웃(초)
     - framework: 사용 프레임워크 이름(예: OpenAIFramework)
     - host_info: { host, base_url, model } 필수
+        - kwargs: 프레임워크/LLM 세부 파라미터 딕셔너리 (예: { "temperature": 0.1, "timeout": 900 })
 
     응답 본문
     - data.result: 추출된 JSON
@@ -44,8 +42,7 @@ async def run_extraction(request: ExtractionRequest):
             input_text=request.input_text,
             retries=request.retries,
             schema_name=request.schema_name,
-            temperature=request.temperature,
-            timeout=request.timeout,
+            extra_kwargs=request.extra_kwargs,
             framework=request.framework,
             host_info=request.host_info,
             langfuse_trace_id=request.langfuse_trace_id,

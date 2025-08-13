@@ -29,7 +29,8 @@ class GoogleFramework(BaseFramework):
                 config=types.GenerateContentConfig(
                     response_schema=self.response_model,
                     response_mime_type="application/json",
-                )
+                ),
+                **self.extra_kwargs
             )
             return json.loads(response.candidates[0].content.parts[0].text)
            

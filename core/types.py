@@ -17,8 +17,7 @@ class ExtractionRequest(BaseModel):
     # 공통 실행 설정
     retries: int = Field(1, ge=1, le=10, description="프레임워크 재시도 횟수")
     schema_name: str = Field("schema_han", description="프레임워크 스키마 이름 (예: schema_han)")
-    temperature: float = Field(0.1, ge=0.0, le=2.0, description="프롬프트 온도")
-    timeout: int = Field(900, ge=30, le=3600, description="LLM request timeout 시간 (초)")
+    extra_kwargs: Dict[str, Any] = Field(default_factory=dict, description="추가 LLM/프레임워크 파라미터를 담는 딕셔너리. 예: { 'temperature': 0.1, 'timeout': 900, 'seed': 42 }")
     langfuse_trace_id: Optional[str] = Field(None, description="Langfuse trace ID")
     output_dir: Optional[str] = Field(None, description="결과 출력 디렉토리")
 
