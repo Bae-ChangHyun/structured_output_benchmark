@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from typing import Optional, Dict, Any
-from pydantic import BaseModel, Field
+import langfuse
+from pydantic import BaseModel, Field, model_validator
 
 
 class HostInfo(BaseModel):
@@ -10,39 +11,60 @@ class HostInfo(BaseModel):
     model: str
 
 
-class ExtractionCoreRequest(BaseModel):
-    input_text_or_path: str = Field(..., description="프롬프트 텍스트 또는 파일 경로")
-    retries: int = 1
-    schema_name: str = "schema_han"
-    temperature: float = 0.1
-    timeout: int = 900
-    framework_name: str = "OpenAIFramework"
+class ExtractionRequest(BaseModel):
+    input_text: str = Field(..., description="프롬프트 텍스트 또는 파일 경로")
+
+    # 공통 실행 설정
+    retries: int = Field(1, ge=1, le=10, description="프레임워크 재시도 횟수")
+    schema_name: str = Field("schema_han", description="프레임워크 스키마 이름 (예: schema_han)")
+    temperature: float = Field(0.1, ge=0.0, le=2.0, description="프롬프트 온도")
+    timeout: int = Field(900, ge=30, le=3600, description="LLM request timeout 시간 (초)")
+    langfuse_trace_id: Optional[str] = Field(None, description="Langfuse trace ID")
+    output_dir: Optional[str] = Field(None, description="결과 출력 디렉토리")
+
+    framework: str = Field("OpenAIFramework", description="사용할 프레임워크 이름")
+    # 필수 호스트 정보
     host_info: HostInfo
 
-
-class ExtractionCoreResult(BaseModel):
+    
+class ExtractionResult(BaseModel):
     success: bool
     result: Dict[str, Any]
     success_rate: float
     latency: Optional[float]
-    log_dir: str
+    output_dir: str
     result_json_path: str
     langfuse_url: Optional[str] = None
 
-
-class EvaluationCoreRequest(BaseModel):
+class EvaluationRequest(BaseModel):
     pred_json_path: str
     gt_json_path: str
     schema_name: str = "schema_han"
-    criteria_path: Optional[str] = "evaluation_module/criteria/criteria.json"
-    embed_backend: str = "openai"
-    model_name: Optional[str] = None
-    api_base: Optional[str] = None
+    criteria_path: Optional[str] = "evaluation_module/criteria.json"
+    host_info: HostInfo
+    output_dir: Optional[str] = None
 
-
-class EvaluationCoreResult(BaseModel):
+class EvaluationResult(BaseModel):
+    result: Dict[str, Any]
     overall_score: float
-    structure_score: float
-    content_score: float
     eval_result_path: str
-    log_dir: str
+    output_dir: str
+
+class BaseResponse(BaseModel):
+    success: bool
+    message: str
+    data: Optional[Any] = None
+
+class ExtractionResponse(BaseResponse):
+    task_id: Optional[str] = None
+    result_path: Optional[str] = None
+    output_dir: Optional[str] = None
+    langfuse_url: Optional[str] = None
+    success_rate: Optional[float] = None
+    latency: Optional[float] = None
+
+class EvaluationResponse(BaseResponse):
+    task_id: Optional[str] = None
+    eval_result_path: Optional[str] = None
+    overall_score: Optional[float] = None
+    output_dir: Optional[str] = None
