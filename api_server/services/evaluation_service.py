@@ -4,9 +4,8 @@ from datetime import datetime
 from typing import Optional
 from loguru import logger
 
-from api_server.models.evaluation import EvaluationResult
-from core.types import EvaluationCoreRequest
-from core.evaluation import run_evaluation_core
+from structured_output_benchmark.core.types import EvaluationRequest, HostInfo, EvaluationResult
+from structured_output_benchmark.core.evaluation import run_evaluation_core
 from dotenv import load_dotenv
 
 # 환경변수 로드
@@ -20,17 +19,16 @@ class EvaluationService:
         gt_json_path: str,
         schema_name: str = "schema_han",
         criteria_path: Optional[str] = "evaluation_module/criteria/criteria.json",
-        embed_backend: str = "openai",
-        model_name: Optional[str] = None,
-        api_base: Optional[str] = None
+        host_info: Optional[HostInfo] = None,
+        output_dir: Optional[str] = None
     ) -> EvaluationResult:
         """평가 작업을 실행합니다."""
         
         # 로그 설정
-        eval_time = datetime.now().strftime('%Y%m%d_%H%M%S')
-        eval_dir = os.path.join("result", "evaluation", eval_time)
-        os.makedirs(eval_dir, exist_ok=True)
-        log_filename = os.path.join(eval_dir, "evaluation.log")
+        log_time = datetime.now().strftime('%Y%m%d_%H%M%S')
+        log_dir = os.path.join("result", "evaluation", log_time)
+        os.makedirs(log_dir, exist_ok=True)
+        log_filename = os.path.join(log_dir, "evaluation.log")
         
         # 로거 설정
         logger.remove()
@@ -38,23 +36,21 @@ class EvaluationService:
         
         try:
             core_result = run_evaluation_core(
-                EvaluationCoreRequest(
+                EvaluationRequest(
                     pred_json_path=pred_json_path,
                     gt_json_path=gt_json_path,
                     schema_name=schema_name,
                     criteria_path=criteria_path,
-                    embed_backend=embed_backend,
-                    model_name=model_name,
-                    api_base=api_base,
+                    host_info=host_info,
+                    output_dir=output_dir
                 )
             )
 
             return EvaluationResult(
+                result=core_result.result,
                 overall_score=core_result.overall_score,
-                structure_score=core_result.structure_score,
-                content_score=core_result.content_score,
                 eval_result_path=core_result.eval_result_path,
-                log_dir=core_result.log_dir,
+                output_dir=core_result.output_dir
             )
             
         except FileNotFoundError as e:

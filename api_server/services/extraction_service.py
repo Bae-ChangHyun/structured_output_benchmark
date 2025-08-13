@@ -1,16 +1,11 @@
 import os
-import json
-import uuid
 from datetime import datetime
-from typing import Optional, Dict, Any
-from loguru import logger
-import yaml
+from typing import Optional
 from langfuse import get_client
 
-from extraction_module.utils import get_compatible_frameworks
-from api_server.models.extraction import ExtractionResult
-from core.types import ExtractionCoreRequest, HostInfo
-from core.extraction import run_extraction_core
+from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
+from structured_output_benchmark.core.types import ExtractionRequest, HostInfo, ExtractionResult
+from structured_output_benchmark.core.extraction import run_extraction_core
 
 from dotenv import load_dotenv
 
@@ -29,13 +24,15 @@ class ExtractionService:
         temperature: float = 0.1,
         timeout: int = 900,
         framework: str = 'OpenAIFramework',
-        host_info: Optional[Dict[str, Any]] = None
+        host_info: Optional[HostInfo] = None,
+        langfuse_trace_id: Optional[str] = None,
+        output_dir: Optional[str] = None
     ) -> ExtractionResult:
         """추출 작업을 실행합니다."""
         
         # 로그 설정
         log_time = datetime.now().strftime('%Y%m%d_%H%M%S')
-        log_dir = os.path.join("result/extraction", log_time)
+        log_dir = os.path.join("result", "extraction", log_time)
         os.makedirs(log_dir, exist_ok=True)
         log_filename = os.path.join(log_dir, "extraction.log")
         
@@ -52,19 +49,24 @@ class ExtractionService:
                 except Exception as file_err:
                     logger.error(f"파일 읽기 실패: {input_text}, 에러: {str(file_err)}")
                     raise file_err
-            if framework not in get_compatible_frameworks(host_info['host']):
+            if host_info is None:
+                logger.error("host_info가 필요합니다.")
+                raise ValueError("host_info가 필요합니다.")
+            if framework not in get_compatible_frameworks(host_info.host):
                 logger.error(f"호환되지 않는 프레임워크: {framework}")
                 raise ValueError(f"호환되지 않는 프레임워크: {framework}")
             # core 유즈케이스 호출
             core_result = run_extraction_core(
-                ExtractionCoreRequest(
-                    input_text_or_path=input_text,
+                ExtractionRequest(
+                    input_text=input_text,
                     retries=retries,
                     schema_name=schema_name,
                     temperature=temperature,
                     timeout=timeout,
-                    framework_name=framework,
-                    host_info=HostInfo(host=host_info["host"], base_url=host_info["base_url"], model=host_info["model"]),
+                    framework=framework,
+                    host_info=host_info,
+                    langfuse_trace_id=langfuse_trace_id,
+                    output_dir=output_dir
                 )
             )
 
@@ -73,9 +75,9 @@ class ExtractionService:
                 result=core_result.result,
                 success_rate=core_result.success_rate,
                 latency=core_result.latency,
-                log_dir=core_result.log_dir,
                 result_json_path=core_result.result_json_path,
                 langfuse_url=core_result.langfuse_url,
+                output_dir=core_result.output_dir
             )
             
         except Exception as e:

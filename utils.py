@@ -5,17 +5,17 @@ import pandas as pd
 from typing import Any, Dict, Optional
 from langfuse import observe, get_client
 from typing import get_origin, get_args, Union
-from extraction_module.utils import get_compatible_frameworks, convert_schema
+from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks, convert_schema
 
 
 # host 선택 메뉴 함수
-def select_host():
+def select_llm_host():
     print("=== Host 선택 ===")
-    print("1. openai")
-    print("2. anthropic")
-    print("3. vllm")
-    print("4. ollama")
-    print("5. google")
+    print("1. OpenAI")
+    print("2. Anthropic")
+    print("3. VLLM")
+    print("4. Ollama")
+    print("5. Google")
     choice = input("번호를 입력하세요 (1/2/3/4/5): ").strip()
     if choice == "1":
         return {
@@ -41,7 +41,7 @@ def select_host():
     elif choice == "4":
         return {
             "host": "ollama",
-            "base_url": os.getenv("OLLAMA_HOST", "http://localhost:11434/v1"),
+            "base_url": os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1"),
             "model": os.getenv("OLLAMA_MODELS", "llama3.1:8b"),
             "api_key": "dummy",
         }
@@ -54,6 +54,36 @@ def select_host():
         }
     else:
         print("잘못된 입력입니다. 기본값(vllm)으로 진행합니다.")
+        raise ValueError("Invalid host selection")
+    
+def select_embed_host():
+    print("=== Host 선택 ===")
+    print("1. OpenAI")
+    print("2. vLLM")
+    print("3. HuggingFace")
+    choice = input("번호를 입력하세요 (1/2/3): ").strip()
+    if choice == "1":
+        return {
+            "host": "openai",
+            "base_url": "https://api.openai.com/v1",
+            "model": os.getenv("OPENAI_EMBED_MODELS", "text-embedding-3-small"),
+            "api_key": os.getenv("OPENAI_API_KEY"),
+        }
+    elif choice == "2":
+        return {
+            "host": "vllm",
+            "base_url": os.getenv("VLLM_EMBED_BASEURL"),
+            "model": os.getenv("VLLM_EMBED_MODELS", "Qwen/Qwen3-Embedding-8B"),
+            "api_key": "dummy",
+        }
+    elif choice == "3":
+        return {
+            "host": "huggingface",
+            "base_url": "",
+            "model": os.getenv("HUGGINGFACE_EMBED_MODELS", "bert-base-uncased"),
+            "api_key": "",
+        }
+    else:
         raise ValueError("Invalid host selection")
     
 def select_framework(host):
@@ -81,14 +111,14 @@ def select_framework(host):
             print("숫자를 입력해주세요.")
             
 def record_extraction(
-    log_filename, host, model, prompt, framework,
+    log_filename, llm_host, llm_model, prompt, framework,
     success, latency, langfuse_url,
     note, csv_path="result/extraction_result.csv", result_json_path=None
 ):
     record = {
         "log_filename": log_filename,
-        "host": host,
-        "model": model,
+        "host": llm_host,
+        "model": llm_model,
         "prompt": prompt,
         "framework": framework,
         "success": success,
@@ -101,6 +131,7 @@ def record_extraction(
         df = pd.read_csv(csv_path)
         df = pd.concat([df, pd.DataFrame([record])], ignore_index=True)
     else:
+        os.makedirs(os.path.dirname(csv_path), exist_ok=True)
         df = pd.DataFrame([record])
     df.to_csv(csv_path, index=False)
     
@@ -112,8 +143,6 @@ def record_evaluation(
     schema_name,
     criteria_path,
     overall_score,
-    structure_score,
-    content_score,
     eval_result_path,
     note=""
 ):
@@ -126,8 +155,6 @@ def record_evaluation(
         "schema_name": schema_name,
         "criteria_path": criteria_path,
         "overall_score": overall_score,
-        "structure_score": structure_score,
-        "content_score": content_score,
         "eval_result_path": eval_result_path,
         "note": note
     }
@@ -164,20 +191,6 @@ def final_report(exp_info, logger, latencies, langfuse_trace_url):
         langfuse = get_client()
         logger.success(f"Request Langfuse Trace URLs: {langfuse_trace_url}")
 
-
-def load_extract_info(schema_name: str):
-    """
-    스키마 이름에서 ExtractInfo 클래스를 로드합니다.
-    
-    Args:
-        schema_name: 스키마 파일명 (확장자 제외)
-        
-    Returns:
-        ExtractInfo 클래스
-    """
-    return convert_schema(schema_name)
-
-
 def load_field_eval_criteria(schema_name: str, criteria_path = f"evaluation_module/criteria.json") -> Optional[Dict[str, str]]:
     """
     스키마에 대한 필드 평가 기준을 로드하거나 생성합니다.
@@ -201,7 +214,7 @@ def load_field_eval_criteria(schema_name: str, criteria_path = f"evaluation_modu
     
     # 기본 criteria 생성
     try:
-        ExtractInfo = load_extract_info(schema_name)
+        ExtractInfo = convert_schema(schema_name)
         criteria = generate_default_criteria(ExtractInfo)
         
         # 생성된 criteria를 파일로 저장

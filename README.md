@@ -52,7 +52,7 @@ GOOGLE_API_KEY=...
 GOOGLE_MODELS=gemini-1.5-flash
 
 # Ollama (로컬 OpenAI 호환)
-OLLAMA_HOST=http://localhost:11434/v1
+OLLAMA_BASEURL=http://localhost:11434/v1
 OLLAMA_MODELS=llama3.1:8b
 
 # vLLM (OpenAI 호환 서버)
@@ -211,7 +211,6 @@ python main.py --cli viz --eval-result result/evaluation/<YYYYMMDD_HHMM>/eval_re
 API_HOST=0.0.0.0
 API_PORT=8000
 DEBUG=true
-UPLOAD_DIR=uploads
 MAX_FILE_SIZE=10485760  # 10MB
 TASK_TIMEOUT=3600       # 1시간
 ```

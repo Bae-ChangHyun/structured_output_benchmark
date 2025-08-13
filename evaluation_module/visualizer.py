@@ -50,9 +50,9 @@ class EvaluationVisualizer:
     def visualize_overall_scores(self, report: Dict[str, Any]):
         st.subheader("📊 전체 점수 대시보드")
         fig = make_subplots(
-            rows=1, cols=3,
+            rows=1, cols=1,
             subplot_titles=('', '', ''),
-            specs=[[{"type": "indicator"}, {"type": "indicator"}, {"type": "indicator"}]]
+            specs=[[{"type": "indicator"}]]
         )
         fig.add_trace(
             go.Indicator(
@@ -76,40 +76,6 @@ class EvaluationVisualizer:
                 }
             ),
             row=1, col=1
-        )
-        fig.add_trace(
-            go.Indicator(
-                mode="gauge+number",
-                value=report['structure_score'],
-                domain={'x': [0, 1], 'y': [0, 1]},
-                title={'text': "Structure Score"},
-                gauge={
-                    'axis': {'range': [None, 1]},
-                    'bar': {'color': self.get_score_color(report['structure_score'])},
-                    'steps': [
-                        {'range': [0, 0.4], 'color': "lightgray"},
-                        {'range': [0.4, 0.8], 'color': "gray"}
-                    ]
-                }
-            ),
-            row=1, col=2
-        )
-        fig.add_trace(
-            go.Indicator(
-                mode="gauge+number",
-                value=report['content_score'],
-                domain={'x': [0, 1], 'y': [0, 1]},
-                title={'text': "Content Score"},
-                gauge={
-                    'axis': {'range': [None, 1]},
-                    'bar': {'color': self.get_score_color(report['content_score'])},
-                    'steps': [
-                        {'range': [0, 0.4], 'color': "lightgray"},
-                        {'range': [0.4, 0.8], 'color': "gray"}
-                    ]
-                }
-            ),
-            row=1, col=3
         )
         fig.update_layout(height=400)
         st.plotly_chart(fig, use_container_width=True)

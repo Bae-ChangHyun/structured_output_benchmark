@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import Dict, List, Any
 import os
 
-from extraction_module.utils import get_compatible_frameworks
+from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
 
 router = APIRouter()
 
@@ -65,7 +65,7 @@ async def get_frameworks(host: str = "openai") -> Dict[str, Any]:
 async def get_schemas() -> Dict[str, List[str]]:
     """사용 가능한 스키마 목록을 반환합니다."""
     # 스키마 디렉토리에서 스키마 파일들 스캔
-    schema_dir = "extraction_module/schema"
+    schema_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "extraction_module", "schema")
     schemas = []
     
     if os.path.exists(schema_dir):

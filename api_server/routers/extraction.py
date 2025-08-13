@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from api_server.models.extraction import ExtractionRequest, ExtractionResponse
-from api_server.services.extraction_service import ExtractionService
+from structured_output_benchmark.core.types import ExtractionRequest, ExtractionResponse
+from structured_output_benchmark.api_server.services.extraction_service import ExtractionService
 
 router = APIRouter()
 extraction_service = ExtractionService()
@@ -11,25 +11,34 @@ async def run_extraction(request: ExtractionRequest):
     텍스트 추출을 실행합니다.
     
     **Parameters:**
-    - **host_choice**: 호스트 선택
-        - 1: OpenAI (gpt-4o-mini 등)
-        - 2: Anthropic (claude-3-sonnet 등)  
-        - 3: vLLM (로컬 서버)
-        - 4: Ollama (로컬 서버)
-        - 5: Google (gemini-1.5-flash 등)
-        - 미지정시: OpenAI 기본값
-    
-    - **framework_choice**: 프레임워크 선택 (호스트별로 다름)
-        - 미지정시: 호스트에 호환되는 첫번째 프레임워크 사용
-        - 호스트별 호환 프레임워크 목록: `/api/v1/utils/frameworks?host=<host_name>` 참조
-    
+    - **host**: 호스트 선택
+        - 1: openai (gpt-4o-mini 등)
+        - 2: anthropic (claude-3-sonnet 등)
+        - 3: vllm (로컬 서버)
+        - 4: ollama (로컬 서버)
+        - 5: google (gemini-1.5-flash 등)
+        - 미지정시: openai 기본값
+        
     **Example:**
     ```json
     {
         "input_text": "안녕하세요. 제 이름은 김철수입니다.",
-        "host_choice": 1,
-        "framework_choice": 1,
-        "schema": "schema_han"
+
+        # 공통 실행 설정
+        "retries": 1,
+        "schema_name": "schema_han",
+        "temperature": 0.1,
+        "timeout": 900,
+        "langfuse_trace_id": None,
+        "output_dir": None,
+        
+        "framework": "OpenAIFramework",
+
+        # 필수 호스트 정보
+        "host_info": {
+            "host": "vllm",
+            "base_url": "http://localhost:8000"
+        }
     }
     ```
     """
@@ -44,7 +53,9 @@ async def run_extraction(request: ExtractionRequest):
             temperature=request.temperature,
             timeout=request.timeout,
             framework=request.framework,
-            host_info=request.host_info
+            host_info=request.host_info,
+            langfuse_trace_id=request.langfuse_trace_id,
+            output_dir=request.output_dir
         )
         
         return ExtractionResponse(
@@ -54,12 +65,12 @@ async def run_extraction(request: ExtractionRequest):
                 "result": result.result,
                 "success_rate": result.success_rate,
                 "latency": result.latency,
-                "log_dir": result.log_dir,
+                "output_dir": result.output_dir,
                 "result_path": result.result_json_path,
                 "langfuse_url": result.langfuse_url
             },
             result_path=result.result_json_path,
-            log_path=result.log_dir,
+            output_dir=result.output_dir,
             langfuse_url=result.langfuse_url,
             success_rate=result.success_rate,
             latency=result.latency

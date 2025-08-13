@@ -48,14 +48,6 @@ async def generate_visualization(eval_result_path: str):
                 <h3>전체 점수</h3>
                 <div class="score">{eval_result.get('overall_score', 0):.3f}</div>
             </div>
-            <div class="metric">
-                <h3>구조 점수</h3>
-                <div class="score">{eval_result.get('structure_score', 0):.3f}</div>
-            </div>
-            <div class="metric">
-                <h3>내용 점수</h3>
-                <div class="score">{eval_result.get('content_score', 0):.3f}</div>
-            </div>
         </body>
         </html>
         """
@@ -73,8 +65,6 @@ async def generate_visualization(eval_result_path: str):
             "html_path": html_path,
             "data": {
                 "overall_score": eval_result.get('overall_score', 0),
-                "structure_score": eval_result.get('structure_score', 0),
-                "content_score": eval_result.get('content_score', 0)
             }
         }
     
