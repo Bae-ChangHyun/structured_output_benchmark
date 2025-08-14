@@ -57,15 +57,12 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
     if os.path.isfile(input_text):
         with open(input_text, "r", encoding="utf-8") as f:
             input_text = f.read()
-
-    extract_prompt = _load_prompt()
-
-
+            
     result, success, latencies = extract_with_framework(
         framework=req.framework,
         host_info=host_info,
         content=input_text,
-        prompt=f"{extract_prompt}\n{input_text}",
+        prompt=f"{req.prompt}\n{input_text}",
         schema_name=req.schema_name,
         retries=req.retries,
         api_delay_seconds=0.5,
@@ -90,7 +87,7 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
         log_filename=log_filename,
         provider=host_info.provider,
         model=host_info.model,
-        prompt=f"{extract_prompt}\n{input_text}",
+        prompt=f"{req.prompt}\n{input_text}",
         framework=req.framework,
         success=bool(result),
         latency=latency,

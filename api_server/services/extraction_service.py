@@ -6,7 +6,7 @@ from langfuse import get_client
 
 from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
 from structured_output_benchmark.core.types import ExtractionRequest, HostInfo, ExtractionResult
-from structured_output_benchmark.core.extraction import run_extraction_core
+from structured_output_benchmark.core.extraction import run_extraction_core, _load_prompt
 
 from dotenv import load_dotenv
 
@@ -19,6 +19,7 @@ class ExtractionService:
     
     async def run_extraction(
         self,
+        prompt: Optional[str],
         input_text: str,
         retries: int = 1,
         schema_name: str = "schema_han",
@@ -62,6 +63,7 @@ class ExtractionService:
 
             core_result = run_extraction_core(
                 ExtractionRequest(
+                    prompt=prompt if prompt else _load_prompt(),
                     input_text=input_text,
                     retries=retries,
                     schema_name=schema_name,

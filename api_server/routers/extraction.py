@@ -39,6 +39,7 @@ async def run_extraction(request: ExtractionRequest):
     
     try:
         result = await extraction_service.run_extraction(
+            prompt=request.prompt,
             input_text=request.input_text,
             retries=request.retries,
             schema_name=request.schema_name,

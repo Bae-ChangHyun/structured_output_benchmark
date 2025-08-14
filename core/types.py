@@ -13,6 +13,7 @@ class HostInfo(BaseModel):
 
 
 class ExtractionRequest(BaseModel):
+    prompt: Optional[str] = Field(None, description="사용할 프롬프트 (기본값: prompt.yaml에서 로드)")
     input_text: str = Field(..., description="프롬프트 텍스트 또는 파일 경로")
 
     # 공통 실행 설정
