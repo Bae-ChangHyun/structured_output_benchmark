@@ -6,9 +6,10 @@ from pydantic import BaseModel, Field, model_validator
 
 
 class HostInfo(BaseModel):
-    host: str
+    provider: str
     base_url: str
     model: str
+    api_key: Optional[str]
 
 
 class ExtractionRequest(BaseModel):

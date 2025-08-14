@@ -6,38 +6,38 @@ from structured_output_benchmark.extraction_module.utils import get_compatible_f
 
 router = APIRouter()
 
-@router.get("/hosts", summary="사용 가능한 호스트 목록", response_description="호스트 문자열 배열 반환")
-async def get_hosts() -> Dict[str, Any]:
+@router.get("/providers", summary="사용 가능한 호스트 목록", response_description="호스트 문자열 배열 반환")
+async def get_providers() -> Dict[str, Any]:
     """
-    사용 가능한 호스트 목록을 반환합니다.
+    사용 가능한 제공자 목록을 반환합니다.
     """
-    hosts = ["openai", "anthropic", "vllm", "ollama", "google"]
-    
+    providers = ["openai", "anthropic", "openai_compatible", "ollama", "google"]
+
     return {
         "success": True,
-        "data": hosts
+        "data": providers
     }
 
-@router.get("/frameworks", summary="호스트별 프레임워크 목록", response_description="framework 문자열 배열과 host를 포함")
-async def get_frameworks(host: str = "openai") -> Dict[str, Any]:
+@router.get("/frameworks", summary="호스트별 프레임워크 목록", response_description="framework 문자열 배열과 provider을 포함")
+async def get_frameworks(provider: str = "openai") -> Dict[str, Any]:
     """
-    특정 호스트에서 사용 가능한 프레임워크 목록을 반환합니다.
+    특정 제공자에서 사용 가능한 프레임워크 목록을 반환합니다.
     
     추출 API에서 framework_choice 파라미터로 사용할 수 있는 값들을 제공합니다.
     framework_choice는 1부터 시작하는 인덱스 번호입니다.
     
     **Parameters:**
-    - **host**: 호스트 이름 (openai, anthropic, google, vllm, ollama)
+    - **provider**: 호스트 이름 (openai, anthropic, google, openai_compatible, ollama)
     
     **Example:**
-    - `/api/v1/utils/frameworks?host=openai`
-    - `/api/v1/utils/frameworks?host=anthropic`
+    - `/api/v1/utils/frameworks?provider=openai`
+    - `/api/v1/utils/frameworks?provider=anthropic`
     
     **Response:**
     ```json
     {
         "success": true,
-        "host": "openai",
+        "provider": "openai",
         "data": [
             "openai",           // framework_choice=1
             "instructor",       // framework_choice=2
@@ -48,10 +48,10 @@ async def get_frameworks(host: str = "openai") -> Dict[str, Any]:
     ```
     """
     try:
-        frameworks = get_compatible_frameworks(host)
+        frameworks = get_compatible_frameworks(provider)
         return {
             "success": True,
-            "host": host,
+            "provider": provider,
             "data": frameworks
         }
     except Exception as e:

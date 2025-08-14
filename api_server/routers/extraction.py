@@ -19,7 +19,7 @@ async def run_extraction(request: ExtractionRequest):
     - input_text: 추출할 텍스트(또는 텍스트 파일 경로)
     - schema_name: 스키마 이름(기본: schema_han)
     - framework: 사용 프레임워크 이름(예: OpenAIFramework)
-    - host_info: { host, base_url, model } 필수
+    - host_info: { provider, base_url, model } 필수
         - kwargs: 프레임워크/LLM 세부 파라미터 딕셔너리 (예: { "temperature": 0.1, "timeout": 900 })
 
     응답 본문

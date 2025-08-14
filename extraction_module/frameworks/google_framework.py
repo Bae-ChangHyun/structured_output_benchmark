@@ -24,7 +24,7 @@ class GoogleFramework(BaseFramework):
         @experiment(retries=retries)
         def run_experiment(inputs):
             response = self.client.models.generate_content(
-                model = self.llm_model,
+                model = self.model,
                 contents = self.prompt.format(**inputs),
                 config=types.GenerateContentConfig(
                     response_schema=self.response_model,

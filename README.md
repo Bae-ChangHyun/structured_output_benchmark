@@ -1,6 +1,6 @@
 ## Structured Output Benchmark
 
-LLM 구조화 출력(Structured Output) 추출 성능을 빠르게 비교·측정하고, 정답(JSON)과의 유사도를 정량화·시각화로 평가하는 경량 툴킷입니다. OpenAI / Anthropic / Google / vLLM / Ollama 등 다양한 호스트와 Instructor, LangChain, LlamaIndex, Marvin, Mirascope, LM Format Enforcer 등 여러 프레임워크를 통일된 인터페이스로 실험할 수 있습니다.
+LLM 구조화 출력(Structured Output) 추출 성능을 빠르게 비교·측정하고, 정답(JSON)과의 유사도를 정량화·시각화로 평가하는 경량 툴킷입니다. OpenAI / Anthropic / Google / OpenAI-Compatible / Ollama 등 다양한 호스트와 Instructor, LangChain, LlamaIndex, Marvin, Mirascope, LM Format Enforcer 등 여러 프레임워크를 통일된 인터페이스로 실험할 수 있습니다.
 
 ## 목차
 1. 프로젝트 개요
@@ -20,7 +20,7 @@ LLM 구조화 출력(Structured Output) 추출 성능을 빠르게 비교·측�
 - 목적: 다양한 LLM과 프레임워크에서 구조화된 JSON을 안정적으로 추출하고, 정답과의 유사도를 일관된 기준으로 평가·시각화합니다.
 - 주요 기능
 	- API/CLI 제공: 추출·평가·시각화를 단일 프로젝트에서 실행
-	- 멀티 호스트/프레임워크: OpenAI/Anthropic/Google/vLLM/Ollama + 여러 추출 프레임워크
+	- 멀티 호스트/프레임워크: OpenAI/Anthropic/Google/OpenAI-Compatible/Ollama + 여러 추출 프레임워크
 	- 평가 및 대시보드: 임베딩 유사도와 완전일치 점수를 혼합해 정량 평가, Streamlit 대시보드 제공
 - 범위: 개인 이력서 등 한국어 텍스트 스키마 예시 제공(schema_han) 기반 확장 용이
 
@@ -84,15 +84,19 @@ ANTHROPIC_MODELS=claude-3-5-sonnet-latest
 GOOGLE_API_KEY=...
 GOOGLE_MODELS=gemini-1.5-flash
 
-# vLLM (OpenAI 호환 서버)
-VLLM_BASEURL=http://localhost:8000/v1
-VLLM_MODELS=openai/gpt-oss-120b
-VLLM_EMBED_BASEURL=http://localhost:8000/v1
-VLLM_EMBED_MODELS=Qwen/Qwen3-Embedding-8B
+# OpenAI-Compatible (OpenAI 호환 서버)
+OPENAI_COMPATIBLE_BASEURL=http://localhost:8000/v1
+OPENAI_COMPATIBLE_MODELS=openai/gpt-oss-120b
+OPENAI_COMPATIBLE_API_KEY=dummy
+
+OPENAI_COMPATIBLE_EMBED_BASEURL=http://localhost:8000/v1
+OPENAI_COMPATIBLE_EMBED_MODELS=Qwen/Qwen3-Embedding-8B
+OPENAI_COMPATIBLE_EMBED_API_KEY=dummy
 
 # Ollama (OpenAI 호환 서버)
 OLLAMA_BASEURL=http://localhost:11434/v1
 OLLAMA_MODELS=llama3.1:8b
+OLLAMA_API_KEY=dummy
 
 # HuggingFace 임베딩(로컬)
 HUGGINGFACE_EMBED_MODELS=jhgan/ko-sroberta-multitask
@@ -107,35 +111,6 @@ MAX_FILE_SIZE=10485760
 TASK_TIMEOUT=3600
 ```
 
-선택: config YAML 예시(`config.example.yaml`)
-- 현재 코드에서 직접 사용되지는 않지만, 배포/오케스트레이션 시 참고할 수 있는 템플릿입니다.
-
-```yaml
-server:
-	host: 0.0.0.0
-	port: 8000
-	debug: true
-
-defaults:
-	schema_name: schema_han
-	retries: 1
-	temperature: 0.1
-	timeout: 900
-
-hosts:
-	openai:
-		base_url: https://api.openai.com/v1
-		model: gpt-4o-mini
-	vllm:
-		base_url: http://localhost:8000/v1
-		model: openai/gpt-oss-120b
-	ollama:
-		base_url: http://localhost:11434/v1
-		model: llama3.1:8b
-	google:
-		base_url: https://generativelanguage.googleapis.com/v1beta/openai/
-		model: gemini-1.5-flash
-```
 
 ## 5) 프로젝트 구조와 실행 모드
 ```
@@ -166,7 +141,7 @@ Base URL: http://localhost:8000
 - Request Body(요약)
 	- input_text: 문자열 또는 텍스트 파일 경로
 	- schema_name: 스키마 이름(기본 schema_han)
-	- retries, framework, host_info(필수: host/base_url/model)
+	- retries, framework, host_info(필수: provider/base_url/model)
 	- kwargs: 프레임워크/LLM 파라미터 딕셔너리(JSON). 예: {"temperature":0.1, "timeout":900, "seed":42}
 - Response(요약)
 	- success, message, data.result(JSON), success_rate, latency, result_path, output_dir, langfuse_url
@@ -181,7 +156,7 @@ curl -X POST http://localhost:8000/v1/extraction \
 		"retries": 1,
 		"kwargs": {"temperature": 0.1, "timeout": 900},
 		"framework": "OpenAIFramework",
-		"host_info": {"host": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
+		"host_info": {"provider": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
 	}'
 ```
 
@@ -193,7 +168,7 @@ payload = {
 	"schema_name": "schema_han",
 	"framework": "OpenAIFramework",
 	"kwargs": {"temperature": 0.1, "timeout": 900},
-	"host_info": {"host": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
+	"host_info": {"provider": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
 }
 r = requests.post("http://localhost:8000/v1/extraction", json=payload)
 print(r.json())
@@ -207,7 +182,7 @@ print(r.json())
 - Request Body(요약)
 	- pred_json_path, gt_json_path: 예측/정답 JSON 경로
 	- schema_name, criteria_path(선택)
-	- host_info: 임베딩 백엔드(host/base_url/model)
+	- host_info: 임베딩 백엔드(provider/base_url/model)
 - Response(요약)
 	- success, overall_score, eval_result_path, output_dir, fields별 상세 리포트 포함(data.result)
 
@@ -219,7 +194,7 @@ curl -X POST http://localhost:8000/v1/evaluation \
 		"pred_json_path": "result/extraction/20250812_0850/result.json",
 		"gt_json_path": "sample_gt/리멤버-s1.json",
 		"schema_name": "schema_han",
-		"host_info": {"host": "huggingface", "base_url": "", "model": "jhgan/ko-sroberta-multitask"}
+		"host_info": {"provider": "huggingface", "base_url": "", "model": "jhgan/ko-sroberta-multitask"}
 	}'
 ```
 
@@ -227,8 +202,8 @@ curl -X POST http://localhost:8000/v1/evaluation \
 - 200: 성공, 400: 경로 누락 등 요청 오류, 500: 내부 서버 오류
 
 ### 6.3 유틸리티/시각화 API
-- GET /v1/utils/hosts: 사용 가능한 호스트 목록
-- GET /v1/utils/frameworks?host=openai: 호스트별 지원 프레임워크 목록
+- GET /v1/utils/providers: 사용 가능한 호스트 목록
+- GET /v1/utils/frameworks?provider=openai: 호스트별 지원 프레임워크 목록
 - GET /v1/utils/schemas: 사용 가능한 스키마 파일 목록
 - GET /v1/visualization/streamlit/{eval_result_path}: Streamlit URL 반환(서버 별도 실행 필요)
 - POST /v1/visualization/generate: 간단 HTML 리포트 생성(정적)
@@ -341,7 +316,7 @@ curl -X POST http://localhost:8000/v1/extraction \
 		"input_text": "안녕하세요. 저는 홍길동입니다.",
 		"schema_name": "schema_han",
 		"framework": "OpenAIFramework",
-		"host_info": {"host": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
+		"host_info": {"provider": "openai", "base_url": "https://api.openai.com/v1", "model": "gpt-4o-mini"}
 	}'
 ```
 

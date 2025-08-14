@@ -13,34 +13,18 @@ class InstructorFramework(BaseFramework):
     # https://python.useinstructor.com
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        # if self.llm_host == "openai":
-        #     self.instructor_client = instructor.from_openai(
-        #         client = OpenAI(max_retries=0),)
-            
-        # elif self.llm_host == "ollama" or self.llm_host == "vllm":
-        #     self.instructor_client = instructor.from_openai(
-        #         client = OpenAI(
-        #         base_url = self.base_url,
-        #         api_key = "empty",
-        #         timeout = self.timeout,
-        #         max_retries = 0),
-        #         mode=instructor.Mode.JSON)
-            
-        # elif self.llm_host == "google":
-        #     self.instructor_client = instructor.from_provider(
-        #         model=f"google/{self.llm_model}",
-        #         mode=instructor.Mode.GENAI_STRUCTURED_OUTPUTS
-        #     )
-
-        llm_host = self.llm_host if self.llm_host != "vllm" else "ollama"
+ 
+        provider = self.provider if self.provider != "openai_compatible" else "ollama"
         
-        if self.llm_host in ['ollama', 'vllm']:
-            base_url = os.getenv("OLLAMA_BASEURL") if self.llm_host=='ollama' else os.getenv("VLLM_BASEURL")
-            llm_host = 'ollama'
-            self.client = instructor.from_provider(f"{llm_host}/{self.llm_model}",
-                                                   base_url=base_url)
+        if self.provider in ['ollama', 'openai_compatible']:
+            base_url = os.getenv("OLLAMA_BASEURL") if provider=='ollama' else os.getenv("OPENAI_COMPATIBLE_BASEURL")
+            provider = 'ollama'
+            self.client = instructor.from_provider(f"{provider}/{self.model}",
+                                                   base_url=base_url,
+                                                   api_key=self.api_key or os.getenv("OLLAMA_API_KEY") or os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
+                                                   )
         else:
-            self.client = instructor.from_provider(f"{llm_host}/{self.llm_model}")
+            self.client = instructor.from_provider(f"{provider}/{self.model}")
 
     @observe(name='Instructor Framework')
     def run(
@@ -48,7 +32,7 @@ class InstructorFramework(BaseFramework):
     ) -> tuple[list[Any], float, list[float]]:
         @experiment(retries=retries)
         def run_experiment(inputs):
-            # if self.llm_host == "google":
+            # if self.provider == "google":
             #     response = self.instructor_client.chat.completions.create(
             #         response_model=self.response_model,
             #         max_retries=retries,
@@ -57,7 +41,7 @@ class InstructorFramework(BaseFramework):
             #     )
             # else:
             #     response = self.instructor_client.chat.completions.create(
-            #         model=self.llm_model,
+            #         model=self.model,
             #         response_model=self.response_model,
             #         max_retries=retries,
             #         messages=[{"role": "user", "content": self.prompt.format(**inputs)}],

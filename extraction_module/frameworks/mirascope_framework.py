@@ -1,3 +1,4 @@
+import os
 from typing import Any
 from mirascope import llm
 from mirascope.core import openai
@@ -12,20 +13,27 @@ class MirascopeFramework(BaseFramework):
 
     def response(self, prompt, call_params=None):
         # call_params: LLM에 넘길 extra kwargs
-        if self.llm_host == 'openai' or self.llm_host == 'google':
-            @llm.call(provider=self.llm_host, model=self.llm_model, response_model=self.response_model)
+        if self.provider == 'openai' or self.provider == 'google':
+            @llm.call(provider=self.provider, model=self.model, response_model=self.response_model)
             def extract_info(query: str, call_params=None):
                 return {
                     "messages": [{"role": "user", "content": query}],
                     "call_params": call_params,
                 }
         else:
-            client = OpenAI(
-                base_url=self.base_url,
-                api_key="dummy",
-                max_retries=0,
-                timeout=self.timeout)
-            @openai.call(self.llm_model, response_model=self.response_model, client=client)
+            if self.provider == 'ollama':
+                client = OpenAI(
+                    base_url=self.base_url,
+                    api_key=self.api_key or os.getenv("OLLAMA_API_KEY", "dummy"),
+                    max_retries=0,
+                    timeout=self.timeout)
+            else:
+                client = OpenAI(
+                    base_url=self.base_url,
+                    api_key=self.api_key or os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
+                    max_retries=0,
+                    timeout=self.timeout)
+            @openai.call(self.model, response_model=self.response_model, client=client)
             def extract_info(query: str, call_params=None):
                 return {
                     "messages": [{"role": "user", "content": query}],

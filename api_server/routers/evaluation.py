@@ -21,7 +21,7 @@ async def run_evaluation(request: EvaluationRequest):
     - gt_json_path: 정답 JSON 경로
     - schema_name: 스키마 이름(기본: schema_han)
     - criteria_path: 필드별 평가 기준 파일 경로(없으면 자동 생성)
-    - host_info: 임베딩 백엔드 정보 { host, base_url, model }
+    - host_info: 임베딩 백엔드 정보 { provider, base_url, model }
 
     응답 본문
     - data.result: overall_score, fields별 세부 리포트, 사용된 criteria 포함

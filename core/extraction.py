@@ -42,7 +42,7 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
     exp_info = [
         "*" * box_width,
         f"{'Benchmark 시작'.center(box_width)}",
-        box_line(f"Host: {host_info.host}"),
+        box_line(f"Provider: {host_info.provider}"),
         box_line(f"BaseURL: {host_info.base_url}"),
         box_line(f"Model: {host_info.model}"),
         box_line(f"Framework: {req.framework}"),
@@ -63,9 +63,7 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
 
     result, success, latencies = extract_with_framework(
         framework=req.framework,
-        llm_host=host_info.host,
-        llm_model=host_info.model,
-        base_url=host_info.base_url,
+        host_info=host_info,
         content=input_text,
         prompt=f"{extract_prompt}\n{input_text}",
         schema_name=req.schema_name,
@@ -90,8 +88,8 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
 
     record_extraction(
         log_filename=log_filename,
-        llm_host=host_info.host,
-        llm_model=host_info.model,
+        provider=host_info.provider,
+        model=host_info.model,
         prompt=f"{extract_prompt}\n{input_text}",
         framework=req.framework,
         success=bool(result),

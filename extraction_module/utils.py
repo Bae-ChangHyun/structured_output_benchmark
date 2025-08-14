@@ -4,6 +4,7 @@ import yaml
 import os
 from typing import Dict, List, Any, Optional
 from loguru import logger
+from structured_output_benchmark.core.types import HostInfo
 
 def convert_schema(schema_name: str):
     """
@@ -24,9 +25,7 @@ def convert_schema(schema_name: str):
 
 def extract_with_framework(
     framework: str,
-    llm_host: str,
-    llm_model: str,
-    base_url: str,
+    host_info: HostInfo,
     content: str,
     prompt: str,
     schema_name: str ,
@@ -41,8 +40,8 @@ def extract_with_framework(
     
     Args:
         framework: 사용할 프레임워크 이름
-        llm_host: LLM 호스트 (ollama, openai, google, vllm)
-        llm_model: 사용할 LLM 모델 이름
+        provider: LLM 제공자 (ollama, openai, google, openai_compatible)
+        model: 사용할 LLM 모델 이름
         base_url: API 기본 URL
         content: 추출할 텍스트 내용
         prompt: 사용할 프롬프트
@@ -56,9 +55,10 @@ def extract_with_framework(
         response_model = convert_schema(schema_name)
         
         init_kwargs = {
-            "llm_model": llm_model,
-            "llm_host": llm_host,
-            "base_url": base_url,
+            "provider": host_info.provider,
+            "model": host_info.model,
+            "base_url": host_info.base_url,
+            "api_key": host_info.api_key,
             "prompt": prompt,
             "response_model": response_model,
             "api_delay_seconds": api_delay_seconds,
@@ -112,7 +112,7 @@ def extract_with_framework(
         logger.error(f"Framework {framework} 실행 중 예상치 못한 오류 발생: {str(e)}")
         return {"error": str(e)}, False, 0
 
-def get_compatible_frameworks(host: str):
+def get_compatible_frameworks(provider: str):
     """선택한 host에 호환되는 프레임워크 목록을 반환하는 함수"""
 
     yaml_path = os.path.join(os.path.dirname(__file__), "framework_compatibility.yaml")
@@ -126,7 +126,7 @@ def get_compatible_frameworks(host: str):
     compatible_frameworks = []
     
     for framework_name, framework_info in compatibility_data.items():
-        if 'hosts' in framework_info and host in framework_info['hosts']:
+        if 'providers' in framework_info and provider in framework_info['providers']:
             compatible_frameworks.append(framework_name)
     
     return compatible_frameworks

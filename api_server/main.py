@@ -37,14 +37,14 @@ app = FastAPI(
     
     1. **OpenAI** - GPT-4, GPT-3.5 등
     2. **Anthropic** - Claude 모델들
-    3. **vLLM** - 로컬 vLLM 서버
-    4. **Ollama** - 로컬 Ollama 서버  
+    3. **OpenAI-Compatible** - 로컬 OpenAI-Compatible 서버
+    4. **Ollama** - 로컬 Ollama 서버
     5. **Google** - Gemini 모델들
     
     ## 사용법
     
-    1. `/v1/utils/hosts` - 사용 가능한 호스트 목록 확인
-    2. `/v1/utils/frameworks?host=<호스트명>` - 호스트별 프레임워크 목록 확인
+    1. `/v1/utils/providers` - 사용 가능한 호스트 목록 확인
+    2. `/v1/utils/frameworks?provider=<호스트명>` - 호스트별 프레임워크 목록 확인
     3. `/v1/extraction` - 텍스트 추출 실행
     3. `/v1/evaluation` - 평가 실행
     ```

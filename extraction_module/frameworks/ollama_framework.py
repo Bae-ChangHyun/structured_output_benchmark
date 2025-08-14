@@ -13,7 +13,8 @@ class OllamaFramework(BaseFramework):
     """
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.client = Client(self.base_url)
+        self.client = Client(self.base_url,
+                             api_key=self.api_key or os.getenv("OLLAMA_API_KEY", "dummy"))
 
     @observe(name='Ollama Framework')
     def run(
@@ -23,7 +24,7 @@ class OllamaFramework(BaseFramework):
         def run_experiment(inputs):
             
             response = self.client.chat(
-                model=self.llm_model,
+                model=self.model,
                 format=self.response_model.model_json_schema(),
                 messages=[
                     {"role": "user", "content": self.prompt.format(**inputs)}

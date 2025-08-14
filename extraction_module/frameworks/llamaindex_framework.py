@@ -1,7 +1,5 @@
 import os
-from pyexpat import model
 from typing import Any
-from loguru import logger
 
 from llama_index.llms.openai import OpenAI
 from llama_index.llms.openai_like import OpenAILike
@@ -17,26 +15,41 @@ class LlamaIndexFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         
-        if self.llm_host == "openai":
-            self.client = OpenAI(model=self.llm_model,max_retries=0,)
+        if self.provider == "openai":
+            self.client = OpenAI(model=self.model,max_retries=0,)
 
-        elif self.llm_host == "ollama" or self.llm_host == "vllm":
+        elif self.provider == "ollama":
             self.client = OpenAILike(
                 api_base=self.base_url,
-                api_key="dummy",
-                model=self.llm_model,
+                api_key=self.api_key or os.getenv("OLLAMA_API_KEY", "dummy"),
+                model=self.model,
+                #max_tokens=16384,  #!TODO: 하드코딩,
+                max_retries=0, 
+            )
+
+        elif self.provider == "openai_compatible":
+            self.client = OpenAILike(
+                api_base=self.base_url,
+                api_key=self.api_key or os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
+                model=self.model,
                 #max_tokens=16384,  #!TODO: 하드코딩,
                 max_retries=0, 
             )
             
-        elif self.llm_host == "google":
+        elif self.provider == "google":
             self.client = GoogleGenAI(
-                #api_base=self.base_url,
                 api_key=os.getenv("GOOGLE_API_KEY"),
-                model=self.llm_model,
+                model=self.model,
                 max_retries=0,
             )
-
+        #!TODO: llamaindex-anthropic
+        # elif self.provider == "anthropic":
+        #     self.client = GoogleGenAI(
+        #         api_key=os.getenv("GOOGLE_API_KEY"),
+        #         model=self.model,
+        #         max_retries=0,
+        #     )
+        
         self.llamaindex_client = LLMTextCompletionProgram.from_defaults(
             output_parser=PydanticOutputParser(self.response_model),
             prompt_template_str=self.prompt,
