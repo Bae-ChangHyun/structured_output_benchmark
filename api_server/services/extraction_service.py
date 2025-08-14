@@ -1,15 +1,12 @@
 import os
-import json
-import uuid
 from datetime import datetime
-from typing import Optional, Dict, Any
+from typing import Optional
 from loguru import logger
-import yaml
 from langfuse import get_client
 
-from extraction_module.utils import extract_with_framework, get_compatible_frameworks
-from utils import (record_extraction, box_line, log_response, final_report)
-from api_server.models.extraction import ExtractionResult
+from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
+from structured_output_benchmark.core.types import ExtractionRequest, HostInfo, ExtractionResult
+from structured_output_benchmark.core.extraction import run_extraction_core
 
 from dotenv import load_dotenv
 
@@ -25,23 +22,24 @@ class ExtractionService:
         input_text: str,
         retries: int = 1,
         schema_name: str = "schema_han",
-        temperature: float = 0.1,
-        timeout: int = 900,
+        extra_kwargs: Optional[dict] = None,
         framework: str = 'OpenAIFramework',
-        host_info: Optional[Dict[str, Any]] = None
+        host_info: Optional[HostInfo] = None,
+        langfuse_trace_id: Optional[str] = None,
+        output_dir: Optional[str] = None
     ) -> ExtractionResult:
         """추출 작업을 실행합니다."""
-        
+
         # 로그 설정
         log_time = datetime.now().strftime('%Y%m%d_%H%M%S')
-        log_dir = os.path.join("result/extraction", log_time)
+        log_dir = os.path.join("result", "extraction", log_time)
         os.makedirs(log_dir, exist_ok=True)
         log_filename = os.path.join(log_dir, "extraction.log")
-        
+
         # 로거 설정
         logger.remove()
         logger.add(log_filename, level="INFO", enqueue=True)
-        
+
         try:
             # input_text가 파일 경로라면 파일 내용 읽기
             if isinstance(input_text, str) and os.path.isfile(input_text):
@@ -51,96 +49,40 @@ class ExtractionService:
                 except Exception as file_err:
                     logger.error(f"파일 읽기 실패: {input_text}, 에러: {str(file_err)}")
                     raise file_err
-            # Langfuse 트레이스 ID 생성
-            langfuse_trace_id = self.langfuse_client.create_trace_id(seed=f"custom-{str(uuid.uuid4())}")
-                        
-            if framework not in get_compatible_frameworks(host_info['host']):
+
+            if host_info is None:
+                logger.error("host_info가 필요합니다.")
+                raise ValueError("host_info가 필요합니다.")
+
+            if framework not in get_compatible_frameworks(host_info.host):
                 logger.error(f"호환되지 않는 프레임워크: {framework}")
                 raise ValueError(f"호환되지 않는 프레임워크: {framework}")
 
-            base_url = host_info["base_url"]
-            model = host_info["model"]
-            
-            # 실험 정보 로깅
-            box_width = 48
-            exp_info = [
-                "*" * box_width,
-                f"{'API Extraction 시작'.center(box_width)}",
-                box_line(f"Host: {host_info['host']}"),
-                box_line(f"BaseURL: {base_url}"),
-                box_line(f"Model: {model}"),
-                box_line(f"Framework: {framework}"),
-                box_line(f"Input: {input_text.strip()[:20]}..."),
-                box_line(f"Retries: {retries}"),
-                "*" * box_width
-            ]
-            for line in exp_info:
-                logger.info(line)
-            
-            # prompt.yaml에서 Extract_prompt 불러오기
-            with open("prompt.yaml", "r", encoding="utf-8") as f:
-                prompt_yaml = yaml.safe_load(f)
-            extract_prompt = prompt_yaml.get("Extract_prompt", "Extract information from the given content.")
-            
-            # 추출 실행
-            result, success, latencies = extract_with_framework(
-                framework_name=framework,
-                provider=host_info["host"],
-                model_name=host_info["model"],
-                base_url=host_info["base_url"],
-                content=input_text,
-                prompt=f"{extract_prompt}\n{input_text}",
-                schema_name=schema_name,
-                retries=retries,
-                api_delay_seconds=0.5,
-                timeout=timeout,
-                temperature=temperature,
-                langfuse_trace_id=langfuse_trace_id
+            extra_kwargs = dict(extra_kwargs or {})
+
+            core_result = run_extraction_core(
+                ExtractionRequest(
+                    input_text=input_text,
+                    retries=retries,
+                    schema_name=schema_name,
+                    extra_kwargs=extra_kwargs,
+                    framework=framework,
+                    host_info=host_info,
+                    langfuse_trace_id=langfuse_trace_id,
+                    output_dir=output_dir,
+                )
             )
-            
-            # 결과 저장
-            result_json_path = os.path.join(log_dir, f"result_{log_time}.json")
-            with open(result_json_path, "w", encoding="utf-8") as f:
-                json.dump(result, f, ensure_ascii=False, indent=2)
-            
-            # 성공률 및 지연시간 계산
-            success_rate = success
-            latency = latencies[0] if isinstance(latencies, list) and latencies else latencies
-            
-            # 로깅
-            logger.success(f"API Extraction completed")
-            logger.success(f"Success rate: {success_rate:.2%}")
-            log_response(logger, result, latency, prefix="API response ")
-            
-            # Langfuse URL 생성
-            langfuse_url = self.langfuse_client.get_trace_url(trace_id=langfuse_trace_id)
-            final_report(exp_info, logger, latency, langfuse_url)
-            
-            # 결과 기록
-            record_extraction(
-                log_filename=log_filename,
-                host=host_info["host"],
-                model=model,
-                prompt=f"{extract_prompt}\n{input_text}",
-                framework=framework,
-                success=bool(result),
-                latency=latency,
-                langfuse_url=langfuse_url,
-                note="API Call",
-                csv_path="result/extraction_result.csv",
-                result_json_path=result_json_path
-            )
-            
+
             return ExtractionResult(
-                success=bool(result),
-                result=result,
-                success_rate=success_rate,
-                latency=latency,
-                log_dir=log_dir,
-                result_json_path=result_json_path,
-                langfuse_url=langfuse_url
+                success=core_result.success,
+                result=core_result.result,
+                success_rate=core_result.success_rate,
+                latency=core_result.latency,
+                result_json_path=core_result.result_json_path,
+                langfuse_url=core_result.langfuse_url,
+                output_dir=core_result.output_dir,
             )
-            
+
         except Exception as e:
             logger.error(f"Extraction failed: {str(e)}")
             raise e

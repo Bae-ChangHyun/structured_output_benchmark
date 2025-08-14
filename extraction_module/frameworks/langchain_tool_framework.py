@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
 
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 from typing import Any
 from langfuse import observe
 
@@ -12,31 +12,22 @@ class LangchainToolFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         
-        if self.llm_provider == "openai":
-            self.llm = ChatOpenAI(model=self.llm_model,
-                                  max_retries=0,
-                                  timeout=self.timeout,
-                                  temperature=self.temperature)
+        if self.llm_host == "openai":
+            self.llm = ChatOpenAI(model=self.llm_model,max_retries=0, **self.extra_kwargs)
 
-        elif self.llm_provider == "ollama" or self.llm_provider == "vllm":
+        elif self.llm_host == "ollama" or self.llm_host == "vllm":
             self.llm = ChatOpenAI(model=self.llm_model,
                                   base_url=self.base_url,
                                   api_key="dummy",
-                                  max_retries=0,
-                                  timeout=self.timeout,
-                                  temperature=self.temperature)
+                                  max_retries=0, **self.extra_kwargs)
             
-        elif self.llm_provider == "google":
+        elif self.llm_host == "google":
             self.llm = ChatGoogleGenerativeAI(model=self.llm_model,
                                               google_api_key=os.environ.get("GOOGLE_API_KEY"),
-                                              max_retries=0,
-                                              temperature=self.temperature)
+                                              max_retries=0,  **self.extra_kwargs)
         
-        elif self.llm_provider == "anthropic":
-            self.llm = ChatAnthropic(model=self.llm_model,
-                                     max_retries=0,
-                                     temperature=self.temperature,
-                                     timeout=self.timeout)
+        elif self.llm_host == "anthropic":
+            self.llm = ChatAnthropic(model=self.llm_model,max_retries=0,  **self.extra_kwargs)
 
         self.structured_llm = self.llm.with_structured_output(self.response_model)
 

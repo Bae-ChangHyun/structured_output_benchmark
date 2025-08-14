@@ -1,37 +1,38 @@
 from fastapi import APIRouter, HTTPException
-from api_server.models.extraction import ExtractionRequest, ExtractionResponse
-from api_server.services.extraction_service import ExtractionService
+from structured_output_benchmark.core.types import ExtractionRequest, ExtractionResponse
+from structured_output_benchmark.api_server.services.extraction_service import ExtractionService
 
 router = APIRouter()
 extraction_service = ExtractionService()
 
-@router.post("", response_model=ExtractionResponse)
+@router.post(
+    "",
+    response_model=ExtractionResponse,
+    summary="LLM 구조화 추출 실행",
+    response_description="추출 결과와 로그/성공률/지연시간 등을 포함한 응답"
+)
 async def run_extraction(request: ExtractionRequest):
     """
-    텍스트 추출을 실행합니다.
-    
-    **Parameters:**
-    - **host_choice**: 호스트 선택
-        - 1: OpenAI (gpt-4o-mini 등)
-        - 2: Anthropic (claude-3-sonnet 등)  
-        - 3: vLLM (로컬 서버)
-        - 4: Ollama (로컬 서버)
-        - 5: Google (gemini-1.5-flash 등)
-        - 미지정시: OpenAI 기본값
-    
-    - **framework_choice**: 프레임워크 선택 (호스트별로 다름)
-        - 미지정시: 호스트에 호환되는 첫번째 프레임워크 사용
-        - 호스트별 호환 프레임워크 목록: `/api/v1/utils/frameworks?host=<host_name>` 참조
-    
-    **Example:**
-    ```json
-    {
-        "input_text": "안녕하세요. 제 이름은 김철수입니다.",
-        "host_choice": 1,
-        "framework_choice": 1,
-        "schema": "schema_han"
-    }
-    ```
+    텍스트에서 이력서 스키마(`schema_han.ExtractInfo`)에 맞는 구조화된 정보를 추출합니다.
+
+    요청 본문
+    - input_text: 추출할 텍스트(또는 텍스트 파일 경로)
+    - schema_name: 스키마 이름(기본: schema_han)
+    - framework: 사용 프레임워크 이름(예: OpenAIFramework)
+    - host_info: { host, base_url, model } 필수
+        - kwargs: 프레임워크/LLM 세부 파라미터 딕셔너리 (예: { "temperature": 0.1, "timeout": 900 })
+
+    응답 본문
+    - data.result: 추출된 JSON
+    - data.success_rate: 프레임워크 내부 성공률(단일 실행 시 0/1)
+    - data.latency: 첫 성공 응답 지연 시간(초)
+    - data.output_dir/result_path: 결과 파일 경로
+    - data.langfuse_url: Langfuse Trace URL(설정 시)
+
+    상태코드
+    - 200: 성공
+    - 400: 입력 오류(input_text 누락 등)
+    - 500: 내부 오류
     """
     if not request.input_text:
         raise HTTPException(status_code=400, detail="input_text가 필요합니다.")
@@ -41,10 +42,11 @@ async def run_extraction(request: ExtractionRequest):
             input_text=request.input_text,
             retries=request.retries,
             schema_name=request.schema_name,
-            temperature=request.temperature,
-            timeout=request.timeout,
+            extra_kwargs=request.extra_kwargs,
             framework=request.framework,
-            host_info=request.host_info
+            host_info=request.host_info,
+            langfuse_trace_id=request.langfuse_trace_id,
+            output_dir=request.output_dir
         )
         
         return ExtractionResponse(
@@ -54,12 +56,12 @@ async def run_extraction(request: ExtractionRequest):
                 "result": result.result,
                 "success_rate": result.success_rate,
                 "latency": result.latency,
-                "log_dir": result.log_dir,
+                "output_dir": result.output_dir,
                 "result_path": result.result_json_path,
                 "langfuse_url": result.langfuse_url
             },
             result_path=result.result_json_path,
-            log_path=result.log_dir,
+            output_dir=result.output_dir,
             langfuse_url=result.langfuse_url,
             success_rate=result.success_rate,
             latency=result.latency

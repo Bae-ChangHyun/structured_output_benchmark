@@ -4,7 +4,7 @@ import json
 
 from ollama._client import Client
 from langfuse import observe
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class OllamaFramework(BaseFramework):
@@ -28,7 +28,6 @@ class OllamaFramework(BaseFramework):
                 messages=[
                     {"role": "user", "content": self.prompt.format(**inputs)}
                 ],
-                options={'temperature': self.temperature},
             )
             content = json.loads(response.message.content)
             

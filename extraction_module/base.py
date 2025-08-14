@@ -84,19 +84,18 @@ def experiment(
 class BaseFramework(ABC):
     prompt: str
     llm_model: str
-    llm_provider: str
+    llm_host: str
     base_url: str
     response_model: Any
     device: str
     api_delay_seconds: float  # API 요청 사이의 지연 시간(초)
-    timeout: float
-    temperature: Optional[float] = None 
+    extra_kwargs: dict
 
     def __init__(self, *args, **kwargs) -> None:
         self.prompt = kwargs.get("prompt", "")
         self.llm_model = kwargs.get("llm_model", "gpt-3.5-turbo")
-        self.llm_provider = kwargs.get("llm_provider", "openai")
-        self.base_url = kwargs.get("base_url", os.environ.get("OLLAMA_HOST", ""))
+        self.llm_host = kwargs.get("llm_host", "openai")
+        self.base_url = kwargs.get("base_url", os.environ.get("VLLM_BASEURL", ""))
         self.device = kwargs.get("device", "cpu")
         self.api_delay_seconds = kwargs.get("api_delay_seconds", 0)  # API 지연 시간 설정
         self.retries = kwargs.get("retries", 3)  # 기본 재시도 횟수 설정
@@ -104,6 +103,7 @@ class BaseFramework(ABC):
         self.temperature = kwargs.get("temperature", 1.0)
         self.response_model = kwargs.get("response_model", None)
         self.langfuse_trace_id = kwargs.get("langfuse_trace_id", None)
+        self.extra_kwargs = {k: v for k, v in kwargs.get("extra_kwargs", {}).items()}
 
         logger.info(f"Framework {self.__class__.__name__} 초기화 완료")
 

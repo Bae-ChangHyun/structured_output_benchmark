@@ -1,3 +1,4 @@
+from math import e
 import os
 import re
 import numpy as np
@@ -7,6 +8,12 @@ from loguru import logger
 
 from langchain_openai import OpenAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
+
+def normalize_field_path(field_path):
+        # 'careers[2|1].company_name' -> 'careers.company_name'
+        # 'certificates[0|0].certificate_name' -> 'certificates.certificate_name'
+        # 모든 [숫자], [숫자|숫자], [숫자|-], [-|숫자] 패턴 제거
+        return re.sub(r'\[(\d+\|\d+|\d+|\-|\d+\|\-|\-\|\d+)\]', '', field_path)
 
 
 def normalize_prediction_json(pred_json, gt_json):
@@ -88,27 +95,27 @@ def normalize_prediction_json(pred_json, gt_json):
     
 # 임베딩 백엔드 선택: huggingface, openai, vllm, ollama
 class EmbeddingBackend:
-    def __init__(self, backend: str = 'huggingface', model_name: Optional[str] = None, api_key: Optional[str] = None, api_base: Optional[str] = None):
-        self.backend = backend
-        self.model_name = model_name
+    def __init__(self, host: str = 'huggingface', model: Optional[str] = None, api_key: Optional[str] = None, api_base: Optional[str] = None):
+        self.host = host
+        self.model = model
         self.api_key = api_key
         self.api_base = api_base
-        if backend == 'openai':
+        if host == 'openai':
             self.model = OpenAIEmbeddings(
-                model=model_name or 'text-embedding-ada-002',
+                model=model or 'text-embedding-ada-002',
             )
-        elif backend in ['vllm', 'ollama']:
+        elif host in ['vllm', 'ollama']:
             self.model = OpenAIEmbeddings(
-                model=model_name,
+                model=model,
                 openai_api_key="dummy",
                 openai_api_base=api_base
             )
-        elif backend == 'huggingface':
-            self.model = HuggingFaceEmbeddings(model_name=model_name or 'jhgan/ko-sroberta-multitask')
+        elif host == 'huggingface':
+            self.model = HuggingFaceEmbeddings(model_name=model or 'jhgan/ko-sroberta-multitask')
         else:
-            logger.error(f"Unsupported embedding backend: {backend}")
-            raise NotImplementedError(f"Backend {backend} not supported.")
-        
+            logger.error(f"Unsupported embedding backend: {host}")
+            raise NotImplementedError(f"Backend {host} not supported.")
+
 
     def embed(self, texts):
         if isinstance(texts, str):
@@ -124,14 +131,11 @@ def cosine_similarity(a, b):
         b = b.reshape(1, -1)
     return float(np.dot(a, b.T) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-8))
 
-
-def compare_json(gt, pred, embedder: EmbeddingBackend, weights: Optional[Dict[str, float]] = None, path="", field_eval_criteria: Optional[Dict[str, str]] = None):
-
-    def normalize_field_path(field_path):
-        # 'careers[2|1].company_name' -> 'careers.company_name'
-        # 'certificates[0|0].certificate_name' -> 'certificates.certificate_name'
-        # 모든 [숫자], [숫자|숫자], [숫자|-], [-|숫자] 패턴 제거
-        return re.sub(r'\[(\d+\|\d+|\d+|\-|\d+\|\-|\-\|\d+)\]', '', field_path)
+    
+def eval_json(gt, pred, host_info, 
+              field_eval_criteria=None,
+              weights: Optional[Dict[str, float]] = None):
+    
     """
     gt: ground truth json
     pred: prediction json (정규화된)
@@ -143,9 +147,12 @@ def compare_json(gt, pred, embedder: EmbeddingBackend, weights: Optional[Dict[st
     report = {}
     total_score = 0.0
     total_weight = 0.0
-    structure_score = 1.0  # 정규화된 경우 항상 1.0
     content_score = 0.0
     field_reports = {}
+
+    embedder = load_embedder(host_info.host, 
+                             model=host_info.model, 
+                             api_base=host_info.base_url)
 
     def _compare(gt_val, pred_val, key, weight=1.0, path="", field_eval_criteria=None):
         field_path = f"{path}.{key}" if path else key
@@ -317,34 +324,22 @@ def compare_json(gt, pred, embedder: EmbeddingBackend, weights: Optional[Dict[st
         total_weight += w
     content_score = total_score / total_weight if total_weight > 0 else 1.0
     report = {
-        "overall_score": content_score,  # 구조 점수는 정규화로 항상 1.0
-        "structure_score": structure_score,
-        "content_score": content_score,
+        "overall_score": content_score,
         "fields": field_reports,
         "field_eval_criteria": field_eval_criteria or {}
     }
     return report
 
-def eval_json(gt_json, pred_json, 
-              embed_backend, model=None, api_base=None,
-              field_eval_criteria=None):
-    """
-    의미 유사도/완전일치 기반 JSON 평가 metric 실행 (필드별 평가기준 지원)
-    """
-
-    if embed_backend == 'huggingface':
-        embedder = EmbeddingBackend('huggingface', model_name=model)
-    elif embed_backend == 'openai':
-        embedder = EmbeddingBackend('openai', model_name=model)
-    elif embed_backend == 'vllm':
+def load_embedder(host, model=None, api_base=None):
+    if host == 'huggingface':
+        return EmbeddingBackend('huggingface', model=model)
+    elif host == 'openai':
+        return EmbeddingBackend('openai', model=model)
+    elif host == 'vllm':
         if not api_base: api_base = os.getenv("VLLM_BASEURL", "http://localhost:8000/v1")
-        embedder = EmbeddingBackend('vllm', model_name=model, api_base=api_base)
-    elif embed_backend == 'ollama':
+        return EmbeddingBackend('vllm', model=model, api_base=api_base)
+    elif host == 'ollama':
         if not api_base: api_base = os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1")
-        embedder = EmbeddingBackend('ollama', model_name=model, api_base=api_base)
+        return EmbeddingBackend('ollama', model=model, api_base=api_base)
     else:
         return
-
-    report = compare_json(gt_json, pred_json, embedder, field_eval_criteria=field_eval_criteria)
-
-    return report

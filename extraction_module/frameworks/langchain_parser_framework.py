@@ -9,45 +9,50 @@ from langchain_ollama import ChatOllama
 from langchain_anthropic import ChatAnthropic
 from langfuse import observe
 from marvin.agents import team
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class LangchainParserFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        if self.llm_provider == "openai":
-            self.llm = ChatOpenAI(model=self.llm_model,
-                                  max_retries=0,
-                                  temperature=self.temperature,
-                                  timeout=self.timeout)
+        if self.llm_host == "openai":
+            self.llm = ChatOpenAI(
+                model=self.llm_model,
+                max_retries=0,
+                **self.extra_kwargs
+            )
 
-        elif self.llm_provider == "ollama":
-            self.llm = ChatOllama(model=self.llm_model,
-                                  base_url=self.base_url,
-                                  api_key="dummy",
-                                  temperature=self.temperature,
-                                 )
+        elif self.llm_host == "ollama":
+            self.llm = ChatOllama(
+                model=self.llm_model,
+                base_url=self.base_url,
+                api_key="dummy",
+                **self.extra_kwargs
+            )
             
-        elif self.llm_provider == "vllm":
-            self.llm = ChatOpenAI(model=self.llm_model,
-                                  base_url=self.base_url,
-                                  api_key="dummy",
-                                  max_retries=0,
-                                  timeout=self.timeout,
-                                  temperature=self.temperature
-                                  )
+        elif self.llm_host == "vllm":
+            self.llm = ChatOpenAI(
+                model=self.llm_model,
+                base_url=self.base_url,
+                api_key="dummy",
+                max_retries=0,
+                **self.extra_kwargs
+            )
             
-        elif self.llm_provider == "google":
-            self.llm = ChatGoogleGenerativeAI(model=self.llm_model,
-                                              max_retries=0,
-                                              temperature=self.temperature)
+        elif self.llm_host == "google":
+            self.llm = ChatGoogleGenerativeAI(
+                model=self.llm_model,
+                max_retries=0,
+                **self.extra_kwargs
+            )
 
-        elif self.llm_provider == "anthropic":
-            self.llm = ChatAnthropic(model=self.llm_model,
-                                     max_retries=0,
-                                     temperature=self.temperature,
-                                     timeout=self.timeout)
+        elif self.llm_host == "anthropic":
+            self.llm = ChatAnthropic(
+                model=self.llm_model,
+                max_retries=0,
+                **self.extra_kwargs
+            )
 
         self.parser = PydanticOutputParser(pydantic_object=self.response_model)
         

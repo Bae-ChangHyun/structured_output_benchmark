@@ -15,7 +15,7 @@ def convert_schema(schema_name: str):
         # .py 확장자 제거하여 모듈명 생성
         module_name = os.path.splitext(os.path.basename(file_path))[0]
     else:
-        file_path = os.path.join('extraction_module', 'schema', f'{schema_name}.py')
+        file_path = os.path.join(os.path.dirname(__file__), 'schema', f'{schema_name}.py')
         module_name = schema_name
     spec = importlib.util.spec_from_file_location(module_name, file_path)
     mod = importlib.util.module_from_spec(spec)
@@ -23,27 +23,26 @@ def convert_schema(schema_name: str):
     return getattr(mod, 'ExtractInfo')
 
 def extract_with_framework(
-    framework_name: str,
-    provider: str,
-    model_name: str,
+    framework: str,
+    llm_host: str,
+    llm_model: str,
     base_url: str,
     content: str,
     prompt: str,
     schema_name: str ,
     retries: int = 1,
     api_delay_seconds: float = 0,
-    timeout: int = 900,
-    temperature: float = 1.0,
     langfuse_trace_id: Optional[str] = None,
+    extra_kwargs: Optional[Dict[str, Any]] = None,
     
-) -> tuple[Dict[str, Any], bool]:
+) -> tuple[Dict[str, Any], bool, Any]:
     """
     선택된 프레임워크를 사용하여 JSON 추출 수행
     
     Args:
-        framework_name: 사용할 프레임워크 이름
-        provider: LLM 프로바이더 (ollama, openai, google, vllm)
-        model: 사용할 모델 이름
+        framework: 사용할 프레임워크 이름
+        llm_host: LLM 호스트 (ollama, openai, google, vllm)
+        llm_model: 사용할 LLM 모델 이름
         base_url: API 기본 URL
         content: 추출할 텍스트 내용
         prompt: 사용할 프롬프트
@@ -51,32 +50,32 @@ def extract_with_framework(
         api_delay_seconds: API 호출 간 지연 시간
     
     Returns:
-        tuple[Dict[str, Any], bool]: (추출된 데이터, 성공 여부)
+        tuple[Dict[str, Any], bool, Any]: (추출된 데이터, 성공 여부, 지연시간(단일 값 또는 리스트))
     """
     try:
         response_model = convert_schema(schema_name)
         
         init_kwargs = {
-            "llm_model": model_name,
-            "llm_provider": provider,
+            "llm_model": llm_model,
+            "llm_host": llm_host,
             "base_url": base_url,
             "prompt": prompt,
             "response_model": response_model,
             "api_delay_seconds": api_delay_seconds,
             "langfuse_trace_id": langfuse_trace_id,
-            "timeout": timeout,
-            "temperature": temperature
+            "extra_kwargs":extra_kwargs,
         }
         
         # 프레임워크 인스턴스 생성
         try:
-            from extraction_module import factory  # 순환 import 방지용 함수 내부 import
-            framework_instance = factory(framework_name, **init_kwargs)
-            logger.debug(f"프레임워크 {framework_name} 초기화 완료")
+            # 패키지 내부 상대 임포트로 변경 (wheel 설치 환경에서도 동작)
+            from . import factory  # 순환 import 방지용 함수 내부 import
+            framework_instance = factory(framework, **init_kwargs)
+            logger.debug(f"프레임워크 {framework} 초기화 완료")
         except Exception as e:
-            logger.error(f"프레임워크 {framework_name} 초기화 실패: {str(e)}")
-            return {"error": f"프레임워크 초기화 실패: {str(e)}"}, False
-        
+            logger.error(f"프레임워크 {framework} 초기화 실패: {str(e)}")
+            return {"error": f"프레임워크 초기화 실패: {str(e)}"}, False, 0
+
         # 입력 데이터 준비
         inputs = {"content": content}
         
@@ -91,7 +90,7 @@ def extract_with_framework(
             logger.debug(f"프레임워크 실행 완료: 성공률 {percent_successful:.2%}, 응답 수 {len(predictions) if predictions else 0}")
         except Exception as e:
             logger.error(f"프레임워크 실행 중 오류: {str(e)}")
-            return {"error": f"프레임워크 실행 실패: {str(e)}"}, False
+            return {"error": f"프레임워크 실행 실패: {str(e)}"}, False, 0
         
         # 결과 처리
         if predictions and len(predictions) > 0:
@@ -103,20 +102,20 @@ def extract_with_framework(
             elif hasattr(result, 'dict'):
                 result = result.dict(exclude_none=True)
             
-            logger.debug(f"Framework {framework_name} 실행 성공: 성공률 {percent_successful:.2%}")
+            logger.debug(f"Framework {framework} 실행 성공: 성공률 {percent_successful:.2%}")
             return result, True, latencies
         else:
-            logger.error(f"Framework {framework_name} 실행 실패: 성공한 응답 없음")
+            logger.error(f"Framework {framework} 실행 실패: 성공한 응답 없음")
             return {"error": "성공한 응답이 없습니다"}, False, 0
             
     except Exception as e:
-        logger.error(f"Framework {framework_name} 실행 중 예상치 못한 오류 발생: {str(e)}")
+        logger.error(f"Framework {framework} 실행 중 예상치 못한 오류 발생: {str(e)}")
         return {"error": str(e)}, False, 0
 
-def get_compatible_frameworks(host, ):
+def get_compatible_frameworks(host: str):
     """선택한 host에 호환되는 프레임워크 목록을 반환하는 함수"""
 
-    yaml_path = "extraction_module/framework_compatibility.yaml"
+    yaml_path = os.path.join(os.path.dirname(__file__), "framework_compatibility.yaml")
     try:
         with open(yaml_path, 'r', encoding='utf-8') as f:
             compatibility_data = yaml.safe_load(f)

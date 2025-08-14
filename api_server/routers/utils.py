@@ -2,11 +2,11 @@ from fastapi import APIRouter
 from typing import Dict, List, Any
 import os
 
-from extraction_module.utils import get_compatible_frameworks
+from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
 
 router = APIRouter()
 
-@router.get("/hosts")
+@router.get("/hosts", summary="사용 가능한 호스트 목록", response_description="호스트 문자열 배열 반환")
 async def get_hosts() -> Dict[str, Any]:
     """
     사용 가능한 호스트 목록을 반환합니다.
@@ -18,7 +18,7 @@ async def get_hosts() -> Dict[str, Any]:
         "data": hosts
     }
 
-@router.get("/frameworks")
+@router.get("/frameworks", summary="호스트별 프레임워크 목록", response_description="framework 문자열 배열과 host를 포함")
 async def get_frameworks(host: str = "openai") -> Dict[str, Any]:
     """
     특정 호스트에서 사용 가능한 프레임워크 목록을 반환합니다.
@@ -61,11 +61,11 @@ async def get_frameworks(host: str = "openai") -> Dict[str, Any]:
             "data": []
         }
 
-@router.get("/schemas")
+@router.get("/schemas", summary="사용 가능한 스키마 파일 목록", response_description="스키마 파일명 배열")
 async def get_schemas() -> Dict[str, List[str]]:
     """사용 가능한 스키마 목록을 반환합니다."""
     # 스키마 디렉토리에서 스키마 파일들 스캔
-    schema_dir = "extraction_module/schema"
+    schema_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "extraction_module", "schema")
     schemas = []
     
     if os.path.exists(schema_dir):

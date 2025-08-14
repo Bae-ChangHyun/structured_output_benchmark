@@ -1,12 +1,11 @@
 [project]
 name = "structured-output-benchmark"
-version = "0.1.0"
+version = "0.1.2"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "anthropic>=0.61.0",
-    "dotenv>=0.9.9",
     "google-generativeai==0.8.5",
     "instructor>=1.10.0",
     "langchain>=0.3.27",
@@ -36,4 +35,37 @@ dependencies = [
     "fastapi>=0.104.0",
     "uvicorn[standard]>=0.24.0",
     "python-multipart>=0.0.6",
+    "python-dotenv>=1.1.1",
 ]
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = [
+    "structured_output_benchmark",
+    "structured_output_benchmark.core",
+    "structured_output_benchmark.evaluation_module",
+    "structured_output_benchmark.extraction_module",
+    "structured_output_benchmark.extraction_module.frameworks",
+    "structured_output_benchmark.extraction_module.schema",
+    "structured_output_benchmark.api_server",
+    "structured_output_benchmark.api_server.routers",
+    "structured_output_benchmark.api_server.services",
+]
+
+[tool.setuptools.package-dir]
+structured_output_benchmark = "."
+
+[tool.setuptools.package-data]
+structured_output_benchmark = [
+    "prompt.yaml",
+    "extraction_module/framework_compatibility.yaml",
+    "extraction_module/schema/*.py",
+    "api_server/**/*.py",
+]
+
+[project.scripts]
+sob = "structured_output_benchmark.cli:app"
+structured-output-benchmark = "structured_output_benchmark.main:main"

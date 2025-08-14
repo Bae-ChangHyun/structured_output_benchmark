@@ -10,36 +10,30 @@ from llama_index.core.program import LLMTextCompletionProgram
 from llama_index.core.output_parsers import PydanticOutputParser
 
 from langfuse import observe
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class LlamaIndexFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         
-        if self.llm_provider == "openai":
-            self.client = OpenAI(model=self.llm_model,
-                                 temperature=self.temperature,
-                                 max_retries=0,
-                                 timeout=self.timeout)
+        if self.llm_host == "openai":
+            self.client = OpenAI(model=self.llm_model,max_retries=0,)
 
-        elif self.llm_provider == "ollama" or self.llm_provider == "vllm":
+        elif self.llm_host == "ollama" or self.llm_host == "vllm":
             self.client = OpenAILike(
                 api_base=self.base_url,
                 api_key="dummy",
                 model=self.llm_model,
                 #max_tokens=16384,  #!TODO: 하드코딩,
-                timeout=self.timeout,
-                temperature=self.temperature,
                 max_retries=0, 
             )
             
-        elif self.llm_provider == "google":
+        elif self.llm_host == "google":
             self.client = GoogleGenAI(
                 #api_base=self.base_url,
                 api_key=os.getenv("GOOGLE_API_KEY"),
                 model=self.llm_model,
-                temperature=self.temperature,
                 max_retries=0,
             )
 
@@ -55,8 +49,8 @@ class LlamaIndexFramework(BaseFramework):
         @experiment(retries=retries)
         def run_experiment(inputs):
 
-            response = self.llamaindex_client(**inputs)
-            
+            response = self.llamaindex_client(llm_kwargs=self.extra_kwargs, **inputs)
+
             return response
 
         predictions, percent_successful, latencies = run_experiment(inputs)

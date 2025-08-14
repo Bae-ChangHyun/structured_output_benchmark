@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Tuple, Union
 import json
 import argparse
 
@@ -50,9 +50,9 @@ class EvaluationVisualizer:
     def visualize_overall_scores(self, report: Dict[str, Any]):
         st.subheader("📊 전체 점수 대시보드")
         fig = make_subplots(
-            rows=1, cols=3,
+            rows=1, cols=1,
             subplot_titles=('', '', ''),
-            specs=[[{"type": "indicator"}, {"type": "indicator"}, {"type": "indicator"}]]
+            specs=[[{"type": "indicator"}]]
         )
         fig.add_trace(
             go.Indicator(
@@ -76,40 +76,6 @@ class EvaluationVisualizer:
                 }
             ),
             row=1, col=1
-        )
-        fig.add_trace(
-            go.Indicator(
-                mode="gauge+number",
-                value=report['structure_score'],
-                domain={'x': [0, 1], 'y': [0, 1]},
-                title={'text': "Structure Score"},
-                gauge={
-                    'axis': {'range': [None, 1]},
-                    'bar': {'color': self.get_score_color(report['structure_score'])},
-                    'steps': [
-                        {'range': [0, 0.4], 'color': "lightgray"},
-                        {'range': [0.4, 0.8], 'color': "gray"}
-                    ]
-                }
-            ),
-            row=1, col=2
-        )
-        fig.add_trace(
-            go.Indicator(
-                mode="gauge+number",
-                value=report['content_score'],
-                domain={'x': [0, 1], 'y': [0, 1]},
-                title={'text': "Content Score"},
-                gauge={
-                    'axis': {'range': [None, 1]},
-                    'bar': {'color': self.get_score_color(report['content_score'])},
-                    'steps': [
-                        {'range': [0, 0.4], 'color': "lightgray"},
-                        {'range': [0.4, 0.8], 'color': "gray"}
-                    ]
-                }
-            ),
-            row=1, col=3
         )
         fig.update_layout(height=400)
         st.plotly_chart(fig, use_container_width=True)
@@ -225,16 +191,31 @@ class EvaluationVisualizer:
         with tab3:
             self.visualize_detailed_comparison(report)
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--eval-result', type=str, required=True)
-args, _ = parser.parse_known_args()
+def render_evaluation_report(eval_result: Union[str, Dict[str, Any]]):
+    """Convenience function to render a report in Streamlit.
 
-try:
-    with open(args.eval_result, 'r', encoding='utf-8') as f:
-        eval_result = json.load(f)
-except Exception as e:
-    st.error(f"파일을 열거나 파싱할 수 없습니다: {e}")
-    st.stop()
+    Accepts either a path to an evaluation result JSON file or the already-parsed dict.
+    """
+    data: Dict[str, Any]
+    if isinstance(eval_result, str):
+        with open(eval_result, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    else:
+        data = eval_result
 
-visualizer = EvaluationVisualizer()
-visualizer.visualize_report(eval_result)
+    visualizer = EvaluationVisualizer()
+    return visualizer.visualize_report(data)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--eval-result', type=str, required=True)
+    args, _ = parser.parse_known_args()
+    try:
+        with open(args.eval_result, 'r', encoding='utf-8') as f:
+            eval_result = json.load(f)
+    except Exception as e:
+        st.error(f"파일을 열거나 파싱할 수 없습니다: {e}")
+        st.stop()
+
+    render_evaluation_report(eval_result)

@@ -4,7 +4,7 @@ from google import genai
 from google.genai import types
 
 from langfuse import observe
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class GoogleFramework(BaseFramework):
@@ -29,7 +29,8 @@ class GoogleFramework(BaseFramework):
                 config=types.GenerateContentConfig(
                     response_schema=self.response_model,
                     response_mime_type="application/json",
-                )
+                ),
+                **self.extra_kwargs
             )
             return json.loads(response.candidates[0].content.parts[0].text)
            

@@ -7,7 +7,7 @@ from lmformatenforcer.integrations.transformers import (
 )
 from transformers import pipeline
 
-from extraction_module.base import BaseFramework, experiment
+from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
 
 
 class LMFormatEnforcerFramework(BaseFramework):
@@ -16,7 +16,7 @@ class LMFormatEnforcerFramework(BaseFramework):
         self.parser = JsonSchemaParser(self.response_model.schema())
         max_length = kwargs.get("max_length", 4096)
 
-        if self.llm_provider == "transformers":
+        if self.llm_host == "transformers":
             self.hf_pipeline = pipeline(
                 "text-generation",
                 model=self.llm_model,
@@ -27,7 +27,7 @@ class LMFormatEnforcerFramework(BaseFramework):
                 self.hf_pipeline.tokenizer, self.parser
             )
         else:
-            raise ValueError(f"Model host: {self.llm_provider} not supported")
+            raise ValueError(f"Model host: {self.llm_host} not supported")
 
     def run(
         self, retries: int, expected_response: Any = None, inputs: dict = {}
