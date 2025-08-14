@@ -21,31 +21,39 @@ class MarvinFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        if self.llm_host == "openai":
+        if self.provider == "openai":
             settings = OpenAIModelSettings(**self.extra_kwargs)
-            self.model = OpenAIModel(self.llm_model, settings=settings)
+            self.llm = OpenAIModel(self.model, settings=settings)
 
-        elif self.llm_host == "ollama" or self.llm_host == "vllm":
+        elif self.provider == "ollama":
             provider = OpenAIProvider(
                 base_url=self.base_url,
-                api_key='dummmy'
+                api_key=self.api_key or os.environ.get("OLLAMA_API_KEY", "dummy")
             )
             settings = OpenAIModelSettings(**self.extra_kwargs)
-            self.model = OpenAIModel(self.llm_model, provider=provider, settings=settings)
+            self.llm = OpenAIModel(self.model, provider=provider, settings=settings)
+        
+        elif self.provider == "openai_compatible":
+            provider = OpenAIProvider(
+                base_url=self.base_url,
+                api_key=self.api_key or os.environ.get("OPENAI_COMPATIBLE_API_KEY", "dummy")
+            )
+            settings = OpenAIModelSettings(**self.extra_kwargs)
+            self.llm = OpenAIModel(self.model, provider=provider, settings=settings)
 
-        elif self.llm_host == "google":
+        elif self.provider == "google":
             provider = GoogleProvider(api_key=os.getenv("GOOGLE_API_KEY"))
             settings = GoogleModelSettings(**self.extra_kwargs)
-            self.model = GoogleModel(self.llm_model, 
+            self.llm = GoogleModel(self.model, 
                                      provider=provider,
                                       settings=settings)
 
-        elif self.llm_host == "anthropic":
+        elif self.provider == "anthropic":
             provider = AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY"))
             settings = AnthropicModelSettings(**self.extra_kwargs)
-            self.model = AnthropicModel(self.llm_model, provider=provider, settings=settings)
+            self.llm = AnthropicModel(self.model, provider=provider, settings=settings)
 
-        self.client = marvin.Agent(model=self.model)
+        self.client = marvin.Agent(model=self.llm)
         
     @observe(name='Marvin Framework')
     def run(

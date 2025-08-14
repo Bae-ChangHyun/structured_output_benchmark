@@ -83,9 +83,10 @@ def experiment(
 
 class BaseFramework(ABC):
     prompt: str
-    llm_model: str
-    llm_host: str
+    provider: str
+    model: str
     base_url: str
+    api_key: str
     response_model: Any
     device: str
     api_delay_seconds: float  # API 요청 사이의 지연 시간(초)
@@ -93,9 +94,10 @@ class BaseFramework(ABC):
 
     def __init__(self, *args, **kwargs) -> None:
         self.prompt = kwargs.get("prompt", "")
-        self.llm_model = kwargs.get("llm_model", "gpt-3.5-turbo")
-        self.llm_host = kwargs.get("llm_host", "openai")
-        self.base_url = kwargs.get("base_url", os.environ.get("VLLM_BASEURL", ""))
+        self.provider: str = kwargs.get("provider", "openai")
+        self.model = kwargs.get("model", "gpt-3.5-turbo")
+        self.base_url = kwargs.get('base_url', self.load_base_url())
+        self.api_key = kwargs.get('api_key', self.load_api_key())
         self.device = kwargs.get("device", "cpu")
         self.api_delay_seconds = kwargs.get("api_delay_seconds", 0)  # API 지연 시간 설정
         self.retries = kwargs.get("retries", 3)  # 기본 재시도 횟수 설정
@@ -106,6 +108,22 @@ class BaseFramework(ABC):
         self.extra_kwargs = {k: v for k, v in kwargs.get("extra_kwargs", {}).items()}
 
         logger.info(f"Framework {self.__class__.__name__} 초기화 완료")
+    
+    def load_base_url(self):
+        if self.provider == 'ollama':
+            return os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
+        elif self.provider == 'openai_compatible':
+            return os.getenv("OPENAI_COMPATIBLE_BASE_URL", "https://localhost:8000/v1")
+        else:
+            return ""
+    
+    def load_api_key(self):
+        if self.provider == 'ollama':
+            return os.getenv("OLLAMA_API_KEY", "dummy")
+        elif self.provider == 'openai_compatible':
+            return os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy")
+        else:
+            return ""
 
     @abstractmethod
     def run(self, retries: int, expected_response: Any = None, inputs: dict = {}) -> tuple[list[Any], float, list[float]]: 

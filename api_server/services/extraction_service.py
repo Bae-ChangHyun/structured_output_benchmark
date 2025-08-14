@@ -54,7 +54,7 @@ class ExtractionService:
                 logger.error("host_info가 필요합니다.")
                 raise ValueError("host_info가 필요합니다.")
 
-            if framework not in get_compatible_frameworks(host_info.host):
+            if framework not in get_compatible_frameworks(host_info.provider):
                 logger.error(f"호환되지 않는 프레임워크: {framework}")
                 raise ValueError(f"호환되지 않는 프레임워크: {framework}")
 

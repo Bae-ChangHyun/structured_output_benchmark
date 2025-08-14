@@ -8,94 +8,94 @@ from typing import get_origin, get_args, Union
 from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks, convert_schema
 
 
-# host 선택 메뉴 함수
-def select_llm_host():
-    print("=== Host 선택 ===")
+# provider 선택 메뉴 함수
+def select_llm():
+    print("=== Provider 선택 ===")
     print("1. OpenAI")
     print("2. Anthropic")
-    print("3. VLLM")
+    print("3. OpenAI-Compatible")
     print("4. Ollama")
     print("5. Google")
     choice = input("번호를 입력하세요 (1/2/3/4/5): ").strip()
     if choice == "1":
         return {
-            "host": "openai",
+            "provider": "openai",
             "base_url": "https://api.openai.com/v1",
             "model": os.getenv("OPENAI_MODELS", "gpt-4.1-nano"),
             "api_key": os.getenv("OPENAI_API_KEY"),
         }
     elif choice == "2":
         return {
-            "host": "anthropic",
+            "provider": "anthropic",
             "base_url": "https://api.anthropic.com/v1",
             "model": os.getenv("ANTHROPIC_MODELS", "claude-sonnet-4-20250514"),
             "api_key": os.getenv("ANTHROPIC_API_KEY"),
         }
     elif choice == "3":
         return {
-            "host": "vllm",
-            "base_url": os.getenv("VLLM_BASEURL"),
-            "model": os.getenv("VLLM_MODELS", "openai/gpt-oss-120b"),
-            "api_key": "dummy",
+            "provider": "openai_compatible",
+            "base_url": os.getenv("OPENAI_COMPATIBLE_BASEURL"),
+            "model": os.getenv("OPENAI_COMPATIBLE_MODELS", "openai/gpt-oss-120b"),
+            "api_key": os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
         }
     elif choice == "4":
         return {
-            "host": "ollama",
+            "provider": "ollama",
             "base_url": os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1"),
             "model": os.getenv("OLLAMA_MODELS", "llama3.1:8b"),
-            "api_key": "dummy",
+            "api_key": os.getenv("OLLAMA_API_KEY", "dummy"),
         }
     elif choice == "5":
         return {
-            "host": "google",
+            "provider": "google",
             "base_url": "https://generativelanguage.googleapis.com/v1beta/openai/",
             "model": os.getenv("GOOGLE_MODELS", "gemini-1.5-flash"),
             "api_key": os.getenv("GOOGLE_API_KEY"),
         }
     else:
-        print("잘못된 입력입니다. 기본값(vllm)으로 진행합니다.")
-        raise ValueError("Invalid host selection")
+        print("잘못된 입력입니다. 기본값(openai_compatible)으로 진행합니다.")
+        raise ValueError("Invalid provider selection")
     
-def select_embed_host():
-    print("=== Host 선택 ===")
+def select_embed():
+    print("=== Provider 선택 ===")
     print("1. OpenAI")
-    print("2. vLLM")
+    print("2. OpenAI-Compatible")
     print("3. HuggingFace")
     choice = input("번호를 입력하세요 (1/2/3): ").strip()
     if choice == "1":
         return {
-            "host": "openai",
+            "provider": "openai",
             "base_url": "https://api.openai.com/v1",
             "model": os.getenv("OPENAI_EMBED_MODELS", "text-embedding-3-small"),
             "api_key": os.getenv("OPENAI_API_KEY"),
         }
     elif choice == "2":
         return {
-            "host": "vllm",
-            "base_url": os.getenv("VLLM_EMBED_BASEURL"),
-            "model": os.getenv("VLLM_EMBED_MODELS", "Qwen/Qwen3-Embedding-8B"),
-            "api_key": "dummy",
+            "provider": "openai_compatible",
+            "base_url": os.getenv("OPENAI_COMPATIBLE_EMBED_BASEURL"),
+            "model": os.getenv("OPENAI_COMPATIBLE_EMBED_MODELS", "Qwen/Qwen3-Embedding-8B"),
+            "api_key": os.getenv("OPENAI_COMPATIBLE_EMBED_API_KEY", None),
         }
     elif choice == "3":
         return {
-            "host": "huggingface",
+            "provider": "huggingface",
             "base_url": "",
             "model": os.getenv("HUGGINGFACE_EMBED_MODELS", "bert-base-uncased"),
             "api_key": "",
         }
     else:
-        raise ValueError("Invalid host selection")
+        raise ValueError("Invalid provider selection")
     
-def select_framework(host):
+def select_framework(provider):
     """host에 따라 호환되는 프레임워크를 선택하는 함수"""
 
-    compatible_frameworks = get_compatible_frameworks(host)
+    compatible_frameworks = get_compatible_frameworks(provider)
     
     if not compatible_frameworks:
-        print(f"선택한 host '{host}'에 호환되는 프레임워크가 없습니다.")
+        print(f"선택한 provider '{provider}'에 호환되는 프레임워크가 없습니다.")
         return None
     
-    print(f"\n=== {host}에 호환되는 프레임워크 목록 ===")
+    print(f"\n=== {provider}에 호환되는 프레임워크 목록 ===")
     for i, framework in enumerate(compatible_frameworks, 1):
         print(f"{i}. {framework}")
     
@@ -111,14 +111,14 @@ def select_framework(host):
             print("숫자를 입력해주세요.")
             
 def record_extraction(
-    log_filename, llm_host, llm_model, prompt, framework,
+    log_filename, provider, model, prompt, framework,
     success, latency, langfuse_url,
     note, csv_path="result/extraction_result.csv", result_json_path=None
 ):
     record = {
         "log_filename": log_filename,
-        "host": llm_host,
-        "model": llm_model,
+        "provider": provider,
+        "model": model,
         "prompt": prompt,
         "framework": framework,
         "success": success,
@@ -138,8 +138,8 @@ def record_extraction(
 def record_evaluation(
     pred_json_path,
     gt_json_path,
-    embedding_model,
-    embedding_host,
+    provider,
+    model,
     schema_name,
     criteria_path,
     overall_score,
@@ -150,8 +150,8 @@ def record_evaluation(
     record = {
         "pred_json_path": pred_json_path,
         "gt_json_path": gt_json_path,
-        "embedding_model": embedding_model,
-        "embedding_host": embedding_host,
+        "embedding_provider": provider,
+        "embedding_model": model,
         "schema_name": schema_name,
         "criteria_path": criteria_path,
         "overall_score": overall_score,

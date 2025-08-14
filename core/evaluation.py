@@ -70,8 +70,8 @@ def run_evaluation_core(req: EvaluationRequest) -> EvaluationResult:
     record_evaluation(
         pred_json_path=req.pred_json_path,
         gt_json_path=req.gt_json_path,
-        embedding_host=host_info.host,
-        embedding_model=host_info.model,
+        provider=host_info.provider,
+        model=host_info.model,
         schema_name=req.schema_name,
         criteria_path=criteria_save_path,
         overall_score=eval_result.get('overall_score', 0),

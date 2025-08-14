@@ -6,7 +6,7 @@ import json
 from dotenv import load_dotenv
 from langfuse import get_client
 
-from structured_output_benchmark.utils import select_llm_host, select_embed_host, select_framework
+from structured_output_benchmark.utils import select_llm, select_embed, select_framework
 from structured_output_benchmark.core.types import ExtractionRequest, EvaluationRequest, HostInfo
 from structured_output_benchmark.core.extraction import run_extraction_core
 from structured_output_benchmark.core.evaluation import run_evaluation_core
@@ -63,8 +63,8 @@ def viz(
 
 async def run_extraction(input_text: str, retries: int, schema_name: str, extra_kwargs: Dict[str, Any], langfuse_trace_id: Optional[str] = None):
     """Extraction 실행 함수 (core 유즈케이스 호출)"""
-    host_info = select_llm_host()
-    framework = select_framework(host_info["host"])
+    host_info = select_llm()
+    framework = select_framework(host_info["provider"])
 
     extra_kwargs = dict(extra_kwargs or {})
 
@@ -75,9 +75,10 @@ async def run_extraction(input_text: str, retries: int, schema_name: str, extra_
         extra_kwargs=extra_kwargs,
         framework=framework,
         host_info=HostInfo(**{
-            "host": host_info["host"],
+            "provider": host_info["provider"],
             "base_url": host_info["base_url"],
             "model": host_info["model"],
+            "api_key": host_info["api_key"]
         }),
         langfuse_trace_id=langfuse_trace_id
     )
@@ -86,7 +87,7 @@ async def run_extraction(input_text: str, retries: int, schema_name: str, extra_
 
 async def run_evaluation(pred_json_path: str, gt_json_path: str, schema_name: str, criteria_path: Optional[str]):
     """Evaluation 실행 함수 (core 유즈케이스 호출)"""
-    host_info = select_embed_host()
+    host_info = select_embed()
     
     core_req = EvaluationRequest(
         pred_json_path=pred_json_path,
@@ -94,9 +95,10 @@ async def run_evaluation(pred_json_path: str, gt_json_path: str, schema_name: st
         schema_name=schema_name,
         criteria_path=criteria_path,
         host_info=HostInfo(**{
-            "host": host_info["host"],
+            "provider": host_info["provider"],
             "base_url": host_info["base_url"],
             "model": host_info["model"],
+            "api_key": host_info["api_key"]
         }),
     )
     _ = run_evaluation_core(core_req)

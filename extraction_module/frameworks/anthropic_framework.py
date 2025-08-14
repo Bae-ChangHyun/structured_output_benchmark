@@ -13,7 +13,7 @@ class AnthropicFramework(BaseFramework):
         super().__init__(*args, **kwargs)
         
         self.client = anthropic.Anthropic(
-            api_key=kwargs.get("api_key") or os.getenv("ANTHROPIC_API_KEY"),
+            api_key=os.getenv("ANTHROPIC_API_KEY"),
             timeout=self.timeout,
         )
         
@@ -47,7 +47,7 @@ class AnthropicFramework(BaseFramework):
             
             # Anthropic API 호출
             response = self.client.messages.create(
-                model=self.llm_model,
+                model=self.model,
                 max_tokens=32768,
                 tools=[self.tool_schema],
                 tool_choice={"type": "tool", "name": self.tool_schema["name"]},

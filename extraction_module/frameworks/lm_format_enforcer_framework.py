@@ -16,10 +16,10 @@ class LMFormatEnforcerFramework(BaseFramework):
         self.parser = JsonSchemaParser(self.response_model.schema())
         max_length = kwargs.get("max_length", 4096)
 
-        if self.llm_host == "transformers":
+        if self.provider == "transformers":
             self.hf_pipeline = pipeline(
                 "text-generation",
-                model=self.llm_model,
+                model=self.model,
                 device_map=self.device,
                 max_length=max_length,
             )
@@ -27,7 +27,7 @@ class LMFormatEnforcerFramework(BaseFramework):
                 self.hf_pipeline.tokenizer, self.parser
             )
         else:
-            raise ValueError(f"Model host: {self.llm_host} not supported")
+            raise ValueError(f"Model provider: {self.llm_provider} not supported")
 
     def run(
         self, retries: int, expected_response: Any = None, inputs: dict = {}

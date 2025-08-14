@@ -12,22 +12,28 @@ class LangchainToolFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         
-        if self.llm_host == "openai":
-            self.llm = ChatOpenAI(model=self.llm_model,max_retries=0, **self.extra_kwargs)
+        if self.provider == "openai":
+            self.llm = ChatOpenAI(model=self.model,max_retries=0, **self.extra_kwargs)
 
-        elif self.llm_host == "ollama" or self.llm_host == "vllm":
-            self.llm = ChatOpenAI(model=self.llm_model,
+        elif self.provider == "ollama":
+            self.llm = ChatOpenAI(model=self.model,
                                   base_url=self.base_url,
-                                  api_key="dummy",
+                                  api_key=self.api_key or os.getenv("OLLAMA_API_KEY", "dummy"),
                                   max_retries=0, **self.extra_kwargs)
-            
-        elif self.llm_host == "google":
-            self.llm = ChatGoogleGenerativeAI(model=self.llm_model,
+
+        elif self.provider == "openai_compatible":
+            self.llm = ChatOpenAI(model=self.model,
+                                  base_url=self.base_url,
+                                  api_key=self.api_key or os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
+                                  max_retries=0, **self.extra_kwargs)
+
+        elif self.provider == "google":
+            self.llm = ChatGoogleGenerativeAI(model=self.model,
                                               google_api_key=os.environ.get("GOOGLE_API_KEY"),
                                               max_retries=0,  **self.extra_kwargs)
         
-        elif self.llm_host == "anthropic":
-            self.llm = ChatAnthropic(model=self.llm_model,max_retries=0,  **self.extra_kwargs)
+        elif self.provider == "anthropic":
+            self.llm = ChatAnthropic(model=self.model,max_retries=0,  **self.extra_kwargs)
 
         self.structured_llm = self.llm.with_structured_output(self.response_model)
 

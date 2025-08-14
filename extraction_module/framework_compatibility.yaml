@@ -1,73 +1,73 @@
-# Framework to model host compatibility mapping
-# Each framework entry lists the supported model hosts
-# Available model hosts: openai, google, ollama, transformers
+# Framework to model provider compatibility mapping
+# Each framework entry lists the supported model providers
+# Available model providers: openai, google, ollama, transformers
 # Don't modify below contents
 
 OllamaFramework:
-  hosts:
+  providers:
     - ollama
 
 AnthropicFramework:
-  hosts:
+  providers:
     - anthropic
 
 OpenAIFramework:
-  hosts:
+  providers:
     - openai
     - ollama
     - google
-    - vllm
+    - openai_compatible
 
 GoogleFramework:
-  hosts:
+  providers:
     - google
 
 MarvinFramework:
-  hosts:
+  providers:
     - openai
     - ollama
-    - vllm
+    - openai_compatible
     - google
     - anthropic
 
 LlamaIndexFramework:
-  hosts:
+  providers:
     - openai
     - ollama
     - google
-    - vllm
+    - openai_compatible
 
 InstructorFramework:
-  hosts:
+  providers:
     - openai
     - ollama
     - google
-    - vllm
+    - openai_compatible
     - anthropic
 
 MirascopeFramework:
-  hosts:
+  providers:
     - openai
     - google
     - ollama
-    - vllm
+    - openai_compatible
 
 LMFormatEnforcerFramework:
-  hosts:
+  providers:
     - transformers
   
 LangchainToolFramework:
-  hosts:
+  providers:
     - openai
     - google
     - ollama
-    - vllm
+    - openai_compatible
     - anthropic
 
 LangchainParserFramework:
-  hosts:
+  providers:
     - openai
     - google
     - ollama
-    - vllm
+    - openai_compatible
     - anthropic

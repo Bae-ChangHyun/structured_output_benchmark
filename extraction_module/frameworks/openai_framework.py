@@ -14,16 +14,22 @@ class OpenAIFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        if self.llm_host == "openai":
+        if self.provider == "openai":
             self.client = OpenAI(max_retries=0)
-            
-        elif self.llm_host == "ollama" or self.llm_host == "vllm":
+
+        elif self.provider == "ollama":
             self.client = OpenAI(
                 base_url=self.base_url,
-                api_key="empty",
+                api_key=self.api_key or os.getenv("OLLAMA_API_KEY", "dummy"),
                 max_retries=0,
             )
-        elif self.llm_host == "google":
+        elif self.provider == "openai_compatible":
+            self.client = OpenAI(
+                base_url=self.base_url,
+                api_key=self.api_key or os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
+                max_retries=0,
+            )
+        elif self.provider == "google":
             self.client = OpenAI(
                 base_url=self.base_url,
                 api_key=os.getenv("GOOGLE_API_KEY"),
@@ -60,7 +66,7 @@ class OpenAIFramework(BaseFramework):
         @experiment(retries=retries)
         def run_experiment(inputs):
             response = self.client.chat.completions.parse(
-                model=self.llm_model,
+                model=self.model,
                 messages=[
                     {"role": "user", "content": self.prompt.format(**inputs)}
                 ],

@@ -1,3 +1,4 @@
+import os
 from typing import List, Any
 
 from langchain_core.output_parsers import BaseOutputParser
@@ -16,40 +17,40 @@ class LangchainParserFramework(BaseFramework):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-        if self.llm_host == "openai":
+        if self.provider == "openai":
             self.llm = ChatOpenAI(
-                model=self.llm_model,
+                model=self.model,
                 max_retries=0,
                 **self.extra_kwargs
             )
 
-        elif self.llm_host == "ollama":
+        elif self.provider == "ollama":
             self.llm = ChatOllama(
-                model=self.llm_model,
+                model=self.model,
                 base_url=self.base_url,
-                api_key="dummy",
+                api_key=self.api_key or os.getenv("OLLAMA_API_KEY", "dummy"),
                 **self.extra_kwargs
             )
-            
-        elif self.llm_host == "vllm":
+
+        elif self.provider == "openai_compatible":
             self.llm = ChatOpenAI(
-                model=self.llm_model,
+                model=self.model,
                 base_url=self.base_url,
-                api_key="dummy",
+                api_key=self.api_key or os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
                 max_retries=0,
                 **self.extra_kwargs
             )
             
-        elif self.llm_host == "google":
+        elif self.provider == "google":
             self.llm = ChatGoogleGenerativeAI(
-                model=self.llm_model,
+                model=self.model,
                 max_retries=0,
                 **self.extra_kwargs
             )
 
-        elif self.llm_host == "anthropic":
+        elif self.provider == "anthropic":
             self.llm = ChatAnthropic(
-                model=self.llm_model,
+                model=self.model,
                 max_retries=0,
                 **self.extra_kwargs
             )

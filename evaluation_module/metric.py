@@ -8,6 +8,7 @@ from loguru import logger
 
 from langchain_openai import OpenAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
+from pandas import api
 
 def normalize_field_path(field_path):
         # 'careers[2|1].company_name' -> 'careers.company_name'
@@ -92,29 +93,36 @@ def normalize_prediction_json(pred_json, gt_json):
         logger.error(f"JSON 정규화 중 오류 발생: {e}")
         # 오류 발생 시 원본 반환
         return pred_json
-    
-# 임베딩 백엔드 선택: huggingface, openai, vllm, ollama
+
+# 임베딩 백엔드 선택: huggingface, openai, openai_compatible, ollama
 class EmbeddingBackend:
-    def __init__(self, host: str = 'huggingface', model: Optional[str] = None, api_key: Optional[str] = None, api_base: Optional[str] = None):
-        self.host = host
+    def __init__(self, provider: str = 'huggingface', model: Optional[str] = None, api_key: Optional[str] = None, base_url: Optional[str] = None):
+        self.provider = provider
         self.model = model
         self.api_key = api_key
-        self.api_base = api_base
-        if host == 'openai':
+        self.base_url = base_url
+        
+        if provider == 'openai':
             self.model = OpenAIEmbeddings(
                 model=model or 'text-embedding-ada-002',
             )
-        elif host in ['vllm', 'ollama']:
+        elif provider == 'ollama':
             self.model = OpenAIEmbeddings(
                 model=model,
-                openai_api_key="dummy",
-                openai_api_base=api_base
+                openai_api_key=os.getenv("OLLAMA_API_KEY", "dummy"),
+                openai_api_base=base_url
             )
-        elif host == 'huggingface':
+        elif provider == 'openai_compatible':
+            self.model = OpenAIEmbeddings(
+                model=model,
+                openai_api_key=os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy"),
+                openai_api_base=base_url
+            )
+        elif provider == 'huggingface':
             self.model = HuggingFaceEmbeddings(model_name=model or 'jhgan/ko-sroberta-multitask')
         else:
-            logger.error(f"Unsupported embedding backend: {host}")
-            raise NotImplementedError(f"Backend {host} not supported.")
+            logger.error(f"Unsupported embedding backend: {provider}")
+            raise NotImplementedError(f"Backend {provider} not supported.")
 
 
     def embed(self, texts):
@@ -150,9 +158,9 @@ def eval_json(gt, pred, host_info,
     content_score = 0.0
     field_reports = {}
 
-    embedder = load_embedder(host_info.host, 
+    embedder = load_embedder(host_info.provider, 
                              model=host_info.model, 
-                             api_base=host_info.base_url)
+                             base_url=host_info.base_url)
 
     def _compare(gt_val, pred_val, key, weight=1.0, path="", field_eval_criteria=None):
         field_path = f"{path}.{key}" if path else key
@@ -330,16 +338,20 @@ def eval_json(gt, pred, host_info,
     }
     return report
 
-def load_embedder(host, model=None, api_base=None):
-    if host == 'huggingface':
+def load_embedder(provider, model=None, base_url=None):
+    if provider == 'huggingface':
         return EmbeddingBackend('huggingface', model=model)
-    elif host == 'openai':
+    elif provider == 'openai':
         return EmbeddingBackend('openai', model=model)
-    elif host == 'vllm':
-        if not api_base: api_base = os.getenv("VLLM_BASEURL", "http://localhost:8000/v1")
-        return EmbeddingBackend('vllm', model=model, api_base=api_base)
-    elif host == 'ollama':
-        if not api_base: api_base = os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1")
-        return EmbeddingBackend('ollama', model=model, api_base=api_base)
+    elif provider == 'openai_compatible':
+        if not base_url: base_url = os.getenv("OPENAI_COMPATIBLE_BASEURL", "http://localhost:8000/v1")
+        return EmbeddingBackend('openai_compatible',
+                                model=model, 
+                                base_url=base_url,
+                                api_key=os.getenv("OPENAI_COMPATIBLE_API_KEY", "dummy")
+                                )
+    elif provider == 'ollama':
+        if not base_url: base_url = os.getenv("OLLAMA_BASEURL", "http://localhost:11434/v1")
+        return EmbeddingBackend('ollama', model=model, base_url=base_url, api_key=os.getenv("OLLAMA_API_KEY", "dummy"))
     else:
         return
