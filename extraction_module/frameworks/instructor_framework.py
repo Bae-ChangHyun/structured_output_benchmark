@@ -66,7 +66,7 @@ class InstructorFramework(BaseFramework):
             response = self.client.chat.completions.create(
                 response_model=self.response_model,
                 messages=[{"role": "user", "content": self.prompt.format(**inputs)}],
-                temperature=self.temperature,
+                **self.extra_kwargs
             )
             return response
 

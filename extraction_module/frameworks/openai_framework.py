@@ -3,7 +3,8 @@ from typing import Any
 from pydantic import create_model
 from typing import get_args, get_origin
 
-from openai import OpenAI
+#from openai import OpenAI
+from langfuse.openai import OpenAI
 from loguru import logger
 from langfuse import observe
 from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
@@ -14,22 +15,19 @@ class OpenAIFramework(BaseFramework):
         super().__init__(*args, **kwargs)
 
         if self.llm_host == "openai":
-            self.client = OpenAI(max_retries=0,
-                                 timeout=self.timeout)
+            self.client = OpenAI(max_retries=0)
             
         elif self.llm_host == "ollama" or self.llm_host == "vllm":
             self.client = OpenAI(
                 base_url=self.base_url,
                 api_key="empty",
                 max_retries=0,
-                timeout=self.timeout,
             )
         elif self.llm_host == "google":
             self.client = OpenAI(
                 base_url=self.base_url,
                 api_key=os.getenv("GOOGLE_API_KEY"),
                 max_retries=0,
-                timeout=self.timeout,
             )
             self.response_model = self.remove_optional()
 
@@ -66,8 +64,8 @@ class OpenAIFramework(BaseFramework):
                 messages=[
                     {"role": "user", "content": self.prompt.format(**inputs)}
                 ],
-                temperature=self.temperature,
                 response_format=self.response_model,
+                **self.extra_kwargs
             )
             return response.choices[0].message.parsed
 

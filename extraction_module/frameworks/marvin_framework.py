@@ -6,9 +6,8 @@ from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.models.google import GoogleModel, GoogleModelSettings
 from pydantic_ai.providers.google import GoogleProvider
-from pydantic_ai.models.anthropic import AnthropicModel
+from pydantic_ai.models.anthropic import AnthropicModel, AnthropicModelSettings
 from pydantic_ai.providers.anthropic import AnthropicProvider
-
 
 from langfuse import observe
 from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
@@ -23,28 +22,28 @@ class MarvinFramework(BaseFramework):
         super().__init__(*args, **kwargs)
 
         if self.llm_host == "openai":
-            self.model = OpenAIModel(self.llm_model)    
-            
+            settings = OpenAIModelSettings(**self.extra_kwargs)
+            self.model = OpenAIModel(self.llm_model, settings=settings)
+
         elif self.llm_host == "ollama" or self.llm_host == "vllm":
             provider = OpenAIProvider(
                 base_url=self.base_url,
                 api_key='dummmy'
             )
-            self.model = OpenAIModel(self.llm_model, provider=provider)
-            
+            settings = OpenAIModelSettings(**self.extra_kwargs)
+            self.model = OpenAIModel(self.llm_model, provider=provider, settings=settings)
+
         elif self.llm_host == "google":
             provider = GoogleProvider(api_key=os.getenv("GOOGLE_API_KEY"))
-            settings = GoogleModelSettings(
-                temperature=self.temperature,
-                timeout=self.timeout
-            )
+            settings = GoogleModelSettings(**self.extra_kwargs)
             self.model = GoogleModel(self.llm_model, 
                                      provider=provider,
                                       settings=settings)
 
         elif self.llm_host == "anthropic":
             provider = AnthropicProvider(api_key=os.getenv("ANTHROPIC_API_KEY"))
-            self.model = AnthropicModel(self.llm_model)
+            settings = AnthropicModelSettings(**self.extra_kwargs)
+            self.model = AnthropicModel(self.llm_model, provider=provider, settings=settings)
 
         self.client = marvin.Agent(model=self.model)
         

@@ -48,7 +48,6 @@ class AnthropicFramework(BaseFramework):
             # Anthropic API 호출
             response = self.client.messages.create(
                 model=self.llm_model,
-                temperature=self.temperature,
                 max_tokens=32768,
                 tools=[self.tool_schema],
                 tool_choice={"type": "tool", "name": self.tool_schema["name"]},
@@ -60,6 +59,7 @@ class AnthropicFramework(BaseFramework):
                         ],
                     }
                 ],
+                **self.extra_kwargs
             )
             
             # 응답에서 tool_use 결과 추출

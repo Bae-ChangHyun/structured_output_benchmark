@@ -89,8 +89,7 @@ class BaseFramework(ABC):
     response_model: Any
     device: str
     api_delay_seconds: float  # API 요청 사이의 지연 시간(초)
-    timeout: float
-    temperature: Optional[float] = None 
+    extra_kwargs: dict
 
     def __init__(self, *args, **kwargs) -> None:
         self.prompt = kwargs.get("prompt", "")
@@ -104,6 +103,7 @@ class BaseFramework(ABC):
         self.temperature = kwargs.get("temperature", 1.0)
         self.response_model = kwargs.get("response_model", None)
         self.langfuse_trace_id = kwargs.get("langfuse_trace_id", None)
+        self.extra_kwargs = {k: v for k, v in kwargs.get("extra_kwargs", {}).items()}
 
         logger.info(f"Framework {self.__class__.__name__} 초기화 완료")
 

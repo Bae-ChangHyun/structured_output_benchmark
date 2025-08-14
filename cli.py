@@ -1,7 +1,8 @@
 import os
 import asyncio
 import typer
-from typing import Optional
+from typing import Optional, Dict, Any
+import json
 from dotenv import load_dotenv
 from langfuse import get_client
 
@@ -22,12 +23,16 @@ def extract(
     input_text: str = typer.Option("Hello, how are you?", "--input", help="프롬프트 텍스트 또는 파일 경로"),
     retries: int = typer.Option(1, "--retries", help="프레임워크 재시도 횟수"),
     schema_name: str = typer.Option("schema_han", "--schema", help="프레임워크 스키마 이름"),
-    temperature: float = typer.Option(0.1, "--temperature", help="프롬프트 온도"),
-    timeout: int = typer.Option(900, "--timeout", help="LLM request timeout 시간"),
-    langfuse_trace_id: Optional[str] = typer.Option(None, "--trace-id", help="Langfuse trace ID")
+    extra_kwargs: str = typer.Option("{}", "--kwargs", help='프레임워크/LLM 파라미터 JSON 문자열. 예: "{\"temperature\":0.1,\"timeout\":900}"'),
+    langfuse_trace_id: Optional[str] = typer.Option(None, "--trace-id", help="Langfuse trace ID"),
 ):
     """현재 프로세스 실행 (extraction)"""
-    asyncio.run(run_extraction(input_text, retries, schema_name, temperature, timeout, langfuse_trace_id))
+    try:
+        extra_kwargs: Dict[str, Any] = json.loads(extra_kwargs) if extra_kwargs else {}
+    except json.JSONDecodeError as e:
+        raise typer.BadParameter(f"--kwargs JSON 파싱 실패: {e}")
+
+    asyncio.run(run_extraction(input_text, retries, schema_name, extra_kwargs, langfuse_trace_id))
 
 
 @app.command() 
@@ -56,17 +61,18 @@ def viz(
         os.system(f"streamlit run evaluation_module/visualizer.py -- --eval-result {eval_result_path}")
 
 
-async def run_extraction(input_text: str, retries: int, schema_name: str, temperature: float, timeout: int, langfuse_trace_id: Optional[str] = None):
+async def run_extraction(input_text: str, retries: int, schema_name: str, extra_kwargs: Dict[str, Any], langfuse_trace_id: Optional[str] = None):
     """Extraction 실행 함수 (core 유즈케이스 호출)"""
     host_info = select_llm_host()
     framework = select_framework(host_info["host"])
+
+    extra_kwargs = dict(extra_kwargs or {})
 
     core_req = ExtractionRequest(
         input_text=input_text,
         retries=retries,
         schema_name=schema_name,
-        temperature=temperature,
-        timeout=timeout,
+        extra_kwargs=extra_kwargs,
         framework=framework,
         host_info=HostInfo(**{
             "host": host_info["host"],
