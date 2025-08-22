@@ -94,7 +94,7 @@ def extract_with_framework(
         
         # 결과 처리
         #if predictions and len(predictions) > 0 and not predictions[0].startswith('ERROR'):
-        if predictions and len(predictions) > 0 and isinstance(predictions[0], str) and predictions[0].startswith('ERROR'):
+        if predictions and len(predictions) > 0 and isinstance(predictions[0], dict):
             result = predictions[0]  # 첫 번째 성공한 결과 사용
             
             # Pydantic 모델인 경우 dict로 변환
@@ -106,7 +106,10 @@ def extract_with_framework(
             logger.debug(f"Framework {framework} 실행 성공: 성공률 {percent_successful:.2%}")
             return result, True, latencies
         else:
-            logger.error(f"Framework {framework} 실행 실패: 성공한 응답 없음")
+            if predictions[0].startswith('ERROR'):
+                logger.error(f"Framework {framework} 실행 실패: {predictions[0]}")
+            else:
+                logger.error(f"Framework {framework} 실행 실패: 성공한 응답 없음")
             return {"error": f"성공한 응답이 없습니다: {predictions[0]}"}, False, 0
             
     except Exception as e:
