@@ -89,7 +89,7 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
         model=host_info.model,
         prompt=f"{req.prompt}\n{input_text}",
         framework=req.framework,
-        success=bool(result),
+        success=success,
         latency=latency,
         langfuse_url=langfuse_url,
         note="",
@@ -98,7 +98,7 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
     )
 
     return ExtractionResult(
-        success=bool(result),
+        success=success,
         result=result,
         success_rate=success,
         latency=latency,

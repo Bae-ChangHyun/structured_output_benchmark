@@ -65,6 +65,7 @@ def experiment(
                     logger.error(traceback.format_exc())
                     if api_delay_seconds > 0:
                         time.sleep(api_delay_seconds)
+                    responses=[f"ERROR:{str(e)}"]
 
             num_successful = len(responses)
             percent_successful = num_successful / actual_runs  # 실제 시도 횟수로 계산
