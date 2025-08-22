@@ -1,1 +1,1 @@
-"""Routers for structured_output_benchmark.api_server"""
+"""Routers for structured_output_kit.api_server"""

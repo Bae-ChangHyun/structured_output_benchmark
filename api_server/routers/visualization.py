@@ -2,11 +2,11 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 import os
 
-from structured_output_benchmark.core.types import (
+from structured_output_kit.core.types import (
     VisualizationRequest,
     VisualizationResponse,
 )
-from structured_output_benchmark.api_server.services.visualization_service import (
+from structured_output_kit.api_server.services.visualization_service import (
     VisualizationService,
 )
 

@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 # 프로젝트 루트를 파이썬 패스에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from structured_output_benchmark.api_server.routers import extraction, evaluation, visualization, utils
-from structured_output_benchmark.api_server.config import settings
+from structured_output_kit.api_server.routers import extraction, evaluation, visualization, utils
+from structured_output_kit.api_server.config import settings
 
 load_dotenv()
 

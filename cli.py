@@ -6,11 +6,12 @@ import json
 from dotenv import load_dotenv
 from langfuse import get_client
 
-from structured_output_benchmark.utils import select_llm, select_embed, select_framework
-from structured_output_benchmark.core.types import ExtractionRequest, EvaluationRequest, HostInfo
-from structured_output_benchmark.core.extraction import run_extraction_core, _load_prompt
-from structured_output_benchmark.core.evaluation import run_evaluation_core
-from structured_output_benchmark.core.visualization import run_visualization_core
+from structured_output_kit.utils import select_llm, select_embed, select_framework
+from structured_output_kit.core.types import ExtractionRequest, EvaluationRequest, HostInfo
+from structured_output_kit.core.extraction import run_extraction_core
+from structured_output_kit.core.extraction_module.utils import load_prompt
+from structured_output_kit.core.evaluation import run_evaluation_core
+from structured_output_kit.core.visualization import run_visualization_core
 
 
 load_dotenv()
@@ -70,7 +71,7 @@ async def run_extraction(prompt: Optional[str], input_text: str, retries: int, s
     extra_kwargs = dict(extra_kwargs or {})
 
     core_req = ExtractionRequest(
-        prompt=prompt if prompt else _load_prompt(),
+        prompt=prompt if prompt else load_prompt(),
         input_text=input_text,
         retries=retries,
         schema_name=schema_name,

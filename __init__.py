@@ -1,5 +1,5 @@
 """
-structured_output_benchmark 패키지 루트.
+structured_output_kit 패키지 루트.
 
 이 디렉토리(리포 루트) 자체가 패키지 최상위입니다.
 """

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 
-from structured_output_benchmark.core.types import EvaluationRequest, EvaluationResponse
-from structured_output_benchmark.api_server.services.evaluation_service import EvaluationService
+from structured_output_kit.core.types import EvaluationRequest, EvaluationResponse
+from structured_output_kit.api_server.services.evaluation_service import EvaluationService
 
 router = APIRouter()
 evaluation_service = EvaluationService()

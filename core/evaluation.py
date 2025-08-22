@@ -4,8 +4,8 @@ import json
 import os
 from loguru import logger
 
-from structured_output_benchmark.evaluation_module.metric import normalize_prediction_json, eval_json
-from structured_output_benchmark.utils import load_field_eval_criteria, record_evaluation, convert_np
+from structured_output_kit.evaluation_module.metric import normalize_prediction_json, eval_json
+from structured_output_kit.utils import load_field_eval_criteria, record_evaluation, convert_np
 from .types import EvaluationRequest, EvaluationResult
 from .logging import setup_logger
 

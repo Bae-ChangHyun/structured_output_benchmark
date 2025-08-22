@@ -10,7 +10,7 @@ from pydantic_ai.models.anthropic import AnthropicModel, AnthropicModelSettings
 from pydantic_ai.providers.anthropic import AnthropicProvider
 
 from langfuse import observe
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class MarvinFramework(BaseFramework):

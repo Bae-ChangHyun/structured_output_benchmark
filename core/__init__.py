@@ -1,4 +1,4 @@
-"""Core subpackage for structured_output_benchmark."""
+"""Core subpackage for structured_output_kit."""
 
 from .visualization import run_visualization_core  # re-export for convenience
 

@@ -1,4 +1,4 @@
-"""Evaluation module subpackage for structured_output_benchmark."""
+"""Evaluation module subpackage for structured_output_kit."""
 
 from .visualizer import EvaluationVisualizer, render_evaluation_report
 

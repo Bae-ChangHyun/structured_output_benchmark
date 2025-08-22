@@ -1,2 +1,2 @@
-"""FastAPI server package for structured_output_benchmark"""
+"""FastAPI server package for structured_output_kit"""
 

@@ -7,7 +7,7 @@ from typing import get_args, get_origin
 from langfuse.openai import OpenAI
 from loguru import logger
 from langfuse import observe
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class OpenAIFramework(BaseFramework):

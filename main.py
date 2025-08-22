@@ -47,7 +47,7 @@ def main():
         cli_args = sys.argv[cli_index + 1:]
         
         # CLI 모듈 실행
-        from structured_output_benchmark.cli import app as cli_app
+        from structured_output_kit.cli import app as cli_app
         sys.argv = ["cli.py"] + cli_args
         cli_app()
     else:
@@ -60,7 +60,7 @@ def main():
         print("🛑 서버 종료: Ctrl+C")
         
         uvicorn.run(
-            "structured_output_benchmark.api_server.main:app",
+            "structured_output_kit.api_server.main:app",
             host=args.host,
             port=args.port,
             reload=args.reload

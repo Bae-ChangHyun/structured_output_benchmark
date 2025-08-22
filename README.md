@@ -265,7 +265,7 @@ python main.py --cli viz --eval-result result/evaluation/<YYYYMMDD_HHMM>/eval_re
 
 프로그램에서 직접 호출(코어 함수)
 ```python
-from structured_output_benchmark.core.visualization import run_visualization_core
+from structured_output_kit.core.visualization import run_visualization_core
 
 result = run_visualization_core(
 	eval_result_path="result/evaluation/20250812_0854/eval_result.json",

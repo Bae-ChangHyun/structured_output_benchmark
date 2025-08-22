@@ -8,7 +8,7 @@ from llama_index.core.program import LLMTextCompletionProgram
 from llama_index.core.output_parsers import PydanticOutputParser
 
 from langfuse import observe
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class LlamaIndexFramework(BaseFramework):

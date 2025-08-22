@@ -4,7 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
 
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 from typing import Any
 from langfuse import observe
 

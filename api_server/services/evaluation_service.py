@@ -4,8 +4,8 @@ from datetime import datetime
 from typing import Optional
 from loguru import logger
 
-from structured_output_benchmark.core.types import EvaluationRequest, HostInfo, EvaluationResult
-from structured_output_benchmark.core.evaluation import run_evaluation_core
+from structured_output_kit.core.types import EvaluationRequest, HostInfo, EvaluationResult
+from structured_output_kit.core.evaluation import run_evaluation_core
 from dotenv import load_dotenv
 
 # 환경변수 로드

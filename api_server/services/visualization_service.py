@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 
 from loguru import logger
 
-from structured_output_benchmark.core.visualization import run_visualization_core
+from structured_output_kit.core.visualization import run_visualization_core
 
 
 class VisualizationService:

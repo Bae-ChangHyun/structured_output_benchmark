@@ -1,1 +1,1 @@
-"""Services for structured_output_benchmark.api_server"""
+"""Services for structured_output_kit.api_server"""

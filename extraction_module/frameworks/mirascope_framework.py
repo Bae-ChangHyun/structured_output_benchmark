@@ -4,7 +4,7 @@ from mirascope import llm
 from mirascope.core import openai
 from openai import OpenAI
 from langfuse import observe
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class MirascopeFramework(BaseFramework):

@@ -4,9 +4,9 @@ from typing import Optional
 from loguru import logger
 from langfuse import get_client
 
-from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
-from structured_output_benchmark.core.types import ExtractionRequest, HostInfo, ExtractionResult
-from structured_output_benchmark.core.extraction import run_extraction_core, _load_prompt
+from structured_output_kit.extraction_module.utils import get_compatible_frameworks, load_prompt
+from structured_output_kit.core.types import ExtractionRequest, HostInfo, ExtractionResult
+from structured_output_kit.core.extraction import run_extraction_core
 
 from dotenv import load_dotenv
 
@@ -63,7 +63,7 @@ class ExtractionService:
 
             core_result = run_extraction_core(
                 ExtractionRequest(
-                    prompt=prompt if prompt else _load_prompt(),
+                    prompt=prompt if prompt else load_prompt(),
                     input_text=input_text,
                     retries=retries,
                     schema_name=schema_name,

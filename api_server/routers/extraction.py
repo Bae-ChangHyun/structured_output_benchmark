@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from structured_output_benchmark.core.types import ExtractionRequest, ExtractionResponse
-from structured_output_benchmark.api_server.services.extraction_service import ExtractionService
+from structured_output_kit.core.types import ExtractionRequest, ExtractionResponse
+from structured_output_kit.api_server.services.extraction_service import ExtractionService
 
 router = APIRouter()
 extraction_service = ExtractionService()

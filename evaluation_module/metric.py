@@ -1,14 +1,12 @@
-from math import e
 import os
 import re
 import numpy as np
-import pandas as pd
-from typing import Any, Dict, Optional, Union
+from typing import Dict, Optional
 from loguru import logger
 
 from langchain_openai import OpenAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
-from pandas import api
+from scipy.optimize import linear_sum_assignment
 
 def normalize_field_path(field_path):
         # 'careers[2|1].company_name' -> 'careers.company_name'
@@ -199,7 +197,6 @@ def eval_json(gt, pred, host_info,
                     sim_matrix[i, j] = cosine_similarity(gt_embs[i], pred_embs[j])
             # Hungarian Algorithm (최대 유사도 매칭)
             try:
-                from scipy.optimize import linear_sum_assignment
                 # linear_sum_assignment는 최소 비용 매칭이므로, -sim_matrix로 변환
                 row_ind, col_ind = linear_sum_assignment(-sim_matrix)
                 match_pairs = [(i, j, sim_matrix[i, j]) for i, j in zip(row_ind, col_ind)]

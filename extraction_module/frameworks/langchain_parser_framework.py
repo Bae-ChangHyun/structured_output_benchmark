@@ -10,7 +10,7 @@ from langchain_ollama import ChatOllama
 from langchain_anthropic import ChatAnthropic
 from langfuse import observe
 from marvin.agents import team
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class LangchainParserFramework(BaseFramework):

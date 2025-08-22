@@ -7,7 +7,7 @@ from lmformatenforcer.integrations.transformers import (
 )
 from transformers import pipeline
 
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class LMFormatEnforcerFramework(BaseFramework):

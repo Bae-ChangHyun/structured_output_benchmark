@@ -5,7 +5,7 @@ import pandas as pd
 from typing import Any, Dict, Optional
 from langfuse import observe, get_client
 from typing import get_origin, get_args, Union
-from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks, convert_schema
+from structured_output_kit.extraction_module.utils import get_compatible_frameworks, convert_schema
 
 
 # provider 선택 메뉴 함수

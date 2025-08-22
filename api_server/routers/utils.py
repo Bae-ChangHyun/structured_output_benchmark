@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import Dict, List, Any
 import os
 
-from structured_output_benchmark.extraction_module.utils import get_compatible_frameworks
+from structured_output_kit.extraction_module.utils import get_compatible_frameworks
 
 router = APIRouter()
 

@@ -1,26 +1,13 @@
 import os
 import time
-from abc import ABC, abstractmethod
-from dataclasses import asdict, is_dataclass
-from enum import Enum
-from typing import Any, Callable, Optional
-
-from loguru import logger
-
-from pydantic import BaseModel
-from tqdm import tqdm
 import traceback
+from tqdm import tqdm
+from loguru import logger
+from typing import Any, Callable
+from abc import ABC, abstractmethod
 
-def response_parsing(response: Any) -> Any:
-    if isinstance(response, list):
-        response = {
-            member.value if isinstance(member, Enum) else member for member in response
-        }
-    elif is_dataclass(response):
-        response = asdict(response)
-    elif isinstance(response, BaseModel):
-        response = response.model_dump(exclude_none=True)
-    return response
+from structured_output_kit.extraction_module.utils import response_parsing
+
 
 def experiment(
     retries: int = 1,

@@ -6,7 +6,7 @@ import instructor
 from openai import OpenAI
 from langfuse import observe
 
-from structured_output_benchmark.extraction_module.base import BaseFramework, experiment
+from structured_output_kit.extraction_module.base import BaseFramework, experiment
 
 
 class InstructorFramework(BaseFramework):
