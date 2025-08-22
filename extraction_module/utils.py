@@ -93,7 +93,8 @@ def extract_with_framework(
             return {"error": f"프레임워크 실행 실패: {str(e)}"}, False, 0
         
         # 결과 처리
-        if predictions and len(predictions) > 0 and not predictions[0].startswith('ERROR'):
+        #if predictions and len(predictions) > 0 and not predictions[0].startswith('ERROR'):
+        if predictions and len(predictions) > 0 and isinstance(predictions[0], str) and predictions[0].startswith('ERROR'):
             result = predictions[0]  # 첫 번째 성공한 결과 사용
             
             # Pydantic 모델인 경우 dict로 변환
