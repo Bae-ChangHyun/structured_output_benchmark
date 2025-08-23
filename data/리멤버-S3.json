@@ -1,0 +1,163 @@
+{
+    "personal_info": {
+        "name": "황재연",
+        "gender": null,
+        "nationality_type": null,
+        "nationality": null,
+        "birth": null,
+        "contacts": [],
+        "email": null,
+        "address": null,
+        "available_date": null,
+        "sns_links": ["www.x1.co.kr", "invest.zum.com"],
+        "desired_job": null,
+        "desired_location": null,
+        "desired_position": null,
+        "desired_salary": null
+    },
+    "summary_info": {
+        "brief_introduction": "온라인 금융 플랫폼 및 MTS 기획/운영/관리",
+        "core_competencies": [
+            "서비스기획",
+            "서비스운영",
+            "앱 기획",
+            "웹기획"
+        ]
+    },
+    "educations": [
+        {
+            "school_type": "대학교",
+            "school_name": "한양대학교(에리카)",
+            "admission_date": "2009-01",
+            "graduation_date": "2015-01",
+            "gpa": null,
+            "major": "경제학",
+            "sub_major": null,
+            "degree": "학사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "고려대학교",
+            "admission_date": "2019-02",
+            "graduation_date": "2021-02",
+            "gpa": null,
+            "major": "Finance MBA",
+            "sub_major": null,
+            "degree": "석사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        }
+    ],
+    "careers": [
+        {
+            "company_name": "이머니",
+            "start_date": "2015-08",
+            "end_date": "2020-05",
+            "is_currently_employed": false,
+            "responsibilities": "#### 디지털 마케팅/기획\n\n##### 영업/ 마케팅\n- 온라인 금융콘텐츠 플랫폼 운영 및 금융 콘텐츠 판매 진행(월 평균 4억 이상 매출 달성)\n- 영업 전략 수립 기획 및 30여명의 전문가 커뮤니케이션 및 전략 방향 수립\n- 디지털 마케팅(유튜브, GDN, 언론사 기사식 광고) 등을 통한 신규 사이트 100명 이상 유지\n- 린지와 소공 등 유튜브 인플루언서와 협업 마케팅 진행\n- 구글GA를 통한 PV, UV, 모바일 접속 등의 고객 현황 파악 및 액션 플랜 도출\n- 월별 1회 이상 프로모션 기획(신규 가입, 럭키박스, 연말 이벤트 등 기획)\n- 유튜브/ 구글 SA, DA광고 집행(19~20년유튜브 키워드 광고 중심)\n- 키움증권 투자콘텐츠팀과 마케팅 협업(채널K 콘텐츠 활용 및 영웅문 종목 상담실 운영)\n\n##### 제휴/ 기획\n- DGB하이선물, 브이아이금융투자와 제휴한 계좌개설 이벤트 및 업셀링 모델 사업 진행\n- SBS CNBC 언론사와 협업을 통한 방송 콘텐츠 구축(카카오채널 5,000명 이상의 DB 확보)\n- 파생전문콘텐츠 사이트와 제휴를 통한 파생 콘텐트 확대(슈어넷, 팍스넷)\n- BJ들에게 선물하기 기능(별사탕) 기능 도입\n- KG올앳(PG사)와 연계한 간편결제 서비스 구축\n- 코스콤 HINT 서비스(모의투자서비스) 도입을 통한 전문가 실전 투자대회 진행\n- 차세대 증권방송 플랫폼 기획(Flash player 지원 종료에 따른, 웹 기반 방송 솔루션)\n\n#### 디지털 컨텐츠 및 지표 관리\n\n##### 컨텐츠 운영 및 영업지표 전략\n- 2,000여명의 유료회원 금융 콘텐츠 플랫폼 운영\n- 30여명의 증권 BJ가 진행하는 증권정보 영상 컨텐츠 운영 및 판매\n- 주식, 아카데미, 파생, 서브스크립션 모델 등 다양한 형태의 금융 콘텐츠 운영\n- 일일/주간/월간 회원 및 내,외부 지표 보고서 작성\n\n#### 디지털 채널 관리\n\n##### 채널 관리\n- 카카오TV, 카카오채널, 유튜브 서비스와 연동 운영(유튜브 구독자: 5,000명 달성)",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "금융콘텐츠, 디지털마케팅",
+            "department": "X1사업부",
+            "position": "대리",
+            "rank": "대리",
+            "employment_type": null
+        },
+        {
+            "company_name": "신한DS",
+            "start_date": "2020-05",
+            "end_date": "2021-08",
+            "is_currently_employed": false,
+            "responsibilities": "##### 그룹사 OpenAPI 포털 고도화 프로젝트 (프로젝트 기간: 20.08~21.05)\n- **역할**: 개발, 기획, 디자인, 퍼블리싱 포함 총 20명 규모의 100M/M 프로젝트 PMO진행\n- **수행 업무**: 그룹공통 오픈 API 플랫폼 고도화 서비스 프로젝트 운영 및 기획\n  1. 은행,카드,금투,생명 등 각 그룹사 요구사항 정의서 작성 및 커뮤니케이션 진행\n  2. 그룹OpenAPI 포털 운영자, 이용자, 관리자 화면 기획\n  3. 메뉴구조도, 화면 목록/설계서 WBS, 이행계획서, 벤치마킹보고서등 프로젝트 산출물 작성 및 관리\n\n#### 디지털 전략/사업 기획\n\n##### 사업 관리\n- 서비스팀 및 진행 팀간의 협력을 통한 디지털 사업 관리 및 비용 이슈 관리(평균 10개의 사업 비용, M/M관리)\n- M/M 및 비용 처리 문제에 대한 부서간의 협력과 솔루션 도출\n- 당사 규격에 맞는 비용, 법률 규정하에 근거한 사업관리 진행\n- 신규 금융 서비스 SI 프로젝트 관련 진행\n\n##### 디지털 전략 제안서 작성\n- 기업금융 모바일 CRM 고도화 프로젝트 제안서 (프로젝트 규모 10억)\n- 그룹사 오픈API플랫폼 고도화 프로젝트 제안서 작성(프로젝트 규모 10억)",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "디지털서비스, 프로젝트관리",
+            "department": "디지털서비스CELL",
+            "position": "대리",
+            "rank": "대리",
+            "employment_type": null
+        },
+        {
+            "company_name": "줌인터넷",
+            "start_date": "2021-08",
+            "end_date": "2022-09",
+            "is_currently_employed": false,
+            "responsibilities": "#### 주요 업무: 통합 포털 서비스 내 금융 서브 도메인 신규 오픈 및 고도화\n\n##### 금융 파트 기획 총괄\n- 금융 파트 기획 총괄, 벤치마킹, 데이터 수급, 아이데이션, API 정책 기획까지 담당(21.12)\n\n##### 증시MAP을 KEY CONTENTS로 한 서비스 오픈\n- 21.12월 줌투자 도메인 오픈(일평균 PV: 8만/ 일평균 UV: 5만)\n  - 모바일 서비스 오픈(22.03)\n- 전체 투자 트래픽 대비 5%~10% 증대\n  - 데이터 정제 작업 및 차트 라이브러리 적용\n- 나이스평가정보 데이터 계약 및 정제 작업 관련 스펙 정의\n- 레피니티브 해외 재무정보 관련 계약 및 데이터 스펙 정의\n- CHARTIQ 라이브러리 도입 관련 매매전략/도구/차트 설정\n\n##### 트래픽 개선 과제를 위한 줌투자 뉴스 페이지 고도화 작업 진행\n- 기존 뉴스 위주의 포털 사이트에서 크게 벗어난 도메인으로 사용자의 거부감이 컸음 -> 기존 사용자의 투자 서비스에 대한 온보딩을 위해 줌투자 뉴스 페이지 고도화 진행\n- 뉴스를 통한 급등주, 리포트, 주요뉴스 등 투자 사용자 관점 뉴스 로직 설계\n- 뉴스 내 연관 종목 매핑 및 뉴스 내 키워드를 통한 호악재 판단 서비스 제공\n- 오픈 이후, 6개월 내 트래픽 50% 이상 증대\n- 뉴스 일평균 pv: 오픈(4,5만) -> 22.7월(7,8만)/ 뉴스 일평균 uv (2,3만) -> 22.7월(4,5만)\n- 통합 일평균pv: 22.07월(14,15만, max 20만)/ 통합 일평균uv: 22.07월(8,9만)\n\n##### 제품 운영의 문제점\n- 급등주, 리포트 PICK 등 수기 운용 작업 요소 大\n- 제목/ 본문을 분석하여 급등주, 리포트 PICK 자동화 뉴스 로직 구현(운영 요소 일 2시간 이상 감소)\n\n##### 트래픽 제휴 및 위클리 미팅을 통한 사용자 경험 개선\n- MAP을 통한 인플루언서, 언론사(경제TV사) 등과 트래픽 제휴 진행 -> 인플루언서, 방송사를 통한 자연스러운 서비스 유입 진행\n- 증시 MAP에 집중된 사용성(클릭율 전체 60% 이상 차지)을 개선하기 위해, 증시MAP 독립 페이지 구축중\n\n##### 그 외 주요 고도화 프로젝트\n- Dart API를 활용한 공시데이터 제공(무상증자, 유상증자 등의 공시데이터를 사용자 친화적으로 제공)\n- 버티컬 형태의 신규 투자 콘텐츠 앱 서비스 기획(국내/해외/비상장/가상자산 등 통합 연계 서비스)\n\n#### 주요 업무: 신규 비상장 앱서비스(GETSTOCK) 기획 및 구축\n\n##### 비상장 거래 정책/ 인증 및 가입 프로세스 설계/ 제휴 증권사 전문 정책 수립\n- 거래 정책: 협의 > 수락 > 거래 요청 > 거래 완료까지의 비상장 거래 프로세스 수립\n- 안심 계좌 인증, 비상장 매매 현황 등에 대한 정책 수립\n\n##### CMS 구축\n- 거래, 커뮤니티를 효과적으로 모니터링 할 수 있는 CMS 페이지 구축\n\n##### 모바일 화면 기획\n- 홈/ 종목 상세/ 뉴스/ 내 정보/ 거래 등의 주요 기능을 담은 모바일 앱 화면 설계 진행\n\n##### 서비스 진행 과정\n- **문제 정의**: 기존 포털 서비스에서 벗어나 테크핀 기업으로서 도약을 위한 새로운 형태의 비즈니스 필요\n- **가설 수립**: 비상장 거래 및 IPO 시장의 확대에 따른 제휴 증권사를 통한 비상장 거래 및 콘텐츠 플랫폼에 대한 방향성 확립\n- **액션 및 검증**: 공공API/ 나이스평가정보등을 활용한 다양한 비상장 기업 정보 제공 및 증권사의 제휴한 거래 프로세스 구축\n- **결과**: 거래 관련 금융위 이슈제기로 현재 서비스 중단\n- **러닝 포인트**: 서비스기획자가 단순히 화면 기획, 데이터 정책, 플랫폼에 대한 프로세스를 정의 하는 것 외 부가적으로 법률적 리스크, 대관업무 관련 전략적 업무의 필요성을 배울 수 있었습니다.\n- **러닝 포인트**: 송금, 인증, 계좌 등 증권서비스 업무에 대한 이해도와 모바일 앱 서비스의 A TO Z경험.",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "금융서비스기획",
+            "department": "금융서비스기획",
+            "position": "파트장",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "koscom",
+            "start_date": "2022-09",
+            "end_date": null,
+            "is_currently_employed": true,
+            "responsibilities": "#### 주요 업무: 증권사 MTS 서비스 기획\n- 6개 사 증권사 ASP 형태로 MTS 서비스 기획\n- 비대면 계좌개설(웹), 숙려제도 등 신규 서비스 기획\n- 차세대 MTS를 위한 대표 증권 MTS 10개 사 분석 및 차세대 MTS요건 및 기능 정의",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "모바일 증권 거래 시스템",
+            "department": "금융채널서비스부 / 모바일서비스팀",
+            "position": "과장",
+            "rank": "과장",
+            "employment_type": null
+        }
+    ],
+    "education_programs": [],
+    "overseas_experiences": [],
+    "certificates": [
+        {
+            "certificate_name": "투자자산운용사",
+            "issuing_authority": null,
+            "acquisition_date": "2021",
+            "score": null
+        },
+        {
+            "certificate_name": "증권투자권유대행인",
+            "issuing_authority": null,
+            "acquisition_date": "2016",
+            "score": null
+        },
+        {
+            "certificate_name": "매경TEST",
+            "issuing_authority": null,
+            "acquisition_date": "2015",
+            "score": "우수"
+        },
+        {
+            "certificate_name": "자산관리사",
+            "issuing_authority": null,
+            "acquisition_date": "2014",
+            "score": null
+        },
+        {
+            "certificate_name": "AFPK",
+            "issuing_authority": null,
+            "acquisition_date": "2014",
+            "score": null
+        }
+    ],
+    "awards": [
+        {
+            "award_name": "웅진 코웨이 마케팅 공모전 최우수상",
+            "awarding_institution": "웅진 코웨이",
+            "award_date": "2012",
+            "details": null
+        }
+    ],
+    "employment_preference": null,
+    "military_service": null,
+    "cover_letter": null,
+    "etc_info": {
+        "details": null
+    }
+}

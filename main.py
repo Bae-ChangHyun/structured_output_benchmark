@@ -60,7 +60,7 @@ def main():
         print("🛑 서버 종료: Ctrl+C")
         
         uvicorn.run(
-            "structured_output_kit.api_server.main:app",
+            "structured_output_kit.server.main:app",
             host=args.host,
             port=args.port,
             reload=args.reload

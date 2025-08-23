@@ -1,0 +1,201 @@
+{
+    "personal_info": {
+        "name": "이현우",
+        "gender": "남",
+        "nationality_type": null,
+        "nationality": null,
+        "birth": "1975-09-19",
+        "contacts": ["+818081152210"],
+        "email": "netmaru@gmail.com",
+        "address": "東京都新宿区新宿 7-26-3 405",
+        "available_date": null,
+        "sns_links": [],
+        "desired_job": null,
+        "desired_location": null,
+        "desired_position": null,
+        "desired_salary": null
+    },
+    "summary_info": {
+        "brief_introduction": "신사업 개발 / 컨텐츠 사업 / 브랜드마케팅 / 게임개발 (총 경력 19년 : 한국 11년, 일본 8년)",
+        "core_competencies": [
+            "신사업 개발",
+            "컨텐츠 사업",
+            "브랜드마케팅",
+            "게임개발",
+            "디지털 신사업 개발",
+            "OTT & Music 서비스",
+            "전략기획",
+            "사업총괄"
+        ]
+    },
+    "educations": [
+        {
+            "school_type": "대학교",
+            "school_name": "건국대학교",
+            "admission_date": "1994-03",
+            "graduation_date": "2001-02",
+            "gpa": null,
+            "major": "경제학과",
+            "sub_major": "건축학",
+            "degree": "학사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "연세대학교 언론홍보대학원",
+            "admission_date": "2007-09",
+            "graduation_date": "2010-03",
+            "gpa": null,
+            "major": "방송영상전공",
+            "sub_major": null,
+            "degree": "석사",
+            "graduation_work": "TV 프로그램에 대한 인터넷 검색 행태 연구와 시청률간의 관계에 대한 연구",
+            "completion_status": "졸업"
+        }
+    ],
+    "careers": [
+        {
+            "company_name": "Steam media Corp",
+            "start_date": "2017-11",
+            "end_date": null,
+            "is_currently_employed": true,
+            "responsibilities": "SM Ent 일본 자회사, JASDAQ 상장사로 방송/매니지먼트/라이센스 전문기업 (연 매출 61억엔, 근무 인원 120명 *2020.12 기준). 전략사업본부 본부장(General Manager)으로 SM Ent 자회사 / JASDAQ 상장사 전략기획 및 신사업개발 총괄. SM Ent 및 Keyeast 아티스트 팬클럽 운영/개발 PM. ■ 전사 전략/신사업개발 총괄: 전사전략 담당, 신사업 추진, M&A/투자 검토, 방송부분 마케팅 부분 총괄, 채널 브랜딩 (스테이션 ID, CI 통합, 방송캐릭터 제작), 방송부문 통합 캐릭터 토키매키 린짱 (ときめきリンちゃん) 제작&마케팅 총괄 (LINE 스템프 제작, 캐릭터활용 방송제작, 캐릭터 원안), SMC 오리지널 드라마 '야식남녀' 일본 내 IP 사업 진행 w/카카오재팬 (야식남녀 웹툰 제작, JTBC 2020 정일우, 강지영, 이학주 주연 드라마화, 코로나 영향으로 제작지연되어 홀드). ■ 전사 IT 조직 운영 총괄: SM, KEYEAST 포함 약 30개 팬클럽서비스 운영 총괄 (팬클럽 시스템 통합 및 솔루션 내재화 추진으로 전체 운영비용 약 30% 감축), 자사 개발 모바일 전자 티켓 서비스 'RIN TICKET' 사업 총괄 (코로나로 인한 일본 내 콘서트 중지로 인한 프로젝트 홀드)",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": "일본",
+            "job_field": "전략기획, 신사업개발",
+            "department": "전략사업본부",
+            "position": "본부장 (General Manager)",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "NHN HANGAME",
+            "start_date": "2016-11",
+            "end_date": "2017-09",
+            "is_currently_employed": false,
+            "responsibilities": "NHN Ent. 의 일본 자회사로 게임 개발, 퍼블리싱 운영 전문기업 (자본금 49,500 万円, 근무 인원 311 명 *2016년 5월 기준). 게임사업본부 사업부장(Senior Manager)으로 ■ 겜블계열 (파칭코, 파치스로, 마작, 고스톱, 포커 등) 사업부장: 겜블계 게임 추진 전략 수립 및 Ent 개발 모바일 게임 퍼블리싱, PC 게임 나나파치 / 麻雀 天極牌 / 花札 / 포커류 운영 총괄, SP 마작 「麻雀 天極牌」전면리뉴얼 총괄 PM (자체제작 Unity / Spine) *2017.05 리뉴얼 론칭. ■ 겜블계열 모바일 게임 퍼블리싱 총괄 PM: Ent 개발 겜블계 SP 게임 일본 퍼블리싱 담당, SP 게임 한게임 포커 일본 도입 및 N 스크린 서비스 추진, SP 게임 한게임 카지노/슬롯 일본 론칭총괄 PM *2017.04 일본 마켓 론칭. ■ NHN Bugs 일본 사업진출 TF: 일본 내 음악 스트리밍 사업 진출 검토",
+            "reason_for_leaving": "그룹 사업 효율성 증대를 위한 NHN 한게임 동경 사무실 철수 및 후쿠오카 본사 전근 명령",
+            "annual_salary": null,
+            "work_location": "일본",
+            "job_field": "게임사업",
+            "department": "게임사업본부",
+            "position": "사업부장(Senior Manager)",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "CJE&M",
+            "start_date": "2011-06",
+            "end_date": "2016-10",
+            "is_currently_employed": false,
+            "responsibilities": "CJ 그룹 계열사로 방송, 영화, 음악, 공연, 게임 등 종합엔터테인먼트 기업 (매출액 약 1.3조원, 근무인원: 약 2,300명). 글로벌사업본부 부장(Sr. Specialist)으로 디지털 신사업 개발 스페셜리스트 일본/미국/베트남 OTT & Music 서비스 PM. ■ 글로벌사업 본부 Digital Service Specialist (2015.09 ~ 2016.10): CJE&M 전사 글로벌 디지털 전략 수립 및 글로벌 OTT 프로젝트 진행, 관심기반 컨텐츠 추천 서비스 KCON.TV (www.kcon.tv) PM (2016.07 론칭), 베트남 비엣텔 제휴 OTT 서비스 구축 PM (2016.09 론칭) - Service Structure, CMS, PG-Billing, Front web/mobile web/Native App UI 기획, 컨텐츠 판권 계약 및 관리, P/L 관리, 마케팅 실무 진행. ■ 일본 디지털 미디어 사업 총괄 PM (2013.01 ~ 2015.08) – 주재원: 일본 디지털 사업 전략 수립 / 디지털 사업 총괄, 한류포털서비스 jp.mnet.com 구축 총괄 (2013), 일본엠넷채널 기반 Live OTTV 서비스 smart.mnet.com 구축 총괄 (2014) - Service Structure, CMS, PG-Billing, Front web/mobile web/Native App UI 기획 컨텐츠 판권 계약 및 관리, P/L 관리, 마케팅 실무 진행, Yahoo!Japan, Line Corp, 라쿠텐 등 Local Partner 컨텐츠 판매영업 및 콜라보 프로젝트 진행, 사업 2차년도 디지털 사업 부분 자체 BEP 달성 (매출 13억원). ■ 글로벌 엠넷 프로젝트 전략 담당 (2011.06~2012.12): CJE&M 글로벌 디지털 전략 수립, 글로벌 엠넷 (현 MWAVE) 일본 섹션 구축 PM - Service Structure, CMS, Front web/mobile web 기획 및 컨텐츠 판권 계약 및 관리, P/L 관리, 마케팅 실무 진행, 글로벌 엠넷 P/L 관리 및 마케팅 – 오픈 1차년도 1,000만 UV 달성, 중국 Yuku, 미국 Allkpop 등 Local Service 제휴 및 PIP 입점 제휴, 삼성전자 연계 글로벌 Global K-POP App 전략 수립 및 추진 PM",
+            "reason_for_leaving": "새로운 도전을 위한 일본 현지 취업",
+            "annual_salary": null,
+            "work_location": "일본·한국",
+            "job_field": "글로벌사업, 디지털미디어",
+            "department": "글로벌 사업본부",
+            "position": "부장(Sr. Specialist)",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "엔씨 소프트 재팬",
+            "start_date": "2010-06",
+            "end_date": "2011-06",
+            "is_currently_employed": false,
+            "responsibilities": "게임회사 엔씨소프트의 일본 지사로 리니지 2, 아이온 등의 일본 서비스 및 빌링 관리 (매출액 약 4천억원, 근무인원: 50명). 웹서비스팀 팀장(Manager)으로 ■ 엔씨 소프트 재팬 웹서비스 팀장: 게임포털 플레이엔씨(일본) 리뉴얼 (2011) 총괄 PM, 유저 니즈 분석 및 plaync 사이트 전체 리뉴얼 진행, 본사 개발 빌링 및 결제 인프라 일본 로컬라이즈 기획 및 런쳐 개편 진행, 게임 유저 리텐션 및 로열티 증대를 위한 블로그 리뉴얼 진행, 게임 연계 프로모션 및 아이템샵 리뉴얼/신규 게임 아이템 추가, 개별 게임 웹사이트 및 아이템 샵 리뉴얼 (아이온, 雀龍門 3). NC Soft 본사 빌링/회원/회원 인프라 연동 리뉴얼 기획 PM",
+            "reason_for_leaving": "2011년 3월 발생한 동일본 대지진의 여파로 한국인 스텝들의 대규모 귀국 및 사업 진행 차질 발생. 이에 따른 직장폐쇄 및 조직 통폐합",
+            "annual_salary": null,
+            "work_location": "일본",
+            "job_field": "웹서비스",
+            "department": "웹 서비스팀",
+            "position": "팀장 (Manager)",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "SK 커뮤니케이션즈",
+            "start_date": "2006-05",
+            "end_date": "2010-05",
+            "is_currently_employed": false,
+            "responsibilities": "SK 텔레콤의 자회사로서 종합 포털 네이트닷컴, 네이트온, 싸이월드 등 SNS 및 포털서비스 운영 업체 (매출액 약 1천억원, 근무인원: 500명). 싸이월드본부 과장으로 ■ 싸이월드 선물가게 전략파트 파트장 / 과장 (2008.02~2010.5): 선물가게 상품 운영총괄 및 BP(Business Partner) 운영 및 계약/평가, 파트너사 신규 아이템 제안 검토 및 신규 사업추진, 전사 디지털 아이템 전략 수립 및 경영계획, 선물가게 Annual Promotion 기획, F/U. ■ 싸이월드 지도 TF 기획파트장 / 과장 (2007.06 ~ 2008.02): MAP SERIVE 경영계획 / 대중교통 서비스 기획 / BM 전략 수립, SKT 연동 친구찾기 서비스 F/U (2008.05 OPEN). ■ 네이트 통 사업부 기획팀 전략파트 파트장 / 과장 (2006.5 ~ 2007.6): TONG SERIVE 경영계획수립 / 통서비스 전략 기획 및 대외 제휴 담당, NATE TONG 서비스 신규 BM 수립 및 추진 담당",
+            "reason_for_leaving": "싸이월드와 네이트의 점진적인 침체국면에서 국내 포털 사업의 한계를 실감하고 글로벌 진출을 통한 커리어개발 및 새로운 영역에 대한 도전을 위하여 이직",
+            "annual_salary": null,
+            "work_location": "한국",
+            "job_field": "SNS, 포털서비스",
+            "department": "싸이월드본부",
+            "position": "과장",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "인포렉스",
+            "start_date": "2003-05",
+            "end_date": "2005-08",
+            "is_currently_employed": false,
+            "responsibilities": "커뮤니티서비스 Club5678 운영, 캐쥬얼게임 개발, 영상소프트웨어 개발 전문사 (매출액 약 150억원 / 근무인원 : 80명). 모바일팀 팀장/차장으로 ■ 신규사업부 모바일사업팀 팀장/차장 (2005.01 ~ 2005.8): club5678.com 연계 모바일 서비스 기획 및 이통사 business (KT, LGT), 이통 3사 연동 서비스 클럽 5678 모바일 스캔들 오픈(**5678). ■ 인터넷사업부 서비스 기획팀 총괄 팀장/과장 (2003.05 ~ 2004.12): 채팅/미팅 커뮤니티 club5678.com/Cizmo.com 기획 총괄 (팀장 재임시 매출 226% 증대), 프로필 배경음악 서비스 기획 PM (2003.10), Club5678 동호회 전체 기획 PM (2003.12), Club5678 플러그(미니홈피형 프로필)기획 PM (2003.12), Club5678 스트리밍 음악서비스 기획 PM (2003.12), 모바일 기반 커뮤니티 CIZMO.com Main 기획 PM (2004.8), Club5678 사이트 전체 리뉴얼 기획 PM (2004.11)",
+            "reason_for_leaving": "게임사업 실패로 인한 전체적인 사업 부분 축소 및 모바일 사업 폐쇄가 결정됨에 따라 보다 큰 조직에서 안정적으로 업무 진행하기 위하여 이직",
+            "annual_salary": null,
+            "work_location": "한국",
+            "job_field": "모바일, 커뮤니티서비스",
+            "department": "모바일팀",
+            "position": "팀장",
+            "rank": "차장",
+            "employment_type": null
+        },
+        {
+            "company_name": "위즈맥스",
+            "start_date": "2001-09",
+            "end_date": "2003-05",
+            "is_currently_employed": false,
+            "responsibilities": "세계최초 광고기반 MP3 제공 서비스 엠피캣운영, 삼성모바일 협력사 (근무인원 : 30명). 해외사업팀 팀장/과장으로 ■ 해외사업팀 팀장/과장 (2003년 02월 ~ 2003년 05월): 삼성전자 중국 유무선 포탈사이트 '삼성낙원(http://www.samsungmobile.com.cn)' 음악 컨텐츠 제공(중국 광저우 파견 근무), 아시아지역 삼성전자 유무선 포탈사이트 음악 마스터 CP 총괄 PM, 중국 Haotian tec(http://www.6388.net) 제휴 및 벨소리 컨텐츠 제공 PM. ■ 음악서비스팀 웹기획 PM/과장 (2001년 09월 ~ 2003년 01월): 당시 유일한 합법적 mp3 다운로드 사이트 엠피캣 운영 - 서비스유료화 및 포인트 정책강화, 무선아이템 도입 (랭키기준 mp3 다운로드 사이트 전체 3위), 국내 주요 사이트 (MSN, Korean.com, 라이코스, 드림엑스, 버디버디 등)에 CP 참여, 한국 내 이통사 대상 음악 관련 서비스 기획 및 런칭, KTF 그림 소리샵 CP 선정, LGT 벨소리 CP / KFT, LGT 유무선 통합연동 m.mpcat.com 사이트 기획",
+            "reason_for_leaving": "회사 경영상황 악화 및 임금체불",
+            "annual_salary": null,
+            "work_location": "한국",
+            "job_field": "음악서비스, 해외사업",
+            "department": "서비스기획팀",
+            "position": "팀장",
+            "rank": null,
+            "employment_type": null
+        }
+    ],
+    "education_programs": [],
+    "overseas_experiences": [],
+    "certificates": [
+        {
+            "certificate_name": "JLPT",
+            "issuing_authority": null,
+            "acquisition_date": "2014",
+            "score": "N1"
+        },
+        {
+            "certificate_name": "SJPT",
+            "issuing_authority": null,
+            "acquisition_date": "2014",
+            "score": "level 6"
+        },
+        {
+            "certificate_name": "OPic",
+            "issuing_authority": null,
+            "acquisition_date": "2016",
+            "score": "IM3"
+        }
+    ],
+    "awards": [],
+    "employment_preference": null,
+    "military_service": {
+        "military_status": "군필",
+        "service_start_date": "1995-07",
+        "service_end_date": "1997-09",
+        "military_branch": "육군",
+        "rank": "병장"
+    },
+    "cover_letter": {
+        "full_text": "지난 19년간 한국, 일본, 미국, 베트남 등 다양한 국가에서 다양한 비즈니스 필드의 업무를 진행하였습니다. 2001년 웹기획자로 캐리어를 시작하여 점차 사업 PM, 사업관리, 브랜딩 등 제로베이스에서 서비스를 론칭시키고 발전시켜나가는 전체프로세스의 경험을 했고 성공보다는 훨씬 많은 횟수의 실패를 경험을 했습니다. 이러한 실패를 바탕으로 얻은 저의 추진력과 신념으로 귀사의 사업을 성공시키겠습니다. 끈질기게 노력하고 반드시 성공시키는 추진력. 조직이 클수록, 새로운 프로젝트일수록 프로세스 자체가 명확하지 정리되지 않은 경우가 많고 내/외부적인 챌린지에 원래의 방향성을 잃어버리는 경우나 진행과정에서 시장환경 및 방향성에 따라서 필연적으로 처음과 다른 길을 가더라도, 유연하게 모든 상황을 조정하며 프로젝트의 온전한 주인정신을 가지고 새로운 프로세스를 만들고 상사와 조직을 모두 납득시켜야 하는 경우에도 끝까지 포기하지 않고 업무를 추진합니다. 현명하게, 신념을 가지고 항상 내가, 우리 팀이, 우리회사가 궁극적으로 무엇을 해야 하는지 그를 위해서는 무엇이 필요한지 비전을 리마인드하고 있습니다. 자기 자신이 항상 비전을 숙지하고 않는다면 경쟁사, 스텝들, 상급자들 그리고 내 자신을 설득할 수 없고 중요한 순간에 현명한 판단을 내리지 못한다는 신념으로 행동합니다. 함께 가는, 단점보다는 장점을 먼저 보고 코칭하는 모든 업무를 진행함에 있어 업무의 의의와 장/단기 Goal의 공감과 더불어 시작하고 진행과정을 스텝들과 지속적으로, 진실되게 공유하여 자연스럽게 조직의 전체적인 업무지능과 팀워크를 향상시키는데 주력합니다. 또한 스텝들의 코칭의 측면에서도 모든 사람은 장점과 단점을 함께 가지고 있으나 단점은 그것이 무엇이든 극복할 수 있는 것이며 언젠가는 사라지는 것이나, 반대로 장점은 너무나도 쉽게 사라질 수 있지만 그만큼 더 빨리 크게 자라날수 있다고 생각합니다. 저는 장점을 보고 장점을 더욱 더 크게 시키려고 노력하고 사람을 대할 때도 장점을 보고 칭찬하며 장점을 코칭하려고 노력합니다."
+    },
+    "etc_info": {
+        "details": "일본어: fluent, 영어: Intermediate Mid, 재류자격: 영주권"
+    }
+}
