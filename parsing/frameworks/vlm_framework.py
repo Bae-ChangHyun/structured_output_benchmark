@@ -1,11 +1,14 @@
 import os
 import tempfile
-from typing import Dict, Any, List
+import json
+import concurrent.futures
+from typing import Dict, Any, List, Tuple
 from loguru import logger
 
 from PIL import Image
 from pdf2image import convert_from_path
 from structured_output_kit.parsing.base import ParsingFramework
+from structured_output_kit.parsing.preprocessor import preprocess_vlm_output
 
 
 class VLMFramework(ParsingFramework):
@@ -35,18 +38,32 @@ class VLMFramework(ParsingFramework):
             # 이미지 파일들 준비
             image_paths = self._prepare_images()
             
-            # VLM으로 각 이미지 처리
-            results = []
-            for idx, image_path in enumerate(image_paths):
-                logger.debug(f"이미지 {idx + 1}/{len(image_paths)} 처리 중: {image_path}")
-                result = self._process_single_image(image_path, idx + 1)
-                results.append(result)
+            logger.info(f"Processing {len(image_paths)} images with {self.host_info.provider}/{self.host_info.model} (병렬 처리)")
             
-            # 결과 통합
-            combined_content = self._combine_results(results)
+            # VLM으로 각 이미지를 병렬 처리
+            def process_page(args):
+                idx, image_path = args
+                return idx, self._process_single_image(image_path, idx + 1)
+
+            # 병렬 처리: 각 페이지별 VLM API 호출
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                results = list(executor.map(process_page, enumerate(image_paths)))
             
-            logger.info(f"VLM으로 문서 파싱 완료: {len(combined_content)} 문자")
-            return combined_content
+            # 페이지 순서대로 정렬
+            results.sort(key=lambda x: x[0])
+            
+            # 결과만 추출
+            page_results = [content for idx, content in results]
+            
+            # 결과 통합 (마크다운과 JSON 둘 다 반환)
+            markdown_content, json_results = self._combine_results(page_results)
+            
+            # 전처리 적용 (마크다운과 JSON 둘 다 전달)
+            processed_content = preprocess_vlm_output(
+                content=markdown_content, model_name=self.host_info.model, image_path=image_paths[0] if image_paths else "", json_data=json_results)
+            
+            logger.info(f"VLM으로 문서 파싱 완료: {len(str(processed_content))} 문자")
+            return processed_content
             
         except Exception as e:
             logger.error(f"VLM 파싱 중 오류 발생: {str(e)}")
@@ -91,6 +108,7 @@ class VLMFramework(ParsingFramework):
             else:
                 raise ValueError(f"지원하지 않는 VLM 호스트: {self.host_info.provider}")
             
+                        
             return result
             
         except Exception as e:
@@ -139,7 +157,7 @@ class VLMFramework(ParsingFramework):
         """OpenAI Compatible VLM API 호출"""
         import requests
         
-        url = f"{self.host_info.base_url}/v1/chat/completions"
+        url = f"{self.host_info.base_url}/chat/completions"
         
         headers = {
             "Content-Type": "application/json"
@@ -316,18 +334,38 @@ class VLMFramework(ParsingFramework):
             logger.error(f"Google VLM API 호출 실패: {str(e)}")
             raise
     
-    def _combine_results(self, results: List[str]) -> str:
-        """여러 페이지 결과를 하나로 통합"""
+    def collect_result(self, results: List[str]) -> Tuple[List[str], List]:
+        """각 페이지의 마크다운과 JSON 결과를 리스트로 수집"""
         if not results:
-            return ""
+            raise ValueError("처리할 결과가 없습니다")
         
-        if len(results) == 1:
-            return results[0].strip()
+        # 실패한 페이지와 성공한 페이지 구분
+        successful_markdown = []
+        successful_json = []
+        failed_results = []
         
-        # 여러 페이지를 구분자로 연결
-        combined = ""
         for idx, result in enumerate(results, 1):
-            if result.strip():
-                combined += f"# 페이지 {idx}\n\n{result.strip()}\n\n"
+            if result.startswith(f"[페이지 {idx} 처리 실패:"):
+                failed_results.append(result)
+            else:
+                # 마크다운 결과 수집
+                successful_markdown.append(result.strip())
+                
+                # JSON 결과 수집
+                try:
+                    parsed_json = json.loads(result)
+                    successful_json.append(parsed_json)
+                except json.JSONDecodeError: #!todo json_repair 이용해서 파싱 되도록 수정해야할 것 같음.
+                    logger.debug(f"페이지 {idx} JSON 파싱 실패, 빈 객체로 대체")
+                    successful_json.append({})
         
-        return combined.strip()
+        # 모든 페이지가 실패한 경우 예외 발생
+        if not successful_markdown:
+            error_msg = "모든 페이지 처리 실패:\n" + "\n".join(failed_results)
+            raise RuntimeError(error_msg)
+        
+        # 일부 페이지만 실패한 경우 경고 로그
+        if failed_results:
+            logger.warning(f"{len(failed_results)}개 페이지 처리 실패: {failed_results}")
+        
+        return successful_markdown, successful_json

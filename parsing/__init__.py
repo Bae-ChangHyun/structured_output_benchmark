@@ -15,5 +15,19 @@ PDF 및 이미지 파일에서 텍스트를 추출하는 다양한 프레임워�
 from structured_output_kit.parsing.core import run_parsing_core
 from structured_output_kit.parsing.base import ParsingFramework
 from structured_output_kit.parsing.factory import factory
+from structured_output_kit.parsing.preprocessor import (
+    DotsOCRPreprocessor, 
+    NanonetsPreprocessor, 
+    preprocess_vlm_output,
+    get_preprocessor
+)
 
-__all__ = ["run_parsing_core", "ParsingFramework", "factory"]
+__all__ = [
+    "run_parsing_core", 
+    "ParsingFramework", 
+    "factory",
+    "DotsOCRPreprocessor",
+    "NanonetsPreprocessor", 
+    "preprocess_vlm_output",
+    "get_preprocessor"
+]

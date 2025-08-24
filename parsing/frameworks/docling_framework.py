@@ -28,6 +28,7 @@ from pydantic import AnyUrl
 
 
 from structured_output_kit.parsing.base import ParsingFramework
+from structured_output_kit.parsing.preprocessor import preprocess_vlm_output
 
 
 class DoclingFramework(ParsingFramework):
@@ -97,6 +98,10 @@ class DoclingFramework(ParsingFramework):
             if not content.strip():
                 raise ValueError("문서에서 텍스트 내용을 추출할 수 없습니다")
             
+            # VLM 파이프라인을 사용한 경우 전처리 적용
+            if pipeline_class == 'vlm' and self.host_info and self.host_info.model:
+                content = preprocess_vlm_output(content, self.host_info.model)
+            
             logger.info(f"Docling으로 문서 파싱 완료: {len(content)} 문자")
             return content.strip()
             
@@ -136,7 +141,7 @@ class DoclingFramework(ParsingFramework):
         if vlm_host == "ollama":
             pipeline_options.enable_remote_services = True
             pipeline_options.vlm_options = granite_vision_vlm_ollama_conversion_options
-            pipeline_options.vlm_options.url = AnyUrl(f"{self.host_info.base_url}/v1/chat/completions")
+            pipeline_options.vlm_options.url = AnyUrl(f"{self.host_info.base_url}/chat/completions")
             pipeline_options.vlm_options.params = {"model": vlm_model}
             pipeline_options.vlm_options.prompt = self.prompt or "Convert this page to docling"
             pipeline_options.vlm_options.scale = self.extra_kwargs.get('scale', 1.0)
