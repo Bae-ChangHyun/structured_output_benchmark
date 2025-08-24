@@ -9,33 +9,78 @@ output_dir: "./result/workflow"
 parallel: false
 fail_fast: true
 
-# 파싱 설정 - 더미 설정 (실제로는 사용되지 않음)
+# 파싱 설정
 parsing:
   - file_path: "/home/bch/Project/main_project/scout_partners/sample_data/이력서/국문이력서_샘플_20250526/리멤버-S3.pdf"  # 더미 파일
-    framework: "docling"
+    framework: "vlm"
+    host_info:
+      provider: "openai_compatible"
+      model: "dotsocr-model"
+      base_url: "http://localhost:8000/v1"
+    prompt: |
+        Please output the layout information from the PDF image, including each layout element's bbox, its category, and the corresponding text content within the bbox.
+        1. Bbox format: [x1, y1, x2, y2]
+
+        2. Layout Categories: The possible categories are ['Caption', 'Footnote', 'Formula', 'List-item', 'Page-footer', 'Page-header', 'Picture', 'Section-header', 'Table', 'Text', 'Title'].
+
+        3. Text Extraction & Formatting Rules:
+            - Picture: For the 'Picture' category, the text field should be omitted.
+            - Formula: Format its text as LaTeX.
+            - Table: Format its text as HTML.
+            - All Others (Text, Title, etc.): Format their text as Markdown.
+
+        4. Constraints:
+            - The output text must be the original text from the image, with no translation.
+            - All layout elements must be sorted according to human reading order.
+
+        5. Final Output: The entire output must be a single JSON object.
     extra_kwargs: {}
-    save: false
+    save: true
 
 # 추출 설정 (여러 개 테스트)
 extraction:
   # 첫 번째 추출: 간단한 텍스트로 테스트
-  - prompt: "Extract person information from the following text"
-    input_text: "안녕하세요. 제 이름은 김철수이고, 연락처는 010-1234-5678입니다. 서울대학교 컴퓨터공학과를 졸업했고, 현재 네이버에서 소프트웨어 엔지니어로 일하고 있습니다."
+  - prompt: | 
+      ## Persona ##
+      You are a professional resume parsing expert who extracts information from user-provided resumes without any information loss and maps it to schema fields. **You must strictly follow all instructions below without exception.**
+
+      ## Rules ##
+      **WARNING: Violating instructions is a critical error.**
+      1. **Critical**: All original resume content must be preserved exactly as-is when mapping to schema fields. Information summarization, modification, translation, omission, or generating/adding new information through your own judgment is strictly prohibited. Do not create any content that is not explicitly stated in the original resume.
+      2. Convert all HTML formats to markdown and transform all tables into text format without using table markup, HTML tags, or pipe symbols. Use only #, *, - symbols and ensure all table cell contents are included without exception.
+      3. Convert date information to appropriate formats based on available information. Use 'yyyy' format if only year is available, 'yyyy-mm' if month is available, and 'yyyy-mm-dd' if day is available.
+      4. Include only pure work content such as job duties, responsibilities, project details, achievements, and work descriptions in the 'responsibilities' field exactly as written without omitting a single character. Do not include basic information such as company names, job titles, departments, employment periods, or salary details that belong in their dedicated fields. Never summarize or abbreviate any work-related content.
+      5. Include all links such as websites, GitHub, LinkedIn, blogs, and portfolios in the sns_links field.
+      6. When the same information can be mapped to multiple fields, include that information only in the most appropriate dedicated field and do not duplicate it in other fields.
+      7. Include information from the user-provided resume content that doesn't fit existing fields in the 'etc_info' field.
+      8. Do not output any field if there is no suitable content for that field in the user-provided resume content.
     schema_name: "schema_han"
     framework: "OpenAIFramework"
     host_info:
       provider: "openai"
       model: "gpt-4o-mini"
-    retries: 2
+    retries: 1
     extra_kwargs:
       temperature: 0.1
     save: false
   
   # 두 번째 추출: 다른 텍스트로 테스트
-  - prompt: "Extract person information focusing on career details"
-    input_text: "박민수는 연세대학교 경영학과를 졸업한 후 삼성전자에서 5년간 근무했습니다. 이메일은 minsu@example.com이고, 현재 스타트업 창업을 준비 중입니다."
+  - prompt: | 
+      ## Persona ##
+      You are a professional resume parsing expert who extracts information from user-provided resumes without any information loss and maps it to schema fields. **You must strictly follow all instructions below without exception.**
+
+      ## Rules ##
+      **WARNING: Violating instructions is a critical error.**
+      1. **Critical**: All original resume content must be preserved exactly as-is when mapping to schema fields. Information summarization, modification, translation, omission, or generating/adding new information through your own judgment is strictly prohibited. Do not create any content that is not explicitly stated in the original resume.
+      2. Convert all HTML formats to markdown and transform all tables into text format without using table markup, HTML tags, or pipe symbols. Use only #, *, - symbols and ensure all table cell contents are included without exception.
+      3. Convert date information to appropriate formats based on available information. Use 'yyyy' format if only year is available, 'yyyy-mm' if month is available, and 'yyyy-mm-dd' if day is available.
+      4. Include only pure work content such as job duties, responsibilities, project details, achievements, and work descriptions in the 'responsibilities' field exactly as written without omitting a single character. Do not include basic information such as company names, job titles, departments, employment periods, or salary details that belong in their dedicated fields. Never summarize or abbreviate any work-related content.
+      5. Include all links such as websites, GitHub, LinkedIn, blogs, and portfolios in the sns_links field.
+      6. When the same information can be mapped to multiple fields, include that information only in the most appropriate dedicated field and do not duplicate it in other fields.
+      7. Include information from the user-provided resume content that doesn't fit existing fields in the 'etc_info' field.
+      8. Do not output any field if there is no suitable content for that field in the user-provided resume content.
     schema_name: "schema_han"
-    framework: "OpenAIFramework"
+    framework: "InstructorFramework"
     host_info:
       provider: "openai"
       model: "gpt-4o-mini"
