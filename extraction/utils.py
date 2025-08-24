@@ -11,42 +11,6 @@ import yaml
 import pandas as pd
 from importlib import resources
 
-def check_host_info(host_info: Any) -> dict:
-    """Ensure minimal host_info values for supported providers.
-
-    Accepts a dict, a Pydantic BaseModel, or a simple object with attributes.
-    Converts non-dict inputs to a dict and returns the dict with defaults set.
-    """
-    # If passed a Pydantic model, convert to dict first (pydantic v2 -> model_dump)
-    if isinstance(host_info, BaseModel):
-        host_info = host_info.model_dump(exclude_none=False)
-
-    # If object-like (has attributes but no .get), convert selective attrs to dict
-    if not isinstance(host_info, dict):
-        # try to pick common attributes
-        host_info = {
-            k: getattr(host_info, k, None)
-            for k in ("provider", "base_url", "model", "api_key")
-        }
-
-    provider = (host_info.get("provider") or "").lower()
-    if not provider:
-        raise ValueError("host_info['provider']가 필요합니다.")
-
-    if provider == 'openai':
-        host_info.setdefault("base_url", "https://api.openai.com/v1")
-        if not host_info.get("model"):
-            raise ValueError("OpenAI 모델이름을 입력하세요. https://platform.openai.com/docs/pricing")
-    elif provider == 'anthropic':
-        host_info.setdefault("base_url", "https://api.anthropic.com/v1")
-        if not host_info.get("model"):
-            raise ValueError("Anthropic 모델이름을 입력하세요. https://www.anthropic.com/products/claude")
-    elif provider == 'google':
-        host_info.setdefault("base_url", "https://generativelanguage.googleapis.com/v1beta/openai/")
-        if not host_info.get("model"):
-            raise ValueError("Google 모델이름을 입력하세요. https://ai.google.dev/gemini-api/docs/models?hl=ko")
-
-    return host_info
 
 def load_prompt() -> str:
     """Load extraction prompt with canonical path and fallbacks.
