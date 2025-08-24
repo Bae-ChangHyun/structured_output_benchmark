@@ -1,0 +1,49 @@
+# 테스트용 워크플로우 설정
+# extraction만 테스트 (parsing 건너뛰기)
+
+name: "test_extraction_workflow"
+description: "추출 기능 테스트용 워크플로우"
+output_dir: "./result/workflow"
+
+# 실행 옵션
+parallel: false
+fail_fast: true
+
+# 파싱 설정 - 더미 설정 (실제로는 사용되지 않음)
+parsing:
+  - file_path: "/home/bch/Project/main_project/scout_partners/sample_data/이력서/국문이력서_샘플_20250526/리멤버-S3.pdf"  # 더미 파일
+    framework: "docling"
+    extra_kwargs: {}
+    save: false
+
+# 추출 설정 (여러 개 테스트)
+extraction:
+  # 첫 번째 추출: 간단한 텍스트로 테스트
+  - prompt: "Extract person information from the following text"
+    input_text: "안녕하세요. 제 이름은 김철수이고, 연락처는 010-1234-5678입니다. 서울대학교 컴퓨터공학과를 졸업했고, 현재 네이버에서 소프트웨어 엔지니어로 일하고 있습니다."
+    schema_name: "schema_han"
+    framework: "OpenAIFramework"
+    host_info:
+      provider: "openai"
+      model: "gpt-4o-mini"
+    retries: 2
+    extra_kwargs:
+      temperature: 0.1
+    save: false
+  
+  # 두 번째 추출: 다른 텍스트로 테스트
+  - prompt: "Extract person information focusing on career details"
+    input_text: "박민수는 연세대학교 경영학과를 졸업한 후 삼성전자에서 5년간 근무했습니다. 이메일은 minsu@example.com이고, 현재 스타트업 창업을 준비 중입니다."
+    schema_name: "schema_han"
+    framework: "OpenAIFramework"
+    host_info:
+      provider: "openai"
+      model: "gpt-4o-mini"
+    retries: 2
+    extra_kwargs:
+      temperature: 0.0
+    save: false
+
+# 평가 설정 비활성화
+evaluation:
+  enabled: false
