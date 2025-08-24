@@ -51,6 +51,25 @@ class EvaluationResult(BaseModel):
     eval_result_path: str
     output_dir: str
 
+
+class ParsingRequest(BaseModel):
+    file_path: str = Field(..., description="파싱할 PDF/이미지 파일 경로")
+    framework: str = Field("docling", description="사용할 파싱 프레임워크 (docling, pypdf, fitz, pdfplumber, markitdown, vlm)")
+    extra_kwargs: Dict[str, Any] = Field(default_factory=dict, description="프레임워크별 추가 파라미터")
+    host_info: Optional[HostInfo] = Field(None, description="VLM 사용시 필요한 호스트 정보")
+    prompt: Optional[str] = Field(None, description="VLM 사용시 사용할 프롬프트")
+    output_dir: Optional[str] = Field(None, description="결과 출력 디렉토리")
+    save: bool = False
+
+
+class ParsingResult(BaseModel):
+    success: bool
+    content: str
+    framework: str
+    file_path: str
+    output_dir: Optional[str] = None
+    result_txt_path: Optional[str] = None
+
 class BaseResponse(BaseModel):
     success: bool
     message: str
@@ -77,3 +96,9 @@ class VisualizationResponse(BaseResponse):
     html_path: Optional[str] = None
     output_dir: Optional[str] = None
     overall_score: Optional[float] = None
+
+
+class ParsingResponse(BaseResponse):
+    result_path: Optional[str] = None
+    output_dir: Optional[str] = None
+    framework: Optional[str] = None

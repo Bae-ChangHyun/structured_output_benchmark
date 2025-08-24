@@ -6,7 +6,7 @@ import uuid
 from typing import Dict, Any, Optional
 
 from loguru import logger
-from structured_output_kit.extraction.utils import record_extraction, convert_schema, check_host_info
+from structured_output_kit.extraction.utils import record_extraction, convert_schema
 from structured_output_kit.utils.types import HostInfo, ExtractionRequest, ExtractionResult
 from structured_output_kit.utils.logging import setup_logger, box_line, log_response, final_report
 from structured_output_kit.utils.tracing import Tracer
@@ -96,7 +96,6 @@ def run_extraction_core(req: ExtractionRequest) -> ExtractionResult:
 		trace_id = req.langfuse_trace_id
 
 	host_info = req.host_info
-	check_host_info(host_info)
 
 	box_width = 48
 	exp_info = [
