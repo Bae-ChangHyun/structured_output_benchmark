@@ -38,6 +38,12 @@
 - Typer 기반 명령줄 인터페이스
 - 파싱 → 추출 → 평가 → 시각화 전체 파이프라인 지원
 
+⚡ **YAML 기반 워크플로우**  
+- 여러 파싱 방법 × 여러 추출 설정의 자동 조합 실행
+- 설정 파일 기반 배치 처리
+- 파싱 없이 직접 텍스트 입력도 지원
+- 실행 결과 자동 정리 및 요약 리포트
+
 🔧 **확장성 & 커스터마이징**  
 - 커스텀 스키마 추가 (Pydantic 기반)
 - 평가 기준 커스터마이징 (YAML 설정)
@@ -108,6 +114,19 @@ python main.py --cli eval \
 python main.py --cli viz --eval-result result/evaluation/$(ls result/evaluation | tail -1)/eval_result.json
 ```
 
+### 5️⃣ 워크플로우로 시작하기
+
+```bash
+# 워크플로우 템플릿 생성
+python workflow_cli.py workflow template --output my_workflow.yaml
+
+# 설정 파일 편집 후 (API 키 설정 필요)
+python workflow_cli.py workflow run my_workflow.yaml
+
+# 간단한 추출만 테스트 (파싱 없음)
+python workflow_cli.py workflow run test_extraction_only.yaml
+```
+
 ## 📋 목차
 
 <details>
@@ -118,6 +137,7 @@ python main.py --cli viz --eval-result result/evaluation/$(ls result/evaluation 
 - [사용법](#-사용법)
   - [API 사용법](#api-사용법)
   - [CLI 사용법](#cli-사용법)
+  - [워크플로우 사용법](#-워크플로우-사용법)
 - [프로젝트 구조](#-프로젝트-구조)
 - [지원 프레임워크](#-지원-프레임워크)
 - [파싱 시스템](#-파싱-시스템)
@@ -454,6 +474,145 @@ python main.py --cli viz \
   --html \
   --out result/visualization/custom_dir
 ```
+
+### 🔄 워크플로우 사용법
+
+워크플로우 기능을 사용하면 parsing, extraction, evaluation 단계를 YAML 설정 파일을 통해 한 번에 실행할 수 있습니다. 여러 파싱 방법과 추출 설정의 조합을 자동으로 실행하여 최적의 결과를 찾을 수 있습니다.
+
+#### 주요 특징
+
+- **다단계 통합 실행**: parsing → extraction → evaluation 파이프라인
+- **조합 실행**: 여러 파싱 설정 × 여러 추출 설정의 모든 조합 자동 실행
+- **설정 기반**: YAML 파일로 모든 파라미터 관리
+- **기존 코드 재사용**: 기존 CLI 기능들을 그대로 활용
+- **확장성**: 새로운 단계나 프레임워크 쉽게 추가 가능
+
+#### 빠른 시작
+
+```bash
+# 1. 템플릿 생성
+python workflow_cli.py workflow template --output my_workflow.yaml
+
+# 2. 설정 파일 편집 후 실행
+python workflow_cli.py workflow run my_workflow.yaml
+```
+
+#### 예제 1: 추출만 실행 (파싱 없음)
+
+```yaml
+# test_extraction_only.yaml
+name: "extraction_test"
+description: "추출 기능만 테스트"
+
+# 파싱 설정 없음
+parsing: null
+
+# 추출 설정 (여러 개 가능)
+extraction:
+  - prompt: "Extract person information"
+    input_text: "안녕하세요. 김철수입니다. 서울대 졸업 후 삼성에서 3년 근무했습니다."
+    schema_name: "schema_han"
+    framework: "openai"
+    host_info:
+      provider: "openai"
+      model: "gpt-4o-mini"
+      api_key: "${OPENAI_API_KEY}"
+    retries: 2
+    extra_kwargs:
+      temperature: 0.1
+    save: true
+
+evaluation:
+  enabled: false
+```
+
+#### 예제 2: 파싱 + 추출 조합 실행
+
+```yaml
+# test_parsing_extraction.yaml
+name: "full_pipeline_test"
+description: "파싱과 추출 조합 테스트"
+
+# 파싱 설정 (2개)
+parsing:
+  - file_path: "./document1.pdf"
+    framework: "docling"
+    extra_kwargs:
+      use_ocr: true
+    save: true
+  
+  - file_path: "./document1.pdf"
+    framework: "pypdf"
+    extra_kwargs: {}
+    save: true
+
+# 추출 설정 (2개)
+extraction:
+  - prompt: "Extract person information"
+    schema_name: "schema_han"
+    framework: "openai"
+    host_info:
+      provider: "openai"
+      model: "gpt-4o-mini"
+      api_key: "${OPENAI_API_KEY}"
+    save: true
+  
+  - prompt: "Extract detailed career info"
+    schema_name: "schema_han"
+    framework: "anthropic"
+    host_info:
+      provider: "anthropic"
+      model: "claude-3-sonnet"
+      api_key: "${ANTHROPIC_API_KEY}"
+    save: true
+
+evaluation:
+  enabled: false
+
+# 총 2(parsing) × 2(extraction) = 4개 조합 실행:
+# 1. docling + openai
+# 2. docling + anthropic
+# 3. pypdf + openai
+# 4. pypdf + anthropic
+```
+
+#### 워크플로우 명령어
+
+```bash
+# 워크플로우 실행
+python workflow_cli.py workflow run config.yaml
+
+# 설정 검증
+python workflow_cli.py workflow validate config.yaml
+
+# 템플릿 생성
+python workflow_cli.py workflow template
+python workflow_cli.py workflow template --no-eval  # 평가 설정 제외
+
+# 고급 옵션
+python workflow_cli.py workflow run config.yaml \
+  --parallel          # 병렬 실행
+  --no-fail-fast     # 실패해도 계속 진행
+  --output ./results # 출력 디렉토리 지정
+  --dry-run          # 실제 실행 없이 검증만
+```
+
+#### 결과 구조
+
+```
+result/workflow/
+└── workflow_name_20240824_143022/
+    ├── workflow_config.json      # 실행된 설정
+    ├── workflow_summary.json     # 실행 요약
+    ├── combination_0_0/          # 첫 번째 조합 결과
+    │   ├── parsing_result.txt
+    │   ├── extraction_result.json
+    │   └── evaluation_result.json
+    ├── combination_0_1/          # 두 번째 조합 결과
+    └── ...
+```
+
+더 자세한 워크플로우 사용법은 [WORKFLOW.md](docs/WORKFLOW.md)를 참고하세요.
 
 ## 🏗️ 프로젝트 구조
 
