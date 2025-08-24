@@ -7,10 +7,7 @@ from contextlib import asynccontextmanager
 import uvicorn
 from dotenv import load_dotenv
 
-# 프로젝트 루트를 파이썬 패스에 추가
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-from structured_output_kit.server.routers import extraction, evaluation, visualization, utils
+from structured_output_kit.server.routers import extraction, evaluation, visualization, utils, parsing
 from structured_output_kit.server.config import settings
 
 load_dotenv()
@@ -32,6 +29,7 @@ app = FastAPI(
     
     * **텍스트 추출**: 다양한 LLM 호스트와 프레임워크를 통한 구조화된 정보 추출
     * **평가**: 예측 결과와 정답 JSON 비교 평가
+    * **파싱**: PDF/이미지 파일에서 텍스트 추출
     
     ## 지원 호스트
     
@@ -43,10 +41,20 @@ app = FastAPI(
     
     ## 사용법
     
-    1. `/v1/utils/providers` - 사용 가능한 호스트 목록 확인
-    2. `/v1/utils/frameworks?provider=<호스트명>` - 호스트별 프레임워크 목록 확인
-    3. `/v1/extraction` - 텍스트 추출 실행
-    3. `/v1/evaluation` - 평가 실행
+    ### 추출 (Extraction)
+    1. `/v1/extraction/providers` - 사용 가능한 호스트 목록 확인
+    2. `/v1/extraction/frameworks?provider=<호스트명>` - 호스트별 프레임워크 목록 확인
+    3. `/v1/extraction/schemas` - 사용 가능한 스키마 목록 확인
+    4. `/v1/extraction/extract` - 텍스트 추출 실행
+    
+    ### 평가 (Evaluation)
+    1. `/v1/evaluation/schemas` - 사용 가능한 스키마 목록 확인
+    2. `/v1/evaluation/eval` - 평가 실행
+    
+    ### 파싱 (Parsing)
+    1. `/v1/parsing/frameworks` - 파싱 프레임워크 목록 확인
+    2. `/v1/parsing/parse` - 파일 파싱 실행
+    3. `/v1/parsing/parse-url` - URL에서 파일 다운로드 및 파싱
     ```
     """,
     version="1.0.0",
@@ -63,11 +71,11 @@ app.add_middleware(
 )
 
 # 라우터 등록
-app.include_router(utils.router, prefix="/v1/utils", tags=["utils"])
+app.include_router(parsing.router, prefix="/v1/parsing", tags=["parsing"])
 app.include_router(extraction.router, prefix="/v1/extraction", tags=["extraction"])
 app.include_router(evaluation.router, prefix="/v1/evaluation", tags=["evaluation"])
 app.include_router(visualization.router, prefix="/v1/visualization", tags=["visualization"])
-
+app.include_router(utils.router, prefix="/v1/utils", tags=["utils"])
 
 @app.get("/")
 async def root():

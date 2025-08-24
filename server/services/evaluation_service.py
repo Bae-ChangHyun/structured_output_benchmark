@@ -18,7 +18,7 @@ class EvaluationService:
         pred_json_path: str,
         gt_json_path: str,
         schema_name: str = "schema_han",
-    criteria_path: Optional[str] = "evaluation/criteria/criteria.json",
+        criteria_path: Optional[str] = "evaluation/criteria/criteria.json",
         host_info: Optional[HostInfo] = None,
         output_dir: Optional[str] = None,
         save: Optional[bool] = False
