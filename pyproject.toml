@@ -1,6 +1,6 @@
 [project]
-name = "structured-output-benchmark"
-version = "0.1.4"
+name = "structured_output_kit"
+version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -36,6 +36,7 @@ dependencies = [
     "uvicorn[standard]>=0.24.0",
     "python-multipart>=0.0.6",
     "python-dotenv>=1.1.1",
+    "build>=1.3.0",
 ]
 
 [build-system]
@@ -44,28 +45,28 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 packages = [
-    "structured_output_benchmark",
-    "structured_output_benchmark.core",
-    "structured_output_benchmark.evaluation_module",
-    "structured_output_benchmark.extraction_module",
-    "structured_output_benchmark.extraction_module.frameworks",
-    "structured_output_benchmark.extraction_module.schema",
-    "structured_output_benchmark.api_server",
-    "structured_output_benchmark.api_server.routers",
-    "structured_output_benchmark.api_server.services",
+    "structured_output_kit",
+    "structured_output_kit.utils",
+    "structured_output_kit.extraction",
+    "structured_output_kit.extraction.frameworks",
+    "structured_output_kit.extraction.schema",
+    "structured_output_kit.evaluation",
+    "structured_output_kit.server",
+    "structured_output_kit.server.routers",
+    "structured_output_kit.server.services",
 ]
 
 [tool.setuptools.package-dir]
-structured_output_benchmark = "."
+structured_output_kit = "."
 
 [tool.setuptools.package-data]
-structured_output_benchmark = [
+structured_output_kit = [
     "prompt.yaml",
-    "extraction_module/framework_compatibility.yaml",
-    "extraction_module/schema/*.py",
-    "api_server/**/*.py",
+    "extraction/compatibility.yaml",
+    "evaluation/criteria/**/*.json",
+    "server/**/*.py",
 ]
 
 [project.scripts]
-sob = "structured_output_benchmark.cli:app"
-structured-output-benchmark = "structured_output_benchmark.main:main"
+sob = "structured_output_kit.cli:app"
+structured_output_kit = "structured_output_kit.main:main"
