@@ -1,0 +1,157 @@
+{
+    "personal_info": {
+        "name": "엄건호",
+        "gender": null,
+        "nationality_type": null,
+        "nationality": null,
+        "birth": null,
+        "contacts": ["010-9349-6827"],
+        "email": null,
+        "address": null,
+        "available_date": null,
+        "sns_links": [],
+        "desired_job": null,
+        "desired_location": null,
+        "desired_position": null,
+        "desired_salary": null
+    },
+    "summary_info": {
+        "brief_introduction": null,
+        "core_competencies": [
+            "제품기획",
+            "데이터분석",
+            "시스템",
+            "DB",
+            "SQL",
+            "Python",
+            "프로젝트관리",
+            "회계",
+            "재무일반"
+        ]
+    },
+    "educations": [
+        {
+            "school_type": "대학교",
+            "school_name": "연세대학교",
+            "admission_date": "2006-01",
+            "graduation_date": "2012-01",
+            "gpa": null,
+            "major": "통계학",
+            "sub_major": null,
+            "degree": "학사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "University of Michigan",
+            "admission_date": "2017-01",
+            "graduation_date": "2019-01",
+            "gpa": null,
+            "major": "Information Science",
+            "sub_major": null,
+            "degree": "석사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "University of Michigan",
+            "admission_date": "2016-01",
+            "graduation_date": "2019-01",
+            "gpa": null,
+            "major": "MBA",
+            "sub_major": null,
+            "degree": "MBA",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        }
+    ],
+    "careers": [
+        {
+            "company_name": "삼성전자",
+            "start_date": "2012-02",
+            "end_date": "2013-01",
+            "is_currently_employed": false,
+            "responsibilities": null,
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "재무회계",
+            "department": "재무회계팀",
+            "position": "사원",
+            "rank": "사원",
+            "employment_type": null
+        },
+        {
+            "company_name": "삼성전자",
+            "start_date": "2013-01",
+            "end_date": "2016-04",
+            "is_currently_employed": false,
+            "responsibilities": null,
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "PM",
+            "department": "구주PM그룹",
+            "position": "대리",
+            "rank": "대리",
+            "employment_type": null
+        },
+        {
+            "company_name": "하이퍼커넥트유한책임회사",
+            "start_date": "2019-05",
+            "end_date": "2020-07",
+            "is_currently_employed": false,
+            "responsibilities": null,
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": null,
+            "department": "Epic Product Team",
+            "position": "Team Leader",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "비바리퍼블리카",
+            "start_date": "2020-08",
+            "end_date": "2021-01",
+            "is_currently_employed": false,
+            "responsibilities": null,
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": null,
+            "department": null,
+            "position": "Product Owner",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "하이퍼커넥트",
+            "start_date": "2021-09",
+            "end_date": null,
+            "is_currently_employed": true,
+            "responsibilities": "Hyperconnect B2B Product들을 만드는 PM팀에서 팀장을 역임하고 있습니다",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": null,
+            "department": null,
+            "position": "Team Leader",
+            "rank": null,
+            "employment_type": null
+        }
+    ],
+    "education_programs": [],
+    "overseas_experiences": [],
+    "certificates": [],
+    "awards": [],
+    "employment_preference": null,
+    "military_service": null,
+    "cover_letter": null,
+    "etc_info": {
+        "details": "영어 원어민 수준"
+    }
+}

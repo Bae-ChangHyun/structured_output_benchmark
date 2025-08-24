@@ -1,0 +1,104 @@
+{
+    "personal_info": {
+        "name": "강진구",
+        "gender": null,
+        "nationality_type": null,
+        "nationality": null,
+        "birth": null,
+        "contacts": ["010-9711-0401"],
+        "email": null,
+        "address": null,
+        "available_date": null,
+        "sns_links": [],
+        "desired_job": null,
+        "desired_location": null,
+        "desired_position": null,
+        "desired_salary": null
+    },
+    "summary_info": {
+        "brief_introduction": null,
+        "core_competencies": [
+            "PM",
+            "SAP",
+            "PMP",
+            "프로젝트관리",
+            "사업관리"
+        ]
+    },
+    "educations": [
+        {
+            "school_type": "대학교",
+            "school_name": "경북대학교",
+            "admission_date": "1987-01",
+            "graduation_date": "1991-01",
+            "gpa": null,
+            "major": "전자공학",
+            "sub_major": null,
+            "degree": "학사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "경상대학교",
+            "admission_date": null,
+            "graduation_date": null,
+            "gpa": null,
+            "major": "컴퓨터과학",
+            "sub_major": null,
+            "degree": "석사",
+            "graduation_work": null,
+            "completion_status": "재학중"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "경상대학교",
+            "admission_date": null,
+            "graduation_date": null,
+            "gpa": null,
+            "major": "산업시스템공학",
+            "sub_major": null,
+            "degree": "박사",
+            "graduation_work": null,
+            "completion_status": "재학중"
+        }
+    ],
+    "careers": [
+        {
+            "company_name": "현대오토에버",
+            "start_date": "2005-06",
+            "end_date": null,
+            "is_currently_employed": true,
+            "responsibilities": "주요 프로젝트: 2005년 다이모스 ERP 구축(@아산), 2006년 현대차 DMES Digital Manufacturing Execution System 구축(@남양), 2007년 현대차 글로벌종합상황실 구축(@양재), 2008년 BI 추진 전략 수립(@강남), 2009년 KMMG 기아차 미국 조지아 공장 ERP 구축(@라그랑지), 2010년 HMMR 현대차 러시아 공장 ERP 구축(@상트페테르부르크), 2011년 HMCA 현대차 호주 판매법인 ERP 구축(@시드니), 2012년 HMB 현대차 브라질 공장 ERP 구축(@뻬라씨까바), 2013년 HMGC 현대차 중국 지주사 ERP 구축(@베이징/상하이), 2014년 HAOS 현대차 터키 공장 상용 ERP 구축(@부르사), 2015-16년 KMM 기아차 멕시코 공장 ERP 구축(@멕시코시티/몬테레이), 2017-18년 CJ제일제당 해외 ERP 구축(@자카르타/호치민), 2019년 모비스 인도공장 ERP 구축 & KMI 기아차 인도공장 원산지관리 시스템 구축(@아난타푸르), 2020년 현대트랜시스 ERP, 현대글로비스 운송관리 시스템 구축 지원(@대치), 2021년 현대제철 ERP 구축(@양재), 2022년 현대차/기아 차세대 ERP(@양재)",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "ERP 컨설팅",
+            "department": "ERP컨설팅팀",
+            "position": "Project Manager",
+            "rank": null,
+            "employment_type": null
+        }
+    ],
+    "education_programs": [],
+    "overseas_experiences": [],
+    "certificates": [
+        {
+            "certificate_name": "PMP",
+            "issuing_authority": null,
+            "acquisition_date": null,
+            "score": null
+        },
+        {
+            "certificate_name": "CPIM",
+            "issuing_authority": null,
+            "acquisition_date": null,
+            "score": null
+        }
+    ],
+    "awards": [],
+    "employment_preference": null,
+    "military_service": null,
+    "cover_letter": null,
+    "etc_info": {}
+}

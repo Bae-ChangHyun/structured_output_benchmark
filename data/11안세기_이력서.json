@@ -1,0 +1,280 @@
+{
+    "personal_info": {
+        "name": "안세기",
+        "gender": null,
+        "nationality_type": null,
+        "nationality": null,
+        "birth": "1963-10-09",
+        "contacts": ["010-4697-3939"],
+        "email": null,
+        "address": null,
+        "available_date": null,
+        "sns_links": [],
+        "desired_job": null,
+        "desired_location": null,
+        "desired_position": null,
+        "desired_salary": null
+    },
+    "summary_info": {
+        "brief_introduction": null,
+        "core_competencies": [
+            "DX기획",
+            "전자문서",
+            "ICT R&D(AI,SW,블록체인,클라우드)",
+            "CxO(CDO,CISO,CIO,CTO)"
+        ]
+    },
+    "educations": [
+        {
+            "school_type": "고등학교",
+            "school_name": "성수고등학교",
+            "admission_date": null,
+            "graduation_date": "1982-02",
+            "gpa": null,
+            "major": null,
+            "sub_major": null,
+            "degree": null,
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학교",
+            "school_name": "아주대학교",
+            "admission_date": null,
+            "graduation_date": "1989-02",
+            "gpa": null,
+            "major": "전산학과",
+            "sub_major": null,
+            "degree": "학사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        },
+        {
+            "school_type": "대학원",
+            "school_name": "중앙대학교",
+            "admission_date": null,
+            "graduation_date": "1994-06",
+            "gpa": null,
+            "major": "컴퓨터소프트웨어학과",
+            "sub_major": "멀티미디어 및 인공지능시스템",
+            "degree": "석사",
+            "graduation_work": null,
+            "completion_status": "졸업"
+        }
+    ],
+    "careers": [
+        {
+            "company_name": "대한민국 육군3군단 사령부",
+            "start_date": "1984-11",
+            "end_date": "1987-02",
+            "is_currently_employed": false,
+            "responsibilities": "전산센터",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "전산",
+            "department": "전산센터",
+            "position": null,
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "한국컴퓨터통신",
+            "start_date": "1988-08",
+            "end_date": "1992-01",
+            "is_currently_employed": false,
+            "responsibilities": "VAN연구소",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "연구",
+            "department": "VAN연구소",
+            "position": "선임연구원",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "KTNET",
+            "start_date": "1992-02",
+            "end_date": "2000-02",
+            "is_currently_employed": false,
+            "responsibilities": "시스템본부",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "시스템",
+            "department": "시스템본부",
+            "position": "선임연구원/팀장",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "KTNET",
+            "start_date": "2000-03",
+            "end_date": "2004-02",
+            "is_currently_employed": false,
+            "responsibilities": "전자무역EDI연구소",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "연구개발",
+            "department": "전자무역EDI연구소",
+            "position": "연구소장(CTO)",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "KTNET",
+            "start_date": "2004-03",
+            "end_date": "2007-02",
+            "is_currently_employed": false,
+            "responsibilities": "전자무역IDC센터",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "IDC운영",
+            "department": "전자무역IDC센터",
+            "position": "센터장",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "KTNET",
+            "start_date": "2007-03",
+            "end_date": "2015-05",
+            "is_currently_employed": false,
+            "responsibilities": "공인전자문서센터",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "전자문서",
+            "department": "공인전자문서센터",
+            "position": "센터장",
+            "rank": null,
+            "employment_type": null
+        },
+        {
+            "company_name": "KTNET",
+            "start_date": "2015-06",
+            "end_date": "2017-02",
+            "is_currently_employed": false,
+            "responsibilities": "ICT융합본부",
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "ICT융합",
+            "department": "ICT융합본부",
+            "position": "본부장/상무(CIO, CISO)",
+            "rank": "상무",
+            "employment_type": null
+        },
+        {
+            "company_name": "KTNET",
+            "start_date": "2017-03",
+            "end_date": "2020-03",
+            "is_currently_employed": false,
+            "responsibilities": null,
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "총괄업무",
+            "department": null,
+            "position": "총괄임원/상무(CDO), DDPA(전자문서협의회장)",
+            "rank": "상무",
+            "employment_type": null
+        },
+        {
+            "company_name": "마크애니",
+            "start_date": "2020-08",
+            "end_date": null,
+            "is_currently_employed": true,
+            "responsibilities": null,
+            "reason_for_leaving": null,
+            "annual_salary": null,
+            "work_location": null,
+            "job_field": "정보보호, 대외협력",
+            "department": null,
+            "position": "부사장",
+            "rank": null,
+            "employment_type": null
+        }
+    ],
+    "education_programs": [],
+    "overseas_experiences": [],
+    "certificates": [
+        {
+            "certificate_name": "정보처리기사 1급",
+            "issuing_authority": "한국산업인력공단",
+            "acquisition_date": null,
+            "score": null
+        },
+        {
+            "certificate_name": "소프트웨어기술경력 특급기술자",
+            "issuing_authority": "한국소프트웨어산업협회",
+            "acquisition_date": null,
+            "score": null
+        },
+        {
+            "certificate_name": "국제정보서비스관리(ITSM) 관리자",
+            "issuing_authority": "BSI",
+            "acquisition_date": "2006",
+            "score": null
+        },
+        {
+            "certificate_name": "국제품질경영(ISO9001) 선임심사원",
+            "issuing_authority": "IRCA",
+            "acquisition_date": "2008",
+            "score": null
+        },
+        {
+            "certificate_name": "국제환경경영(ISO14001) 선임심사원",
+            "issuing_authority": "IRCA",
+            "acquisition_date": "2008",
+            "score": null
+        },
+        {
+            "certificate_name": "국제정보시스템감사(CISA)",
+            "issuing_authority": "ISACA",
+            "acquisition_date": "2012",
+            "score": null
+        }
+    ],
+    "awards": [
+        {
+            "award_name": "2011 대한민국 IT Innovation 대상",
+            "awarding_institution": "지경부",
+            "award_date": "2011-11",
+            "details": "지경부장관상"
+        },
+        {
+            "award_name": "한국전자문서 대상",
+            "awarding_institution": "미래창조과학부",
+            "award_date": "2015-12",
+            "details": "미래창조과학부장관상"
+        },
+        {
+            "award_name": "한국CIO포럼 올해의 CIO 대상",
+            "awarding_institution": "한국CIO포럼",
+            "award_date": "2016-12",
+            "details": "물류유통부문 수상"
+        },
+        {
+            "award_name": "무역서비스 아이디어 공모 우수상",
+            "awarding_institution": "KITA",
+            "award_date": "2010-07",
+            "details": null
+        },
+        {
+            "award_name": "AFACT e-ASIA Awards 우수상",
+            "awarding_institution": "AFACT",
+            "award_date": "2013-11",
+            "details": "e-Biz Public Sector"
+        }
+    ],
+    "employment_preference": null,
+    "military_service": null,
+    "cover_letter": null,
+    "etc_info": {
+        "details": "저서: 2002 기업간 B2B(전자상거래) 시스템, 논문: 1994 MHS시스템간의 상호운용성 증진을 위한 접속지침의 개발, 2002 ebXML 표준기반 글로벌 e비즈니스 솔루션 XENI 구현, 특허: 2009 방카슈랑스 청약서류의 전자화를 통한 전자문서관리시스템 및 관리방법, 표준화 활동: UN/CEFACT ebXML 국제표준화 전문위원, ISO TC171 문서관리표준화 전문위원"
+    }
+}

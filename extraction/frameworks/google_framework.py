@@ -1,0 +1,33 @@
+import json
+from typing import Any
+from google import genai
+from google.genai import types
+
+from langfuse import observe
+from structured_output_kit.extraction.base import BaseFramework, experiment
+
+
+class GoogleFramework(BaseFramework):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.client = genai.Client()
+        
+    @observe(name='Google Framework')
+    def run(
+        self, retries: int, inputs: dict = {}
+    ) -> tuple[list[Any], float, dict, list[list[float]]]:
+        @experiment(retries=retries)
+        def run_experiment(inputs):
+            response = self.client.models.generate_content(
+                model = self.model,
+                contents = self.prompt.format(**inputs),
+                config=types.GenerateContentConfig(
+                    response_schema=self.response_model,
+                    response_mime_type="application/json",
+                ),
+                **self.extra_kwargs
+            )
+            return json.loads(response.candidates[0].content.parts[0].text)
+           
+        predictions, percent_successful, latencies = run_experiment(inputs)
+        return predictions, percent_successful, latencies
